@@ -61,18 +61,12 @@ const handleSubmit = async (event) => {
   const [selectedValue, setSelectedValue] = useState('');
 
   const handleChange = (event) => {
-    let Category_Target = document.getElementById('category');
-    let List_Option = document.getElementById('list-option');
     setSelectedValue(event.target.value);
-    // Category_Target.placeholder = event.target.value;
-
-    Category_Target.disabled = true;
-    if(event.target.value === 'setting' ||event.target.value === 'adapting' || event.target.value === 'cutting'  ){
-      List_Option.value = event.target.value     
-    } else {
-      console.log('nothing here  im else ')
+  
+    if (event.target.value === 'setting' || event.target.value === 'adapting' || event.target.value === 'cutting') {
+      setCategory(event.target.value);
     }
-  }
+  };
 
   return (
     <div className="containerr">
@@ -138,7 +132,7 @@ const handleSubmit = async (event) => {
           <br />
           <label htmlFor="category">Category:</label>
           <input
-            placeholder=""
+            placeholder="enter the categry manully"
             type="text"
             id="category"
             value={category}
