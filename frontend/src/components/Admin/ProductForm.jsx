@@ -1,0 +1,157 @@
+
+import React, { useEffect, useState } from "react";
+import './add-product.css';
+import { createProduct, clearErrors } from '../../actions/productaction';
+import { useDispatch, useSelector } from 'react-redux';
+
+const ProductForm = () => {
+const dispatch = useDispatch()
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
+  const [images, setImages] = useState([]);
+  const [stock, setStock] = useState(0);
+  const [category, setCategory] = useState('');
+  
+  const handleProductImageChange = (e) => {
+    const files = e.target.files[0];
+    setFileToBase(files);
+    console.log(files)
+  }
+
+
+  const setFileToBase = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setImages((prevImages) => [...prevImages, reader.result]);
+    }
+  }
+const handleSubmit = async (event) => {
+  event.preventDefault();
+
+  const formData = new FormData();
+  formData.set('name', name);
+  formData.set('description', description);
+  formData.set('stock', stock);
+  formData.set('category', category);
+
+  images.forEach((image) => {
+    formData.append('images', image);
+    console.log(formData)
+
+  });
+
+  dispatch(createProduct(formData));
+}
+
+// useEffect(() => {
+//   if(error) {
+//     enqueueSnackbar(error, { variant: "error" });
+//     dispatch(clearErrors());
+//   }
+//   if (success) {
+//     enqueueSnackbar("product Created", { variant: "success" });
+//     dispatch({ type: NEW_PRODUCT_RESET });
+//     navigate("/admin/products");
+//   }
+// },
+//  [dispatch, error, success, navigate, enqueueSnackbar]
+// );
+
+  const [selectedValue, setSelectedValue] = useState('');
+
+  const handleChange = (event) => {
+    let Category_Target = document.getElementById('category');
+    let List_Option = document.getElementById('list-option');
+    setSelectedValue(event.target.value);
+    // Category_Target.placeholder = event.target.value;
+
+    Category_Target.disabled = true;
+    if(event.target.value === 'setting' ||event.target.value === 'adapting' || event.target.value === 'cutting'  ){
+      List_Option.value = event.target.value     
+    } else {
+      console.log('nothing here  im else ')
+    }
+  }
+
+  return (
+    <div className="containerr">
+      <h2>Here where you should AddProduct</h2>
+      <div className="option-container">
+        <label htmlFor="list-option" className="label-option">Choose a Category:</label>
+        <select name="category" id="list-option" required autoFocus onChange={handleChange} value={selectedValue}>
+          <option id="intro-optn" value="--Please choose a Category">--Please choose a Category</option>
+          <option value="cutting">cutting</option>
+          <option value="adapting">Adapting</option>
+          <option value="setting">Setting</option>
+        </select>
+      </div>        
+      <div className="Main-Mobile"> 
+        <form onSubmit={handleSubmit}>
+          <label htmlFor="name">Name:</label>
+          <input
+            autoFocus
+            type="text"
+            placeholder="enter the name of product"
+            id="name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            minLength={3}
+            maxLength={50}
+            required
+          />
+          <br />
+          <label htmlFor="description">Description:</label>
+          <input 
+            placeholder="enter the description of product"
+            type="text"
+            id="description"
+            value={description}
+            onChange={(event) => setDescription(event.target.value)}
+            minLength={10}
+            maxLength={200}
+            required
+          />
+          <br />
+          <label htmlFor="images">Images:</label>
+          <input
+            // multiple
+            type="file"
+            name="images"
+            accept="image/*"
+            id="images"
+            onChange={handleProductImageChange}
+            required
+          />
+          <br />
+          <label htmlFor="stock">Stock:</label>
+          <input
+            placeholder="enter how much product do you have"
+            type="number"
+            id="stock"
+            value={stock}
+            onChange={(event) => setStock(event.target.value)}
+            min={0}
+            max={10000}
+            required
+          />
+          <br />
+          <label htmlFor="category">Category:</label>
+          <input
+            placeholder=""
+            type="text"
+            id="category"
+            value={category}
+            onChange={(event) => setCategory(event.target.value)}
+            minLength={3}
+            maxLength={30}
+            required
+          />
+          <input type="submit" value='Submit' className="btn" />
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default ProductForm;
