@@ -5,7 +5,6 @@ const cloudinary = require('cloudinary');
 
 // Create Product ---ADMIN
 exports.createProduct = asyncErrorHandler(async (req, res, next) => {
-    console.log(req.body)
 const {name,description,stock,images, category} = req.body
 
 try{
@@ -41,7 +40,7 @@ exports.getProducts = asyncErrorHandler(async (req, res, next) => {
 
     try {
       const products = await Material.find();
-     console.log(products, 'hello im from product controller')
+    //  console.log(products, 'hello im from product controller')
       if (!products) {
         return res.status(404).json({
           success: false,
@@ -58,3 +57,36 @@ exports.getProducts = asyncErrorHandler(async (req, res, next) => {
       next(error);
     }
   });
+
+
+//const Product = require('../models/Product');
+
+
+// Update the stock of a product with the specified ID
+exports.updateProductStock = async (req, res) => {
+  console.log(req.params)
+  
+  try {
+    const { id } = req.params;
+
+    const product = await Material.findById(id);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    if (product.stock === 0) {
+      return res.status(400).json({ message: 'Product out of stock' });
+    }
+
+    product.stock -= 1;
+
+    const updatedProduct = await product.save();
+
+    res.status(200).json(updatedProduct);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+

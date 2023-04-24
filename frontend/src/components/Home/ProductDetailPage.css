@@ -27,7 +27,12 @@
   .product-info {
     margin-top: 1rem;
   }
-  
+ 
+  .counter 
+  {
+    background-color: green;
+    color: white;
+  }
   @media screen and (min-width: 768px) {
     .product {
       flex-direction: row;
@@ -62,5 +67,5 @@
   
   .light.red {
     background-color: red;
-    opacity: 0.4;
+    opacity: 1;
   }

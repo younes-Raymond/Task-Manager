@@ -30,8 +30,6 @@ export  const createProduct = (productData) => async (dispatch) => {
   }
 }
 
-
-
 // Get All Products ---PRODUCT SLIDER
 export const getProducts = async () => {
   try {
@@ -43,6 +41,7 @@ export const getProducts = async () => {
     throw new Error(error.response.data.message);
   }
 };
+
 
 // Clear All Errors
 export  const clearErrors = () => (dispatch) => {
