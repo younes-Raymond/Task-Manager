@@ -86,7 +86,7 @@ const handleSubmit = async (event) => {
           <input
             autoFocus
             type="text"
-            placeholder="enter the name of product"
+            placeholder="اكتب اكتر من  ثلات حروف"
             id="name"
             value={name}
             onChange={(event) => setName(event.target.value)}
@@ -97,7 +97,7 @@ const handleSubmit = async (event) => {
           <br />
           <label htmlFor="description">Description:</label>
           <input 
-            placeholder="enter the description of product"
+            placeholder="اكتب اكتر من  عشر حروف "
             type="text"
             id="description"
             value={description}
@@ -132,7 +132,7 @@ const handleSubmit = async (event) => {
           <br />
           <label htmlFor="category">Category:</label>
           <input
-            placeholder="enter the categry manully"
+            placeholder="كتب اكتر من  ثلات حروف"
             type="text"
             id="category"
             value={category}

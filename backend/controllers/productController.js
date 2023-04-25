@@ -1,4 +1,5 @@
 const Material = require('../models/productModel');
+const UserTaken = require('../models/userModel');
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
 
@@ -59,34 +60,27 @@ exports.getProducts = asyncErrorHandler(async (req, res, next) => {
   });
 
 
-//const Product = require('../models/Product');
-
-
-// Update the stock of a product with the specified ID
-exports.updateProductStock = async (req, res) => {
-  console.log(req.params)
-  
-  try {
-    const { id } = req.params;
-
-    const product = await Material.findById(id);
-
-    if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+  exports.updateUserTakenInfo = async (req, res) => {
+    const { name, destination, phone } = req.body;
+    const { productId } = req.params;
+    try {
+      const material = await Material.findById(productId);
+      if (!material) {
+        return res.status(404).json({ message: 'Material not found' });
+      }
+      const userTaken = new UserTaken({
+        name,
+        destination,
+        phone,
+        takenAt: Date.now(),
+      });
+      material.users.push(userTaken);
+      material.stock -= 1;
+      await material.save();
+      await userTaken.save();
+      res.status(200).json(material);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: 'Server error' });
     }
-
-    if (product.stock === 0) {
-      return res.status(400).json({ message: 'Product out of stock' });
-    }
-
-    product.stock -= 1;
-
-    const updatedProduct = await product.save();
-
-    res.status(200).json(updatedProduct);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: 'Server error' });
-  }
-};
-
+  };
