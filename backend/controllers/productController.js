@@ -110,4 +110,13 @@ exports.updateUserTakenInfo = async (req, res) => {
 
   });
 
-  
+  exports.searchProducts = async (req, res) => {
+    try {
+      const keyword = req.params.keyword;
+      const products = await Product.find({ name: { $regex: keyword, $options: 'i' } });
+      res.json(products);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Server Error' });
+    }
+  };

@@ -21,7 +21,6 @@ const ProductDetailPage = () => {
     const fetchProducts = async () => {
       try {
         const data = await getProducts();
-        console.log(data)
         setProducts(data.products);
         setLoading(false);
       } catch (error) {
@@ -32,7 +31,6 @@ const ProductDetailPage = () => {
     fetchProducts();
   }, []);
 
-  console.log(products); /// thos is will log all the product or i can say main products 
 
   const handleBuy = async (productId, userId) => {
     setShowForm(userId); // Set showForm to the user's id when the button is clicked
@@ -47,7 +45,6 @@ const submitHandler = async (event, productId) => {
   event.preventDefault();
   const formId = event.target.id;
   productId = formId.split('-')[1];
-  console.log(productId)
   try {
     const response = await fetch(`/api/v1/admin/product/${productId}`, {
       method: 'PUT',
@@ -70,7 +67,6 @@ const submitHandler = async (event, productId) => {
     });
     setProducts(updatedProducts);
   } catch (error) {
-    console.log(error);
     setResponse({
       productId,
       message: 'Error buying product.',
@@ -78,7 +74,6 @@ const submitHandler = async (event, productId) => {
   }
 };
 
-console.log(products); 
 
   const handleFormSubmit = async (event, userId, productId) => {
     event.preventDefault();
@@ -124,10 +119,8 @@ console.log(products);
  
 //  start the product container 
     <div className="product-container">
-    { console.log(products) }
       {products.map((product) => (
         <div key={product._id} className="product">
-          {console.log(product,product.images ,`this is the current product id ${product._id}`,'hello from  product inside product-container')}
            
           <div className="product-image">
             <img src={product.images.url} alt={product.name} onError={(e) => console.log(e)}  />
