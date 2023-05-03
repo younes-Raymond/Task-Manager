@@ -34,7 +34,7 @@ export  const createProduct = (productData) => async (dispatch) => {
 export const getProducts = async () => {
   try {
     const { data } = await axios.get('/api/v1/admin/products/all');
-    console.log(data); // add this line to log the data
+    // console.log(data); // add this line to log the data
     return data;
   } catch (error) {
     console.log(error.message)
@@ -42,5 +42,17 @@ export const getProducts = async () => {
   }
 };
 
+
+// send a request to the worker who already use the material 
+export const sendRequest = async (userId, materialId, name, destination, email) => {
+  try {
+    const { data } = await axios.post("/api/v1/material/request", { userId, materialId, name, destination, email });
+    console.log(data); // add this line to log the data
+    return data;
+  } catch (error) {
+    console.log(error.response.data.message);
+    throw new Error(error.response.data.message);
+  }
+};
 
 

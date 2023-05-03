@@ -11,7 +11,7 @@ const userTakenSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  phone: {
+  email: {
     type: String,
     required: true,
   },

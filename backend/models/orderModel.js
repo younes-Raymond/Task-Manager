@@ -23,7 +23,7 @@
 //             type: Number,
 //             required: true
 //         },
-//         phoneNo: {
+//         emailNo: {
 //             type: Number,
 //             required: true
 //         },

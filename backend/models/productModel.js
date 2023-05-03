@@ -54,11 +54,11 @@ const MaterialSchema = new mongoose.Schema({
         minlength: 3,
         maxlength: 50    
       },
-      phone: {
-        type: Number,
+      email: {
+        type: String,
         required: true,
-        minlength: 12,
-        maxlength: 15    
+        minlength: 10,
+        maxlength: 40    
       },
       takenAt: {
         type: Date,
