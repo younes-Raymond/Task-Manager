@@ -20,7 +20,8 @@ app.use(fileUpload());
 
 // const user = require('./routes/userRoute');
 const product = require('./routes/productRoute');
-// app.use('/api/v1', user);
+const user = require('./routes/userRoute');
+app.use('/api/v1', user);
 app.use('/api/v1', product);
 
 

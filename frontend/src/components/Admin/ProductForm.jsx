@@ -5,6 +5,7 @@ import { createProduct, clearErrors } from '../../actions/productaction';
 import { useDispatch, useSelector } from 'react-redux';
 
 const ProductForm = () => {
+  
 const dispatch = useDispatch()
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -12,6 +13,8 @@ const dispatch = useDispatch()
   const [stock, setStock] = useState(0);
   const [category, setCategory] = useState('');
   
+
+
   const handleProductImageChange = (e) => {
     const files = e.target.files[0];
     setFileToBase(files);
@@ -26,6 +29,7 @@ const dispatch = useDispatch()
       setImages((prevImages) => [...prevImages, reader.result]);
     }
   }
+
 const handleSubmit = async (event) => {
   event.preventDefault();
 

@@ -110,13 +110,33 @@ exports.updateUserTakenInfo = async (req, res) => {
 
   });
 
-  exports.searchProducts = async (req, res) => {
-    try {
-      const keyword = req.params.keyword;
-      const products = await Product.find({ name: { $regex: keyword, $options: 'i' } });
-      res.json(products);
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Server Error' });
-    }
-  };
+
+
+  // Get All Products
+exports.searchProducts = asyncErrorHandler(async (req, res, next) => {
+  console.log(req.query);
+  const resultPerPage = 12;
+  const productsCount = await Product.countDocuments();
+
+  const searchFeature = new SearchFeatures(Product.find(), req.query)
+      .search()
+      .filter();
+
+  let products = await searchFeature.query;
+  let filteredProductsCount = products.length;
+
+  searchFeature.pagination(resultPerPage);
+
+  products = await searchFeature.query.clone();
+
+ const response = {
+  success:true,
+  products,
+  productsCount,
+  resultPerPage,
+  filteredProductsCount,
+ };
+ console.log(response);
+ res.status(200).json(response)
+});
+

@@ -6,6 +6,9 @@ import Aboutus from './components/Home/about-us';
 import Header from './components/Layouts/Header';
 import ProductDetailPage from './components/Home/ProductDetailPage';
 
+import LoginPage from './components/Home/Login/Login';
+import RegisterPage from './components/Home/Login/RegisterPage';
+
 const App = () => {
   return (
     <>
@@ -31,7 +34,17 @@ const App = () => {
           <ProductDetailPage  />
           } />
         </Routes>
-      </Router>
+        <Routes>
+  <Route path="/register" element={
+  <RegisterPage />
+  } />
+</Routes>
+<Routes>
+  <Route path="/login" element={
+  <LoginPage />
+  } />
+</Routes>
+</Router>
     </>
   );
 };
