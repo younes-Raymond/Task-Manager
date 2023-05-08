@@ -39,34 +39,43 @@ const MaterialSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  users: [
-    {
-      name: {
-        type: String,
-        required: true,
-        minlength: 3,
-        maxlength: 50    
-       
-      },
-      destination: {
-        type: String,
-        required: true,
-        minlength: 3,
-        maxlength: 50    
-      },
-      email: {
-        type: String,
-        required: true,
-        minlength: 10,
-        maxlength: 40    
-      },
-      takenAt: {
-        type: Date,
-        required: true,
-        default: Date.now,
-      },
-    }
-  ],
+    users: [
+      {
+        name: {
+          type: String,
+          required: true,
+          minlength: 3,
+          maxlength: 50    
+        },
+        destination: {
+          type: String,
+          required: true,
+          minlength: 3,
+          maxlength: 50    
+        },
+        email: {
+          type: String,
+          required: true,
+          minlength: 10,
+          maxlength: 40    
+        },
+        userIdS: {
+          type: String,
+          require: true,
+          maxlength: 50
+        },
+        role: {
+          type: String,
+          required: false,
+          maxlength: 40
+        },
+        takenAt: {
+          type: Date,
+          required: true,
+          default: Date.now,
+        },
+      }
+    ],
 });
 
 const Material = mongoose.model('Material', MaterialSchema);

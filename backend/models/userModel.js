@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const userTakenSchema = new mongoose.Schema({
+const WorkersSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -48,7 +48,7 @@ const userTakenSchema = new mongoose.Schema({
   resetPasswordExpire: Date,
 });
 
-userTakenSchema.pre('save', async function (next) {
+WorkersSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();
   }
@@ -57,19 +57,19 @@ userTakenSchema.pre('save', async function (next) {
 });
 
 
-userTakenSchema.methods.getJWTToken = function () {
+WorkersSchema.methods.getJWTToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });
 };
 
 
-userTakenSchema.methods.comparePassword = async function (enteredPassword) {
+WorkersSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
 
-userTakenSchema.methods.getResetPasswordToken = async function () {
+WorkersSchema.methods.getResetPasswordToken = async function () {
   const resetToken = crypto.randomBytes(20).toString('hex');
 
   this.resetPasswordToken = crypto
@@ -82,6 +82,6 @@ userTakenSchema.methods.getResetPasswordToken = async function () {
   return resetToken;
 };
 
-const UserTaken = mongoose.model('UserTaken', userTakenSchema);
+const Workers = mongoose.model('Workers', WorkersSchema);
 
-module.exports = UserTaken;
+module.exports = Workers;

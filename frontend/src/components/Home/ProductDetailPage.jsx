@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { getProducts } from '../../actions/productaction';
 import { sendRequest } from '../../actions/productaction';
+import { updateProduct } from '../../actions/productaction';
 
 import './ProductDetailPage.css'; 
 
 const ProductDetailPage = () => {
+  // State variables
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
   const [response, setResponse] = useState(null);
   const [showForm, setShowForm] = useState(false);
-  const [name, setName] = useState('');
-  const [destination, setDestination] = useState('');
-  const [email, setemail] = useState('');
-  const [user, setUser] = useState({ name: '', destination: '', email: '' });
   const [submitting, setSubmitting] = useState(false);
-
+  const [destination, setDestination] = useState('');
+  const [name, setName] = useState(''); 
+  const [email, setEmail] = useState(''); 
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -32,55 +32,75 @@ const ProductDetailPage = () => {
   }, []);
 
 
+
+
+
   const handleBuy = async (productId, userId) => {
     setShowForm(userId); // Set showForm to the user's id when the button is clicked
   };
-  
+
   const handleBuyit = async (productId, userId) => {
     setShowForm(productId); // Set showForm to the user's id when the button is clicked  
-};
+  };
 
 
-const submitHandler = async (event, productId) => {
-  event.preventDefault();
-  const formId = event.target.id;
-  productId = formId.split('-')[1];
-  try {
-    const response = await fetch(`/api/v1/admin/product/${productId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ name, destination, email }),
-    });
-    const updatedProduct = await response.json();
-    setResponse({
-      productId: updatedProduct._id,
-      message: 'Product bought successfully!',
-    });
-    setShowForm(false); // Set showForm to false after the form is submitted
-    const updatedProducts = products.map((product) => {
-      if (product._id === productId) {
-        return updatedProduct;
-      }
-      return product;
-    });
-    setProducts(updatedProducts);
-  } catch (error) {
-    setResponse({
-      productId,
-      message: 'Error buying product.',
-    });
-  }
-};
 
-
-  const handleFormSubmit = async (event, userId, productId) => {
+  const handleGetMaterial = async (event) => {
     event.preventDefault();
+    const formId = event.target.id.split('-')[1];
+    const productId = formId;
+    const destination = event.target.elements[`destination-${productId}`].value; // Get the destination value from the input field
+    const name = localStorage.getItem('name'); // Get the name value from localStorage
+    const email = JSON.parse(localStorage.getItem('user')).email; // Get the email value from localStorage
+    const userIdS = localStorage.getItem('userId'); // Get the userId value from localStorage
+    console.log(userIdS)
+    setShowForm(true);
+    try {
+      const updatedProduct = await updateProduct(productId, name, destination, email, userIdS); // Pass the name, destination, and email values to the updateProduct function
+      setResponse({
+        productId: updatedProduct._id,
+        message: 'Product bought successfully!',
+      });
+      setShowForm(false);
+      const updatedProducts = products.map((product) => {
+        if (product._id === productId) {
+          return updatedProduct;
+        }
+        return product;
+      });
+      setProducts(updatedProducts);
+    } catch (error) {
+      setResponse({
+        productId,
+        message: 'Error buying product.',
+      });
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+  const handleSendRequest = async (event, userId, productId) => {
+    event.preventDefault();
+    const userIdS = localStorage.getItem('userId');
+    const formId = event.target.id.split('-')[1];
+    const storedName = localStorage.getItem('name'); // Get the name value from localStorage
+    const storedEmail = localStorage.getItem('email'); // Get the email value from localStorage
+    setName(storedName); // Set the name value in the state
+    setDestination(userId); // Set the destination value to the user's id
+    setEmail(storedEmail); // Set the email value in the state
+    setShowForm(true); // Show the form
+
     if (name && destination && email) {
       setSubmitting(true);
       try {
-        const response = await sendRequest(userId, productId, name, destination, email); // Pass the name, destination, and emailvalues to the sendRequest function
+        const response = await sendRequest(userIdS, userId, productId, destination,); // Pass the name, destination, and email values to the sendRequest function
         const updatedProduct = response.product;
         setResponse({
           productId: updatedProduct._id,
@@ -146,22 +166,15 @@ const submitHandler = async (event, productId) => {
         <p>email: {user.email}</p>
         <p>Taken at: {new Date(user.takenAt).toLocaleString()}</p> 
  <form 
-  id={user._id} // Use the user's id as the id attribute
+  id={user._id} 
   className={`request-form ${showForm && showForm === user._id ? 'show' : ''}`} // Add the show class to the form when showForm is true and matches the user's id
-  onSubmit={(event) => handleFormSubmit(event, user._id, product._id)}
+  onSubmit={(event) => handleSendRequest (event, user._id, product._id)}
 >
-          <label>
-            Name:
-            <input type="text" value={name} onChange={(event) => setName(event.target.value)} />
-          </label>
           <label>
             Destination:
             <input type="text" value={destination} onChange={(event) => setDestination(event.target.value)} />
           </label>
-          <label>
-            email:
-            <input type="email" value={email} onChange={(event) => setemail(event.target.value)} />
-          </label>
+        
           <button type="submit" disabled={loading || submitting}>Submit</button>
         </form>
       </li>
@@ -171,6 +184,7 @@ const submitHandler = async (event, productId) => {
 {/* end user container */}
 
 
+
 {product.stock > 0 && (
 <button onClick={() => handleBuyit(product._id)}>Get</button>
 )}
@@ -178,16 +192,10 @@ const submitHandler = async (event, productId) => {
     {showForm === product._id && (
       <form id={`form-${product._id}`}
        className={product.stock > 0 ? 'show' : ''} 
-       onSubmit={submitHandler}
+       onSubmit={handleGetMaterial}
        >
-<label htmlFor={`name-${product._id}`}>Name:</label>
-<input
-  type="text"
-  id={`name-${product._id}`}
-  value={name}
-  onChange={(event) => setName(event.target.value)}
-  disabled={loading || submitting}
-/>
+
+
 <label htmlFor={`destination-${product._id}`}>Destination:</label>
 <input
   type="text"
@@ -196,16 +204,8 @@ const submitHandler = async (event, productId) => {
   onChange={(event) => setDestination(event.target.value)}
   disabled={loading || submitting}
 />
-<label htmlFor={`email-${product._id}`}>Email:</label>
-<input
-  type="email"
-  id={`email-${product._id}`}
-  value={email}
-  onChange={(event) => setemail(event.target.value)}
-  placeholder="Enter your email"
-  maxLength="20"
-  disabled={loading || submitting}
-/>
+
+
     <button type="submit"  disabled={loading || submitting}>Submit</button>
       </form>
 
@@ -218,6 +218,32 @@ const submitHandler = async (event, productId) => {
     // end the product container 
 
   );
-};
+
+
+}
 
 export default ProductDetailPage;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

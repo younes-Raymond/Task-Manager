@@ -43,10 +43,24 @@ export const getProducts = async () => {
 };
 
 
-// send a request to the worker who already use the material 
-export const sendRequest = async (userId, materialId, name, destination, email) => {
+// Get from Get buttton when user
+export const updateProduct = async (productId, name, destination, email, userIdS) => {
   try {
-    const { data } = await axios.post("/api/v1/material/request", { userId, materialId, name, destination, email });
+    const config = { header: { "Content-Type": "application/json" } }
+    const { data } = await axios.put(`/api/v1/admin/product/${productId}`, { name, destination, email, userIdS }, config);
+    return data;
+  } catch (error) {
+    throw new Error(error.response.data.message);
+  }
+};
+
+
+
+
+// send a request to the worker who already use the material 
+export const sendRequest = async (userIdS ,userId, materialId, name, destination, email) => {
+  try {
+    const { data } = await axios.post("/api/v1/material/request", { userIdS ,userId, materialId, name, destination, email });
     console.log(data); // add this line to log the data
     return data;
   } catch (error) {
@@ -54,5 +68,9 @@ export const sendRequest = async (userId, materialId, name, destination, email) 
     throw new Error(error.response.data.message);
   }
 };
+
+
+
+
 
 

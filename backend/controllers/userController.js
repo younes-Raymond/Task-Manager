@@ -1,4 +1,4 @@
-const UserTaken = require('../models/userModel');
+const Workers = require('../models/userModel');
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
 const sendToken = require('../utils/sendToken');
@@ -17,7 +17,7 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
   
       const { name, email, gender, password } = req.body;
   
-      const user = await UserTaken.create({
+      const user = await Workers.create({
         name, 
         email,
         gender,
@@ -39,28 +39,61 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
 
 
 
+
+
+  
+
 // Login User
-exports.loginUser = asyncErrorHandler(async (req, res, next) => {
-    console.log(req.body)
+exports.loginUser = asyncErrorHandler(async (req, res) => {
+  console.log(req.body)
+  const { email, password } = req.body;
 
-    // const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400).json({ message: 'Please enter email and password' });
+    return;
+  }
 
-    // if(!email || !password) {
-    //     return next(new ErrorHandler("Please Enter Email And Password", 400));
-    // }
+  const user = await Workers.findOne({ email }).select('+password');
 
-    // const user = await User.findOne({ email}).select("+password");
+  if (!user) {
+    res.status(401).json({ message: "Sorry, we couldn't find an account with that email and password" });
+    return;
+  }
 
-    // if(!user) {
-    //     return next(new ErrorHandler("Invalid Email or Password", 401));
-    // }
+  const isPasswordMatched = await user.comparePassword(password);
 
-    // const isPasswordMatched = await user.comparePassword(password);
+  if (!isPasswordMatched) {
+    res.status(401).json({ message: "Sorry, we couldn't find an account with that email and password" });
+    return;
+  }
 
-    // if(!isPasswordMatched) {
-    //     return next(new ErrorHandler("Invalid Email or Password", 401));
-    // }
-
-    // sendToken(user, 201, res);
+  sendToken(user, 201, res);
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Get All Users --ADMIN
+exports.getAllUsers = asyncErrorHandler(async (req, res, next) => {
+
+  const users = await Workers.find();
+
+  res.status(200).json({
+      success: true,
+      users,
+  });
+});

@@ -3,41 +3,46 @@ import { useDispatch } from 'react-redux';
 import { registerUser } from '../../../actions/userAction';
 
 import './registerPage.css';
+
 function RegisterPage() {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
-  const [destination, setDestination] = useState('');
   const [email, setEmail] = useState('');
   const [gender, setGender] = useState('');
   const [avatar, setAvatar] = useState([]);
   const [password, setPassword] = useState('');
-
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleProductImageChange = (e) => {
     const files = e.target.files[0];
     setFileToBase(files);
-    console.log(files)
+    // console.log(files)
   }
- 
 
-  const setFileToBase = (file) => {
+
+const setFileToBase = (file) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onloadend = () => {
       setAvatar(reader.result);
     }
   }
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
+    if (password !== confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+
     const formData = new FormData();
     formData.set('name', name);
-    formData.set('destination', destination);
     formData.set('email', email);
     formData.set('gender', gender);
     formData.set('password', password);
     formData.append('avatar', avatar);
-    console.log(formData.get('avatar')); // log the avatar file data
+    // console.log(formData.get('avatar')); // log the avatar file data
 
     dispatch(registerUser(formData));
   };
@@ -53,16 +58,6 @@ function RegisterPage() {
             id="name"
             value={name}
             onChange={(event) => setName(event.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="destination">Destination:</label>
-          <input
-            type="text"
-            id="destination"
-            value={destination}
-            onChange={(event) => setDestination(event.target.value)}
             required
           />
         </div>
@@ -106,6 +101,16 @@ function RegisterPage() {
             id="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="confirmPassword">Confirm Password:</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
             required
           />
         </div>

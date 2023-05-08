@@ -1,10 +1,33 @@
 
 .box {
-    width: 90%;
-    border: 1px solid #ccc;
-    border-radius: 15px;
-    margin: 0 5% 5% 5%;
-  }
+  width: 90%;
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  margin: 0 5% 5% 5%;
+  padding: 20px;
+  color: white;
+
+}
+
+.box:nth-child(1) {
+  background-image: url('https://res.cloudinary.com/dktkavyr3/image/upload/v1683557421/OIP_2_khhm2i.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.box:nth-child(2) {
+  background-image: url('https://res.cloudinary.com/dktkavyr3/image/upload/v1683557421/smiling-construction-worker-thrilled-to-be-site-morning-sun-64846142_vjcka7.jpg');
+  background-size: cover;
+  background-position: center;
+}
+
+.box:nth-child(3) {
+  background-image: url('https://res.cloudinary.com/dktkavyr3/image/upload/v1683557421/R_1_ma9vem.jpg');
+  background-size: cover;
+  background-position: center;
+  color: black;
+}
+
   
   .add-product-box {
     background-color: #cfb5b5;
