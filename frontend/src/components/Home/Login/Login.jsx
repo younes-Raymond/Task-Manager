@@ -42,7 +42,6 @@ function LoginPage() {
     }
   };
   
-
   useEffect(() => {
     const chooseContainer = document.querySelector('.chosse-container');
     const new_user = document.querySelector('.New-user')
@@ -108,7 +107,7 @@ function LoginPage() {
             <div className="home">
               <Link to="/"><button>Home</button></Link> 
             </div>
-            <p className='hint'>{user.reuestData.message}!</p>
+            <p className='hint'><span>Hint:</span>{user.reuestData.message}!</p>
           </div>
         )}
         {loading && <p>Loading...</p>} {/* show loading message while waiting for user data */}

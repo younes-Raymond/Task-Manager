@@ -16,6 +16,7 @@
   "author": "Younes Attaoui",
   "license": "ISC",
   "dependencies": {
+    "react": "^17.0.2",
     "@sendgrid/mail": "^7.6.0",
     "bcrypt": "^5.1.0",
     "body-parser": "^1.20.2",
