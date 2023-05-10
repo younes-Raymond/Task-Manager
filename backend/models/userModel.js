@@ -48,6 +48,15 @@ const WorkersSchema = new mongoose.Schema({
   resetPasswordExpire: Date,
 });
 
+
+
+WorkersSchema.methods.generateToken = function() {
+  const token = jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRE,
+  });
+  return token;
+};
+
 WorkersSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();

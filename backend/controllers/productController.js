@@ -1,9 +1,12 @@
 const Material = require('../models/productModel');
 const Workers = require('../models/userModel');
-const  MaterialRequest = require('../models/MaterialRequestModel');
+const MaterialRequest = require('../models/MaterialRequestModel');
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
 const mongoose = require('mongoose');
+
+const admin = require('firebase-admin'); 
+
 
 
 // Create Product ---ADMIN
@@ -36,6 +39,7 @@ try{
     next(error)
 }
 });
+
 
 
 // get all product from db and send it to the client side  
@@ -83,9 +87,9 @@ exports.getProducts = asyncErrorHandler(async (req, res, next) => {
 
 // update the worker taken the material when worker click to get and fill the inpust and info 
 exports.updateUserTakenInfo = async (req, res) => {
-  console.log(typeof req.body.userIdS) // string
-  const { name, destination, email, userIdS } = req.body;
-  console.log('userIdS:', userIdS); // log the userIdS value
+  // console.log(typeof req.body.userIdS) // string
+  const { name, destination, email, userIdLS } = req.body;
+  console.log('userIdS:', userIdLS); // log the userIdLS value
   const { productId } = req.params;
   try {
     const material = await Material.findById(productId);
@@ -96,14 +100,14 @@ exports.updateUserTakenInfo = async (req, res) => {
       name,
       destination,
       email,
-      userIdS,
+      userIdLS,
       takenAt: Date.now(),
     };
-    console.log('user:', user); // log the user object
+    // console.log('user:', user); // log the user object
     material.users.push(user);
     material.stock -= 1;
     await material.save();
-    console.log('material:', material); // log the material object
+    // console.log('material:', material); // log the material object
     res.status(200).json(material);
   } catch (error) {
     console.log(error);
@@ -114,51 +118,56 @@ exports.updateUserTakenInfo = async (req, res) => {
 
 
 exports.sendRequest = asyncErrorHandler(async (req, res, next) => {
-  // console.log(req.body)
+  console.log(req.body)
+  const { materialId, name, destination, email, userIdLS, userId_of_Taken, requesterDestination } = req.body;
+  try {
+    // Find the user who made the request
+    const requester = await Workers.findById(userIdLS);
 
+    // Find the user who will receive the material
+    const worker = await Workers.findById(userId_of_Taken);
 
-  // const { userIdS ,userId, materialId, name, destination, email } = req.body;
-  // try {
-  //   const material = await Material.findById(materialId);
-  //   if (!material) {
-  //     return res.status(404).json({ message: 'Material not found' });
-  //   }
-  //   // Create a new MaterialRequest document
-  //   const materialRequest = new MaterialRequest({
-  //     materialId,
-  //     requesterId: userIdS,
-  //     requestDate: new Date(),
-  //     status: 'pending',
-  //     name,
-  //     destination,
-  //     email,
-  //   });
-  //   await materialRequest.save();
-  //   res.status(200).json({ message: 'Request sent successfully!', product: material });
-  // } catch (error) {
-  //   console.log(error);
-  //   next(error);
-  // }
+    // Find the material
+    const material = await Material.findById(materialId);
 
+    console.log(requester.avatar, requester.name);
+
+    console.log(material.images, material.name);
+
+    // Create a new MaterialRequest document
+    const materialRequest = new MaterialRequest({
+      materialId,
+      requesterId: userIdLS,
+      userId_of_Taken: userId_of_Taken,
+      requestDate: new Date(),
+      status: 'pending',
+      name,
+      email,
+      requesterName: requester.name,
+      requesterAvatar: requester.avatar.url,
+      requesterDestination: destination,
+      materialPicture: material.images.url,
+    });
+    await materialRequest.save();
+    // Store the response in a database
+    const response = {
+      message: 'Request sent successfully!',
+      product: material,
+      userData: {
+        name: requester.name,
+        avatar: requester.avatar,
+        destination: requesterDestination,
+      },
+      materialData: {
+        picture: material.images,
+      },
+      requestDate: materialRequest.requestDate,
+    };
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

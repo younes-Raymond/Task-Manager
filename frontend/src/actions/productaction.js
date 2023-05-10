@@ -44,10 +44,10 @@ export const getProducts = async () => {
 
 
 // Get from Get buttton when user
-export const updateProduct = async (productId, name, destination, email, userIdS) => {
+export const updateProduct = async (productId, name, destination, email, userIdLS) => {
   try {
     const config = { header: { "Content-Type": "application/json" } }
-    const { data } = await axios.put(`/api/v1/admin/product/${productId}`, { name, destination, email, userIdS }, config);
+    const { data } = await axios.put(`/api/v1/admin/product/${productId}`, { name, destination, email, userIdLS }, config);
     return data;
   } catch (error) {
     throw new Error(error.response.data.message);
@@ -58,9 +58,9 @@ export const updateProduct = async (productId, name, destination, email, userIdS
 
 
 // send a request to the worker who already use the material 
-export const sendRequest = async (userIdS ,userId, materialId, name, destination, email) => {
+export const sendRequest = async (materialId, name, destination, email, userIdLS, userId_of_Taken) => {
   try {
-    const { data } = await axios.post("/api/v1/material/request", { userIdS ,userId, materialId, name, destination, email });
+    const { data } = await axios.post("/api/v1/material/request", { materialId, name, destination, email, userIdLS, userId_of_Taken });
     console.log(data); // add this line to log the data
     return data;
   } catch (error) {

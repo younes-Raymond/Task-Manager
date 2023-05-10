@@ -59,7 +59,7 @@ const MaterialSchema = new mongoose.Schema({
           minlength: 10,
           maxlength: 40    
         },
-        userIdS: {
+        userIdLS: {
           type: String,
           require: true,
           maxlength: 50

@@ -9,17 +9,24 @@ export const loginUser = async (email, password) => {
       headers: { 'Content-Type': 'application/json' },
     };
     const { data } = await axios.post('/api/v1/login', { email, password }, config);
-    console.log('Login User:', data.user); // log user object to console
-    const user = {
-      ...data.user,
-      userId: data.user._id,
-      email: data.user.email,
-      name: data.user.name, // Add the name property to the user object
-    };
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('userId', data.user._id);
-    localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('name', data.user.name); // Store the name property in the localStorage
+    console.log('Login User:', data); // log user object to console
+    // check if data excite and stored to db 
+    if (data.user && data.user._id) {
+      const user = {
+        userId: data.user._id,
+        email: data.user.email,
+        name: data.user.name,
+        avatar: data.user.avatar.url,
+        gender: data.user.gender,
+        role: data.user.role,
+        takenAt: data.user.takenAt,
+        reuestData: data.requestData,
+      };
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('userId', data.user._id);
+      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem('name', data.user.name);
+    }
     return data;
   } catch (error) {
     if (error.response && error.response.data.message) {
@@ -29,6 +36,9 @@ export const loginUser = async (email, password) => {
     }
   }
 };
+
+
+
 
 export const registerUser = async (userData) => {
   console.log(userData); // log user data to console

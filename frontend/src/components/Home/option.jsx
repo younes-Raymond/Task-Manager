@@ -5,7 +5,7 @@ import './option.css';
 const AddProductBox = () => {
   return (
     <div className='box'>
-      <h2>Add Material</h2>
+      <h2>Add Materials</h2>
       <p>Click the button below to add a new materials:</p>
       <Link to="/add-product">
         <button>+</button>
@@ -20,7 +20,7 @@ const ShowProductsBox = () => {
       <h2>Show Material</h2>
       <p>Click the button below to see all materials:</p>
       <Link to='/show-products'>
-        <button>See Products</button>
+        <button>See Materials</button>
       </Link>
     </div>
   );

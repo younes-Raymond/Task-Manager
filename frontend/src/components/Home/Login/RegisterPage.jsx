@@ -58,6 +58,7 @@ const setFileToBase = (file) => {
             id="name"
             value={name}
             onChange={(event) => setName(event.target.value)}
+            placeholder="Enter your name"
             required
           />
         </div>
@@ -68,6 +69,7 @@ const setFileToBase = (file) => {
             id="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
+            placeholder="Enter your email"
             required
           />
         </div>
@@ -101,6 +103,7 @@ const setFileToBase = (file) => {
             id="password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
+            placeholder="Enter your password"
             required
           />
         </div>
@@ -111,6 +114,7 @@ const setFileToBase = (file) => {
             id="confirmPassword"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
+            placeholder="Confirm your password"
             required
           />
         </div>

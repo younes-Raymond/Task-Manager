@@ -171,6 +171,11 @@
     margin-bottom: 0.5rem;
   }
 
+  
+  .users-container li p:last-child {
+    display: none;
+  }
+
 .users-container form {
   display: none;
 }

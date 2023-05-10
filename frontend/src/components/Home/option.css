@@ -2,33 +2,59 @@
 .box {
   width: 90%;
   border: 1px solid #ccc;
-  border-radius: 15px;
   margin: 0 5% 5% 5%;
   padding: 20px;
   color: white;
-
+  font-weight: 700;
+  position: relative;
+  text-decoration: none;
+  list-style-type: none;
 }
-
-.box:nth-child(1) {
+.box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba( 0, 0, 0.5); 
+  z-index: -1; 
+  border-radius: 15px;
+}
+.box:nth-child(1)::before {
   background-image: url('https://res.cloudinary.com/dktkavyr3/image/upload/v1683557421/OIP_2_khhm2i.jpg');
   background-size: cover;
   background-position: center;
+  /* color:white; */
+
 }
 
-.box:nth-child(2) {
+.box:nth-child(2)::before {
   background-image: url('https://res.cloudinary.com/dktkavyr3/image/upload/v1683557421/smiling-construction-worker-thrilled-to-be-site-morning-sun-64846142_vjcka7.jpg');
   background-size: cover;
   background-position: center;
 }
 
-.box:nth-child(3) {
+
+.box:nth-child(3)::before {
   background-image: url('https://res.cloudinary.com/dktkavyr3/image/upload/v1683557421/R_1_ma9vem.jpg');
   background-size: cover;
   background-position: center;
+}
+.box h2, .box p {
+  position: relative; /* add position relative */
+  z-index: 1; /* set z-index to 1 to position in front of the overlay */
+  /* color: black; */
+}
+.box:nth-child(2) h2 {
   color: black;
 }
+.box:nth-child(3) {
+  color: black;
+  border: 2px solid #ccc;
+  border-radius: 15px;
+}
 
-  
   .add-product-box {
     background-color: #cfb5b5;
   }
@@ -50,6 +76,13 @@
     margin: 10px 0;
     cursor: pointer;
     border-radius: 4px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+  }
+  
+  button:hover {
+    padding: 12px 22px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
   }
 
   .non

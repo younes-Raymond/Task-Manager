@@ -17,6 +17,7 @@ const ProductDetailPage = () => {
   const [name, setName] = useState(''); 
   const [email, setEmail] = useState(''); 
 
+  
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -46,17 +47,16 @@ const ProductDetailPage = () => {
 
 
   const handleGetMaterial = async (event) => {
-    event.preventDefault();
     const formId = event.target.id.split('-')[1];
     const productId = formId;
     const destination = event.target.elements[`destination-${productId}`].value; // Get the destination value from the input field
     const name = localStorage.getItem('name'); // Get the name value from localStorage
     const email = JSON.parse(localStorage.getItem('user')).email; // Get the email value from localStorage
-    const userIdS = localStorage.getItem('userId'); // Get the userId value from localStorage
-    console.log(userIdS)
+    const userIdLS = localStorage.getItem('userId'); // Get the userId value from localStorage
+    console.log(userIdLS)
     setShowForm(true);
     try {
-      const updatedProduct = await updateProduct(productId, name, destination, email, userIdS); // Pass the name, destination, and email values to the updateProduct function
+      const updatedProduct = await updateProduct(productId, name, destination, email, userIdLS); // Pass the name, destination, and email values to the updateProduct function
       setResponse({
         productId: updatedProduct._id,
         message: 'Product bought successfully!',
@@ -82,25 +82,26 @@ const ProductDetailPage = () => {
 
 
 
-
-
-
-
+  const handleDestinationChange = (event) => {
+    setDestination(event.target.value);
+  };
+  
+  // Render the input field
   const handleSendRequest = async (event, userId, productId) => {
     event.preventDefault();
-    const userIdS = localStorage.getItem('userId');
+    const  userId_of_Taken  = document.querySelector('.user-id').textContent;
+    console.log(userId_of_Taken)
+    event.preventDefault();
     const formId = event.target.id.split('-')[1];
-    const storedName = localStorage.getItem('name'); // Get the name value from localStorage
-    const storedEmail = localStorage.getItem('email'); // Get the email value from localStorage
-    setName(storedName); // Set the name value in the state
-    setDestination(userId); // Set the destination value to the user's id
-    setEmail(storedEmail); // Set the email value in the state
+    const name = localStorage.getItem('name'); // Get the name value from localStorage
+    const email = JSON.parse(localStorage.getItem('user')).email; // Get the email value from localStorage
+    const userIdLS = localStorage.getItem('userId'); // Get the userId value from localStorage
     setShowForm(true); // Show the form
 
-    if (name && destination && email) {
+    if (name && destination && email && userId_of_Taken) {
       setSubmitting(true);
       try {
-        const response = await sendRequest(userIdS, userId, productId, destination,); // Pass the name, destination, and email values to the sendRequest function
+        const response = await sendRequest(productId, name, destination, email, userIdLS, userId_of_Taken ); // Pass the name, destination, and email values to the sendRequest function
         const updatedProduct = response.product;
         setResponse({
           productId: updatedProduct._id,
@@ -165,6 +166,7 @@ const ProductDetailPage = () => {
         <p>Destination: {user.destination}</p>
         <p>email: {user.email}</p>
         <p>Taken at: {new Date(user.takenAt).toLocaleString()}</p> 
+        <p className="user-id" style={{ display: 'none' }}>{user.userIdS}</p> {/* Add this line to display the userIdLS value */}
  <form 
   id={user._id} 
   className={`request-form ${showForm && showForm === user._id ? 'show' : ''}`} // Add the show class to the form when showForm is true and matches the user's id
@@ -172,7 +174,7 @@ const ProductDetailPage = () => {
 >
           <label>
             Destination:
-            <input type="text" value={destination} onChange={(event) => setDestination(event.target.value)} />
+            <input type="text" value={destination} onChange={handleDestinationChange} />
           </label>
         
           <button type="submit" disabled={loading || submitting}>Submit</button>
@@ -223,27 +225,3 @@ const ProductDetailPage = () => {
 }
 
 export default ProductDetailPage;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
