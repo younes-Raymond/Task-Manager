@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './option.css';
 
+
+
 const AddProductBox = () => {
   return (
     <div className='box'>
@@ -40,6 +42,7 @@ const LearnMoreBox = () => {
 const Optionbox = () => {
   return (
     <div>
+       
       <AddProductBox />
       <ShowProductsBox />
       <LearnMoreBox />
@@ -48,3 +51,25 @@ const Optionbox = () => {
 };
 
 export default Optionbox;
+
+
+
+// import axios from 'axios';
+
+// const postOfficeBranchName = 'New Delhi';
+// axios.get(`https://api.postalpincode.in/postoffice/${postOfficeBranchName}`)
+//   .then(response => {
+//     const data = response.data[0];
+//     console.log(data)
+//     if (data.Status === "Success") {
+//       const postOffices = data.PostOffice;
+//       postOffices.forEach(postOffice => {
+//         console.log(postOffice.Pincode);
+//       });
+//     } else {
+//       console.log("No post office found for the given city name");
+//     }
+//   })
+//   .catch(error => {
+//     console.log(error);
+//   });

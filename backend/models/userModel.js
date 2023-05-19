@@ -26,6 +26,7 @@ const WorkersSchema = new mongoose.Schema({
     enum: ['male', 'female', 'other'],
     required: true,
   },
+ 
   avatar: {
     public_id: {
       type: String,
@@ -94,3 +95,4 @@ WorkersSchema.methods.getResetPasswordToken = async function () {
 const Workers = mongoose.model('Workers', WorkersSchema);
 
 module.exports = Workers;
+

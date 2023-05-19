@@ -96,3 +96,8 @@
   color: red;
   font-weight: 900;
 }
+.hint span{
+  color: black;
+  font-family: 'Courier New', Courier, monospace;
+  
+}

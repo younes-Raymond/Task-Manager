@@ -107,7 +107,13 @@ function LoginPage() {
             <div className="home">
               <Link to="/"><button>Home</button></Link> 
             </div>
-            <p className='hint'><span>Hint:</span>{user.reuestData.message}!</p>
+            {user.requestData.message && (
+            <p className='hint'>
+              <span>Hint:</span>
+              {user.requestData.message}!
+            </p>
+          )}
+          
           </div>
         )}
         {loading && <p>Loading...</p>} {/* show loading message while waiting for user data */}

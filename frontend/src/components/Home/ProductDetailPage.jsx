@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { getProducts } from '../../actions/productaction';
 import { sendRequest } from '../../actions/productaction';
 import { updateProduct } from '../../actions/productaction';
+// import { loginUser} from '../../actions/userAction';
 
 import './ProductDetailPage.css'; 
 
@@ -32,6 +33,22 @@ const ProductDetailPage = () => {
     fetchProducts();
   }, []);
 
+
+
+  // useEffect(() => {
+  //   const fetchProducts = async () => {
+  //     try {
+  //       const data = await loginUser();
+  //       setProducts(data);
+  //       console.log(data)
+  //       setLoading(false);
+  //     } catch (error) {
+  //       setError(error.message);
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchProducts();
+  // }, []);
 
 
 
@@ -126,8 +143,8 @@ const ProductDetailPage = () => {
     }
   };
 
+  // import axios from 'axios';
 
- 
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -136,8 +153,6 @@ const ProductDetailPage = () => {
   }
   return (
 
-
- 
 //  start the product container 
     <div className="product-container">
       {products.map((product) => (
@@ -220,8 +235,6 @@ const ProductDetailPage = () => {
     // end the product container 
 
   );
-
-
 }
 
 export default ProductDetailPage;

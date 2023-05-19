@@ -1,8 +1,9 @@
 const app = require('./app');
+const express = require('express')
+const path = require('path');
 const connectDatabase = require('./config/database');
 const cloudinary = require('cloudinary');
 const PORT = process.env.PORT || 4000;
-
 
 // UncaughtException Error
 process.on('uncaughtException', (err) => {
@@ -30,4 +31,13 @@ process.on('unhandledRejection', (err) => {
         process.exit(1);
     });
 });
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
+// Start the server
+app.listen(3000, () => {
+  console.log('Server started on port 3000');
+});
+
+
 

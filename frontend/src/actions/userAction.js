@@ -1,7 +1,5 @@
 import axios from "axios";
 
-
-
 // Login User
 export const loginUser = async (email, password) => {
   try {
@@ -11,7 +9,7 @@ export const loginUser = async (email, password) => {
     const { data } = await axios.post('/api/v1/login', { email, password }, config);
     console.log('Login User:', data); // log user object to console
     // check if data excite and stored to db 
-    if (data.user && data.user._id) {
+    if (data.user && data.user._id && data.requestData) {
       const user = {
         userId: data.user._id,
         email: data.user.email,
@@ -20,8 +18,9 @@ export const loginUser = async (email, password) => {
         gender: data.user.gender,
         role: data.user.role,
         takenAt: data.user.takenAt,
-        reuestData: data.requestData,
+        requestData: data.requestData,
       };
+      // if (data.requestData.message === ''){}
       localStorage.setItem('token', data.token);
       localStorage.setItem('userId', data.user._id);
       localStorage.setItem('user', JSON.stringify(user));
@@ -36,9 +35,6 @@ export const loginUser = async (email, password) => {
     }
   }
 };
-
-
-
 
 export const registerUser = async (userData) => {
   console.log(userData); // log user data to console
