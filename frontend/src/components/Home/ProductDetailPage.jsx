@@ -33,26 +33,6 @@ const ProductDetailPage = () => {
     fetchProducts();
   }, []);
 
-
-
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     try {
-  //       const data = await loginUser();
-  //       setProducts(data);
-  //       console.log(data)
-  //       setLoading(false);
-  //     } catch (error) {
-  //       setError(error.message);
-  //       setLoading(false);
-  //     }
-  //   };
-  //   fetchProducts();
-  // }, []);
-
-
-
-
   const handleBuy = async (productId, userId) => {
     setShowForm(userId); // Set showForm to the user's id when the button is clicked
   };
@@ -76,27 +56,23 @@ const ProductDetailPage = () => {
       const updatedProduct = await updateProduct(productId, name, destination, email, userIdLS); // Pass the name, destination, and email values to the updateProduct function
       setResponse({
         productId: updatedProduct._id,
-        message: 'Product bought successfully!',
+        message: 'material bought successfully!',
       });
       setShowForm(false);
-      const updatedProducts = products.map((product) => {
-        if (product._id === productId) {
+      const updatedProducts = products.map((material) => {
+        if (material._id === productId) {
           return updatedProduct;
         }
-        return product;
+        return material;
       });
       setProducts(updatedProducts);
     } catch (error) {
       setResponse({
         productId,
-        message: 'Error buying product.',
+        message: 'Error buying material.',
       });
     }
   };
-
-
-
-
 
 
   const handleDestinationChange = (event) => {
@@ -119,17 +95,17 @@ const ProductDetailPage = () => {
       setSubmitting(true);
       try {
         const response = await sendRequest(productId, name, destination, email, userIdLS, userId_of_Taken ); // Pass the name, destination, and email values to the sendRequest function
-        const updatedProduct = response.product;
+        const updatedProduct = response.material;
         setResponse({
           productId: updatedProduct._id,
           message: 'Request sent successfully!',
         });
         setShowForm(false); // Hide the form after the request is sent
-        const updatedProducts = products.map((product) => {
-          if (product._id === productId) {
+        const updatedProducts = products.map((material) => {
+          if (material._id === productId) {
             return updatedProduct;
           }
-          return product;
+          return material;
         });
         setProducts(updatedProducts);
       } catch (error) {
@@ -146,37 +122,39 @@ const ProductDetailPage = () => {
   // import axios from 'axios';
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div className="loading_container">
+       <div className='custom-loader'></div>
+       <p>loading....</p>
+       <p>please wait the data is loaded</p>
+      </div>;
   }
   if (error) {
     return <div>Error: {error}</div>;
   }
   return (
-
-//  start the product container 
-    <div className="product-container">
-      {products.map((product) => (
-        <div key={product._id} className="product">
-           
-          <div className="product-image">
-            <img src={product.images.url} alt={product.name} onError={(e) => console.log(e)}  />
+//  start the material container 
+    <div className="material-container">
+      {products.map((material) => (
+        <div key={material._id} className="material">
+          <div className="material-image">
+            <img src={material.images.url} alt={material.name} onError={(e) => console.log(e)}  />
           </div>
-          <div className="product-info">
-            <h2>{product.name}</h2>
-            <p>{product.description}</p>
+          <div className="material-info">
+            <h2>{material.name}</h2>
+            <p>{material.description}</p>
             <label htmlFor="stock">
               Stock:
-              <p  className={`counter ${product.stock > 0 ? 'green' : 'red'}`}>{product.stock}</p>
+              <p  className={`counter ${material.stock > 0 ? 'green' : 'red'}`}>{material.stock}</p>
             </label>
-            <p>Category: {product.category}</p>
+            <p>Category: {material.category}</p>
 
 {/* start   user container  */}
 <div className="users-container">
   <h3>Users who have taken this material:</h3>
   <ul>
-    {product.users.map((user, index) => (
+    {material.users.map((user, index) => (
       <li key={index}>
-        <button onClick={() => handleBuy(product._id, user._id)}>Send Request</button> {/* Pass the user'to the handleBuy function */}
+        <button onClick={() => handleBuy(material._id, user._id)}>Send Request</button> {/* Pass the user'to the handleBuy function */}
         <p>Name: {user.name}</p>
         <p>Destination: {user.destination}</p>
         <p>email: {user.email}</p>
@@ -185,7 +163,7 @@ const ProductDetailPage = () => {
  <form 
   id={user._id} 
   className={`request-form ${showForm && showForm === user._id ? 'show' : ''}`} // Add the show class to the form when showForm is true and matches the user's id
-  onSubmit={(event) => handleSendRequest (event, user._id, product._id)}
+  onSubmit={(event) => handleSendRequest (event, user._id, material._id)}
 >
           <label>
             Destination:
@@ -202,21 +180,21 @@ const ProductDetailPage = () => {
 
 
 
-{product.stock > 0 && (
-<button onClick={() => handleBuyit(product._id)}>Get</button>
+{material.stock > 0 && (
+<button onClick={() => handleBuyit(material._id)}>Get</button>
 )}
 
-    {showForm === product._id && (
-      <form id={`form-${product._id}`}
-       className={product.stock > 0 ? 'show' : ''} 
+    {showForm === material._id && (
+      <form id={`form-${material._id}`}
+       className={material.stock > 0 ? 'show' : ''} 
        onSubmit={handleGetMaterial}
        >
 
 
-<label htmlFor={`destination-${product._id}`}>Destination:</label>
+<label htmlFor={`destination-${material._id}`}>Destination:</label>
 <input
   type="text"
-  id={`destination-${product._id}`}
+  id={`destination-${material._id}`}
   value={destination}
   onChange={(event) => setDestination(event.target.value)}
   disabled={loading || submitting}
@@ -228,11 +206,11 @@ const ProductDetailPage = () => {
 
     )}
           </div>
-          <div className={`light ${product.stock > 0 ? 'green' : 'red'}`}></div>
+          <div className={`light ${material.stock > 0 ? 'green' : 'red'}`}></div>
         </div>
       ))}
     </div>
-    // end the product container 
+    // end the material container 
 
   );
 }

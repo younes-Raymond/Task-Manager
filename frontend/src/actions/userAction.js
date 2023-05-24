@@ -8,23 +8,26 @@ export const loginUser = async (email, password) => {
     };
     const { data } = await axios.post('/api/v1/login', { email, password }, config);
     console.log('Login User:', data); // log user object to console
+
     // check if data excite and stored to db 
-    if (data.user && data.user._id && data.requestData) {
+    if (data.requestData) {
       const user = {
-        userId: data.user._id,
-        email: data.user.email,
-        name: data.user.name,
-        avatar: data.user.avatar.url,
-        gender: data.user.gender,
-        role: data.user.role,
-        takenAt: data.user.takenAt,
+        // userId: data.user._id,
+        // email: data.user.email,
+        // name: data.user.name,
+        // avatar: data.user.avatar.url,
+        // gender: data.user.gender,
+        // role: data.user.role,
+        // takenAt: data.user.takenAt,
         requestData: data.requestData,
       };
-      // if (data.requestData.message === ''){}
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('userId', data.user._id);
+      // localStorage.setItem('token', data.token);
+      // localStorage.setItem('userId', data.user._id);
       localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('name', data.user.name);
+      localStorage.setItem('name', data.requestData.name);
+    // } else {
+    //   console.log('the message not found')
+    // }
     }
     return data;
   } catch (error) {
@@ -35,6 +38,7 @@ export const loginUser = async (email, password) => {
     }
   }
 };
+
 
 export const registerUser = async (userData) => {
   console.log(userData); // log user data to console

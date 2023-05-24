@@ -97,7 +97,7 @@ export const productListReducer = (state = initialState, action) => {
     }
 }
 
-export const productDetailsReducer = (state = { product: {} }, { type, payload }) => {
+export const productDetailsReducer = (state = { material: {} }, { type, payload }) => {
 
     switch (type) {
         case PRODUCT_DETAILS_REQUEST:
@@ -108,7 +108,7 @@ export const productDetailsReducer = (state = { product: {} }, { type, payload }
         case PRODUCT_DETAILS_SUCCESS:
             return {
                 loading: false,
-                product: payload,
+                material: payload,
             };
         case PRODUCT_DETAILS_FAIL:
             return {
@@ -118,7 +118,7 @@ export const productDetailsReducer = (state = { product: {} }, { type, payload }
         case REMOVE_PRODUCT_DETAILS:
             return {
                 ...state,
-                product: {},
+                material: {},
             };
         case CLEAR_ERRORS:
             return {

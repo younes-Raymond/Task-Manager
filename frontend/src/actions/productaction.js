@@ -12,12 +12,12 @@ import {
   SLIDER_PRODUCTS_SUCCESS,
   SLIDER_PRODUCTS_FAIL  
 } from "../constants/productConstants";
-// New Product ---ADMIN
+// New material ---ADMIN
 export  const createProduct = (productData) => async (dispatch) => {
   try {
       dispatch({ type: NEW_PRODUCT_REQUEST });
       const config = { header: { "Content-Type": "application/json" } }
-      const { data } = await axios.post("/api/v1/admin/product/new", productData, config);
+      const { data } = await axios.post("/api/v1/admin/material/new", productData, config);
       dispatch({
           type: NEW_PRODUCT_SUCCESS,
           payload: data,
@@ -30,7 +30,7 @@ export  const createProduct = (productData) => async (dispatch) => {
   }
 }
 
-// Get All Products ---PRODUCT SLIDER
+// Get All Products ---material SLIDER
 export const getProducts = async () => {
   try {
     const { data } = await axios.get('/api/v1/admin/products/all');
@@ -53,7 +53,7 @@ export const getProducts = async () => {
 export const updateProduct = async (productId, name, destination, email, userIdLS) => {
   try {
     const config = { header: { "Content-Type": "application/json" } }
-    const { data } = await axios.put(`/api/v1/admin/product/${productId}`, { name, destination, email, userIdLS }, config);
+    const { data } = await axios.put(`/api/v1/admin/material/${productId}`, { name, destination, email, userIdLS }, config);
     return data;
   } catch (error) {
     throw new Error(error.response.data.message);

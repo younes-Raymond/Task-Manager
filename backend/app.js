@@ -19,10 +19,10 @@ app.use(bodyParser.json());
 app.use(fileUpload());
 
 // const user = require('./routes/userRoute');
-const product = require('./routes/productRoute');
+const material = require('./routes/productRoute');
 const user = require('./routes/userRoute');
 app.use('/api/v1', user);
-app.use('/api/v1', product);
+app.use('/api/v1', material);
 
 
  // deployment

@@ -46,9 +46,9 @@
 //                 type: String,
 //                 required: true
 //             },
-//             product: {
+//             material: {
 //                 type: mongoose.Schema.ObjectId,
-//                 ref: "Product",
+//                 ref: "material",
 //                 required: true
 //             },
 //         },

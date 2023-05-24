@@ -30,7 +30,6 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
           url:myCloud.secure_url
         },
       });
-  
       sendToken(user, 201, res);
     } catch (error) {
       console.log(error);
@@ -41,15 +40,16 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
 
 
 
+
   exports.loginUser = asyncErrorHandler(async (req, res) => {
     console.log(req.body)
-    const { email, password } = req.body;
+  
+  const { email, password } = req.body;
   
     if (!email || !password) {
       res.status(400).json({ message: 'Please enter email and password' });
       return;
     }
-  
     const user = await Workers.findOne({ email }).select('+password');
   
     if (!user) {
@@ -63,13 +63,16 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
       res.status(401).json({ message: "Sorry, we couldn't find an account with that email and password" });
       return;
     }
-  
+
     const requestData = {
       user: {
         _id: user._id,
         name: user.name,
+        gender:user.gender,
         avatar: user.avatar,
+        role: user.role,
       },
+      message: '', 
     };
   
     const materialRequests = await MaterialRequest.find({
@@ -87,9 +90,10 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
   
     materialRequests.forEach((request) => {
       if (request.requesterId.toString() === user._id.toString()) {
+        console.log(' the guy who login requester  and this his id: ', request.requesterId);
         if (request.status === 'pending') {
+          requestData.message =  'Your request is pending. Please wait for approval.';
           const pendingRequest = {
-            message: 'Your request is pending. Please wait for approval.',
             materialId: request.materialId,
             requesterName: request.requesterName,
             requesterAvatar: request.requesterAvatar,
@@ -101,8 +105,8 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
           };
           pendingRequests.push(pendingRequest);
         } else if (request.status === 'approved') {
+          requestData.message = 'Your material request has been approved.';
           const approvedRequest = {
-            message: 'Your material request has been approved.',
             materialId: request.materialId,
             requesterName: request.requesterName,
             requesterAvatar: request.requesterAvatar,
@@ -114,8 +118,8 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
           };
           approvedRequests.push(approvedRequest);
         } else if (request.status === 'rejected') {
+        requestData.message =  'Your request has been rejected. Please try again later.';
           const rejectedRequest = {
-            message: 'Your request has been rejected. Please try again later.',
             materialId: request.materialId,
             requesterName: request.requesterName,
             requesterAvatar: request.requesterAvatar,
@@ -128,9 +132,10 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
           rejectedRequests.push(rejectedRequest);
         }
       } else if (request.userId_of_Taken.toString() === user._id.toString()) {
+        console.log(' the guy who login isuserId_of_Taken and this his id: ', request.userId_of_Taken)
         taken = true;
+        requestData.message = 'You have a material that a requester needs. Please approve or reject the request.';
         const takenRequest = {
-          message: 'You have a material that a requester needs. Please approve or reject the request.',
           materialId: request.materialId,
           requesterName: request.requesterName,
           requesterAvatar: request.requesterAvatar,
@@ -151,6 +156,7 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
         requestData.takenRequest = takenRequest;
       }
     });
+    
   
     if (pendingRequests.length > 0) {
       requestData.pendingRequests = pendingRequests;
@@ -169,8 +175,20 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
     }
   
     const token = user.generateToken();
-    res.status(200).json({ token, requestData });
+    res.status(200).json({ token, requestData});
   });
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

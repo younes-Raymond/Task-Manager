@@ -1,0 +1,43 @@
+.containerrr {
+    background-color: #f2f2f2;
+    background-color: #f2f2f2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+.intro {
+  background-color: #f2f2f2;
+}
+
+  h1,
+  h2,
+  h3 {
+    color: #333;
+  }
+  
+  section {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+  }
+  
+  section:first-child{
+    background-color: #d4edda;
+
+  }
+  section:nth-child(odd) {
+    background-color: #d4edda;
+  }
+  
+  a {
+    color: #ffc107;
+  }
+  
+  .embed-responsive {
+    margin-bottom: 20px;
+    background-color: #333;
+  }

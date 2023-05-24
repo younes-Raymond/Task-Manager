@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 // const axios = require('axios')
 
 
-// Create Product ---ADMIN
+// Create material ---ADMIN
 exports.createProduct = asyncErrorHandler(async (req, res, next) => {
   console.log(req.body)
 const {name,description,stock,images, category} = req.body
@@ -18,7 +18,7 @@ try{
         width:300,
         crop:"scale"
     });
-    const product = await Material.create({
+    const material = await Material.create({
         name:name,
         description,
         stock,
@@ -30,7 +30,7 @@ try{
     });
     res.status(201).json({
         success:true,
-        product
+        material
     })
 
 } catch(error) {
@@ -41,7 +41,7 @@ try{
 
 
 
-// get all product from db and send it to the client side  
+// get all material from db and send it to the client side  
 exports.getProducts = asyncErrorHandler(async (req, res, next) => {
   try {
     const products = await Material.find();
@@ -55,22 +55,22 @@ exports.getProducts = asyncErrorHandler(async (req, res, next) => {
     // Check if the current user has any pending requests for the materials in the list
     const userId = req.query.userId;
     const materialRequests = await MaterialRequest.find({
-      materialId: { $in: products.map(product => product._id) },
+      materialId: { $in: products.map(material => material._id) },
       requesterId: userId,
       status: 'pending',
     }).populate('requesterId');
 
     // Add a new property to the material object to indicate that there is a pending request
-    const productsWithRequests = products.map(product => {
-      const request = materialRequests.find(request => request.materialId.toString() === product._id.toString());
+    const productsWithRequests = products.map(material => {
+      const request = materialRequests.find(request => request.materialId.toString() === material._id.toString());
       if (request) {
         return {
-          ...product.toObject(),
+          ...material.toObject(),
           hasPendingRequest: true,
           requester: request.requesterId,
         };
       } else {
-        return product.toObject();
+        return material.toObject();
       }
     });
 
@@ -151,7 +151,7 @@ exports.sendRequest = asyncErrorHandler(async (req, res, next) => {
     // Store the response in a database
     const response = {
       message: 'Request sent successfully!',
-      product: material,
+      material: material,
       userData: {
         name: requester.name,
         avatar: requester.avatar,

@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-import './add-product.css';
+import './add-material.css';
 import { createProduct, clearErrors } from '../../actions/productaction';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -48,20 +48,6 @@ const handleSubmit = async (event) => {
   dispatch(createProduct(formData));
 }
 
-// useEffect(() => {
-//   if(error) {
-//     enqueueSnackbar(error, { variant: "error" });
-//     dispatch(clearErrors());
-//   }
-//   if (success) {
-//     enqueueSnackbar("product Created", { variant: "success" });
-//     dispatch({ type: NEW_PRODUCT_RESET });
-//     navigate("/admin/products");
-//   }
-// },
-//  [dispatch, error, success, navigate, enqueueSnackbar]
-// );
-
   const [selectedValue, setSelectedValue] = useState('');
 
   const handleChange = (event) => {
@@ -74,7 +60,7 @@ const handleSubmit = async (event) => {
 
   return (
     <div className="containerr">
-      <h2>Here where you should AddProduct</h2>
+      <h2>Here where you should AddProduct + +</h2>
       <div className="option-container">
         <label htmlFor="list-option" className="label-option">Choose a Category:</label>
         <select name="category" id="list-option" required autoFocus onChange={handleChange} value={selectedValue}>
@@ -124,7 +110,7 @@ const handleSubmit = async (event) => {
           <br />
           <label htmlFor="stock">Stock:</label>
           <input
-            placeholder="enter how much product do you have"
+            placeholder="enter how much material do you have"
             type="number"
             id="stock"
             value={stock}

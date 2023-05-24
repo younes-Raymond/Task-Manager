@@ -6,13 +6,13 @@
 }
 
 
-.product-container {
+.material-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
   }
   
-  .product {
+  .material {
     display: flex;
     flex-direction: column;
     margin: 1rem;
@@ -22,17 +22,17 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
-  .product-image {
+  .material-image {
     text-align: center;
   }
   
-  .product-image img {
+  .material-image img {
     max-width: 100%;
     height: auto;
     border-radius: 6px;
   }
   
-  .product-info {
+  .material-info {
     margin-top: 1rem;
   }
  
@@ -53,20 +53,20 @@
     background-color: red;
   }
   @media screen and (min-width: 768px) {
-    .product {
+    .material {
       flex-direction: row;
     }
   
-    .product-image {
+    .material-image {
       margin-right: 1rem;
       text-align: right;
     }
   
-    .product-info {
+    .material-info {
       text-align: left;
     }
   }
-  .product {
+  .material {
     position: relative;
   }
   
@@ -90,10 +90,11 @@
   }
 
 
-  .product-info form {
+  .material-info form {
     display: none;
-    position: relative; /* Change position to relative */
-    margin-top: 1rem; /* Add margin to separate form from product info */
+    position: relative;
+    margin-top: 1rem; 
+    margin-left: -0.6rem;
     padding: 1rem;
     background-color: #fff;
     border: 1px solid #ccc;
@@ -101,16 +102,16 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
-  .product-info form.show {
+  .material-info form.show {
     display: block;
   }
 
-  .product-info form label {
+  .material-info form label {
     display: block;
     margin-bottom: 0.5rem;
   }
   
-  .product-info form input {
+  .material-info form input {
     display: block;
     width: 100%;
     padding: 0.5rem;
@@ -119,7 +120,7 @@
     border-radius: 0.25rem;
   }
   
-  .product-info form button {
+  .material-info form button {
     display: block;
     margin-top: 1rem;
     padding: 0.5rem 1rem;
@@ -130,7 +131,7 @@
     cursor: pointer;
   }
   
-  .product-info form button:hover {
+  .material-info form button:hover {
     background-color: #0069d9;
   }
   .users-container {
@@ -179,6 +180,42 @@
 .users-container form {
   display: none;
 }
-.users-container form.show {
- 
+
+
+/* start custom loader  */
+.loading_container 
+{
+  margin: 25% 25%;
+
 }
+.custom-loader {
+  width: 50px;
+  height: 50px;
+  display: grid;
+}
+.custom-loader::before,
+.custom-loader::after {    
+  content:"";
+  grid-area: 1/1;
+  --c: radial-gradient(farthest-side, var(--primary-color) 92%,#0000);
+  background: 
+    var(--c) 50%  0, 
+    var(--c) 50%  100%, 
+    var(--c) 100% 50%, 
+    var(--c) 0    50%;
+  background-size: 12px 12px;
+  background-repeat: no-repeat;
+  animation: s2 1s infinite;
+}
+.custom-loader::before {
+margin:4px;
+filter:hue-rotate(45deg);
+background-size: 8px 8px;
+animation-timing-function: linear
+}
+
+@keyframes s2{ 
+100%{transform: rotate(.5turn)}
+}
+
+/* end custom loader  */

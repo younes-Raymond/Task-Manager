@@ -4,8 +4,8 @@ const router = express.Router();
 
 router.get('/products/search/:keyword', searchProducts);
 router.route('/admin/products/all').get(getProducts); 
-router.route('/admin/product/new').post(createProduct); 
-router.route('/admin/product/:productId').put(updateUserTakenInfo); 
+router.route('/admin/material/new').post(createProduct); 
+router.route('/admin/material/:productId').put(updateUserTakenInfo); 
 router.route('/material/request').post(sendRequest);
 
 

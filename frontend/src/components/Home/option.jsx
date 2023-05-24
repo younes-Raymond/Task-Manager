@@ -9,7 +9,7 @@ const AddProductBox = () => {
     <div className='box'>
       <h2>Add Materials</h2>
       <p>Click the button below to add a new materials:</p>
-      <Link to="/add-product">
+      <Link to="/add-material">
         <button>+</button>
       </Link>
     </div>
@@ -42,7 +42,6 @@ const LearnMoreBox = () => {
 const Optionbox = () => {
   return (
     <div>
-       
       <AddProductBox />
       <ShowProductsBox />
       <LearnMoreBox />

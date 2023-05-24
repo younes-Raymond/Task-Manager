@@ -8,7 +8,7 @@ const reducer = combineReducers({
     products:productListReducer,
     // newReview: newReviewReducer,
     // newProduct: newProductReducer,
-    // product: productReducer,
+    // material: productReducer,
     // reviews: productReviewsReducer,
     // review: newReviewReducer,
 });

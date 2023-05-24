@@ -16,7 +16,7 @@ const App = () => {
         <Header />
         <Routes>
           <Route path="/" element={<Optionbox />} />
-          <Route path="/add-product" element={<ProductForm />} />
+          <Route path="/add-material" element={<ProductForm />} />
           <Route path="/about-us" element={<Aboutus />} />
           <Route path="/show-products" element={<ProductDetailPage />} />
           <Route path="/register" element={<RegisterPage />} />
