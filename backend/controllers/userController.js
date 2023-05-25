@@ -38,10 +38,7 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
   });
 
 
-
-
-
-  exports.loginUser = asyncErrorHandler(async (req, res) => {
+exports.loginUser = asyncErrorHandler(async (req, res) => {
     console.log(req.body)
   
   const { email, password } = req.body;
@@ -89,6 +86,10 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
     let taken = false;
   
     materialRequests.forEach((request) => {
+      console.log('userId_of_Taken:', request.userId_of_Taken);
+console.log('user._id:', user._id);
+console.log('Comparison result:', request.userId_of_Taken._id.toString() === user._id.toString());
+
       if (request.requesterId.toString() === user._id.toString()) {
         console.log(' the guy who login requester  and this his id: ', request.requesterId);
         if (request.status === 'pending') {
@@ -131,8 +132,8 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
           };
           rejectedRequests.push(rejectedRequest);
         }
-      } else if (request.userId_of_Taken.toString() === user._id.toString()) {
-        console.log(' the guy who login isuserId_of_Taken and this his id: ', request.userId_of_Taken)
+      } else if (request.userId_of_Taken._id.toString() === user._id.toString()) {
+        console.log('The user who logged in is userId_of_Taken and this is their ID:', request.userId_of_Taken);
         taken = true;
         requestData.message = 'You have a material that a requester needs. Please approve or reject the request.';
         const takenRequest = {
@@ -155,7 +156,7 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
         };
         requestData.takenRequest = takenRequest;
       }
-    });
+  });
     
   
     if (pendingRequests.length > 0) {
@@ -177,19 +178,6 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
     const token = user.generateToken();
     res.status(200).json({ token, requestData});
   });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // Get All Users --ADMIN

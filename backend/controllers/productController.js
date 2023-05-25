@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 // const admin = require('firebase-admin'); 
 // const axios = require('axios')
 
-
 // Create material ---ADMIN
 exports.createProduct = asyncErrorHandler(async (req, res, next) => {
   console.log(req.body)
@@ -40,7 +39,6 @@ try{
 });
 
 
-
 // get all material from db and send it to the client side  
 exports.getProducts = asyncErrorHandler(async (req, res, next) => {
   try {
@@ -53,7 +51,7 @@ exports.getProducts = asyncErrorHandler(async (req, res, next) => {
     }
 
     // Check if the current user has any pending requests for the materials in the list
-    const userId = req.query.userId;
+const userId = req.query.userId;
     const materialRequests = await MaterialRequest.find({
       materialId: { $in: products.map(material => material._id) },
       requesterId: userId,

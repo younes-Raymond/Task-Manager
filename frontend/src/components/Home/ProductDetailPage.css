@@ -181,7 +181,6 @@
   display: none;
 }
 
-
 /* start custom loader  */
 .loading_container 
 {
@@ -217,5 +216,4 @@ animation-timing-function: linear
 @keyframes s2{ 
 100%{transform: rotate(.5turn)}
 }
-
 /* end custom loader  */
