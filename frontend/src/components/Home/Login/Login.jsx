@@ -22,8 +22,6 @@ function LoginPage() {
   const dispatch = useDispatch();
   const location = useLocation();
 
-
-
   useEffect(() => {
     let interval;
     const checkLocalStorage = () => {
@@ -39,8 +37,6 @@ function LoginPage() {
     interval = setInterval(checkLocalStorage, 1000); // execute the hook every 1 second
     return () => clearInterval(interval); // clear the interval when the component unmounts
   }, []);
-
-
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -61,16 +57,12 @@ function LoginPage() {
       setLoading(false);
     }
   };
-    
   
-  
-      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  
-
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
   useEffect(() => {
     const chooseContainer = document.querySelector('.chosse-container');
-    const new_user = document.querySelector('.New-user')
+    const new_user = document.querySelector('.New-user');
     if (chooseContainer) { // add null check
       if (user) {
         chooseContainer.classList.add('show');
@@ -81,12 +73,13 @@ function LoginPage() {
     }
   }, [user]);
 
+  let formattedDate = '';
+  if (user && user.requestData && user.requestData.takenRequest && user.requestData.takenRequest.requestDate) {
+    formattedDate = new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options);
+  }
 
 
-  let formattedDate = user && user.requestData && user.requestData.takenRequest
-  ? new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options)
-  : '';
-  
+
   return (
     <div className="login-page">
       <form onSubmit={handleSubmit} className="login-form">
@@ -124,9 +117,6 @@ function LoginPage() {
   
         {!loading && user && (
           <div className="chosse-container">
-
-
-
            {user && user.requestData && user.requestData.user && (
   <div className="welcome-user">
     <img src={user.requestData.user.avatar && user.requestData.user.avatar.url} alt="" />
@@ -138,10 +128,6 @@ function LoginPage() {
     </p>
   </div>
 )}
-
-
-
-
             {user.requestData.user.role === 'admin' && (
               <div className="dashboard">
                 <Link to="/add-material">
