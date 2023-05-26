@@ -64,8 +64,7 @@ function LoginPage() {
     
   
   
-      // const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      // const formattedDate = new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options);
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   
 
 
@@ -84,8 +83,9 @@ function LoginPage() {
 
 
 
-  // const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-  // const formattedDate = new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options);
+  let formattedDate = user && user.requestData && user.requestData.takenRequest
+  ? new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options)
+  : '';
   
   return (
     <div className="login-page">
@@ -124,15 +124,24 @@ function LoginPage() {
   
         {!loading && user && (
           <div className="chosse-container">
-            <div className="welcome-user">
-              <img src={user.requestData.user.avatar.url} alt="" />
-              <p>
-                Welcome back,
-                {user.requestData.user.gender === "female" && " Ms "}
-                {user.requestData.user.gender === "male" && " Mc "}
-                {user.requestData.user.name}! What would you like to visit first?
-              </p>
-            </div>
+
+
+
+           {user && user.requestData && user.requestData.user && (
+  <div className="welcome-user">
+    <img src={user.requestData.user.avatar && user.requestData.user.avatar.url} alt="" />
+    <p>
+      Welcome back,
+      {user.requestData.user.gender === "female" && " Ms "}
+      {user.requestData.user.gender === "male" && " Mc "}
+      {user.requestData.user.name}! What would you like to visit first?
+    </p>
+  </div>
+)}
+
+
+
+
             {user.requestData.user.role === 'admin' && (
               <div className="dashboard">
                 <Link to="/add-material">
@@ -156,14 +165,22 @@ function LoginPage() {
                 {user.requestData.message}!
               </p>
             )}
-            {user.requestData.takenRequest.materialPicture && user.requestData.takenRequest.requestDate && (
-              <div className='material-info'>
-                <p>
-                  <span>At: {new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options)}</span>
-                </p>
-                <img src={user.requestData.takenRequest.materialPicture} alt="material picture" />
-              </div>
-            )}
+{!loading && user && user.requestData && (
+  <div className="chosse-container">
+    {/* ... */}
+    {user.requestData.takenRequest && user.requestData.takenRequest.materialPicture && user.requestData.takenRequest.requestDate && (
+      <div className='material-info'>
+        <p>
+          <span>At: {new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options)}</span>
+        </p>
+        <img src={user.requestData.takenRequest.materialPicture} alt="material picture" />
+      </div>
+    )}
+    {/* ... */}
+  </div>
+)}
+
+
             {user.requestData.takenRequest && (
               <div className="approval-buttons">
                 <button onClick={handleApprove} className="approve-button">Approved</button>
