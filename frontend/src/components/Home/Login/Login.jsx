@@ -2,17 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { loginUser } from '../../../actions/userAction';
-
+import axios from 'axios';
 import './Login.css';
 localStorage.clear()
 
-function handleApprove() {
-  // Function to handle the approval action
-}
-
-function handleReject() {
-  // Function to handle the rejection action
-}
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -20,24 +13,41 @@ function LoginPage() {
   const [user, setUser] = useState(null); // add local state for user data
   const [loading, setLoading] = useState(false); // add loading state
   const dispatch = useDispatch();
-  const location = useLocation();
-
+  const [newStatus, setNewStatus] = useState(null);
+  
+  // const location = useLocation();
+  const checkLocalStorage = () => {
+    const userData = localStorage.getItem('requestData');
+    const formGroups = document.querySelectorAll('.login-form .form-group');
+    const loginButton = document.querySelector('.login-form button');
+    const loginPage = document.querySelector('.login-form');
+    const h2_Login = document.querySelector('.login-form h1');
+    
+    if (userData) {
+      // console.log('User data found in local storage:', userData);
+      setUser(JSON.parse(userData));
+      formGroups.forEach((group) => group.classList.add('hide'));
+      loginButton.classList.add('hide');
+      loginPage.classList.add('full-width');
+      h2_Login.classList.add('hide');
+  
+      // Clear the interval if user data is found
+      clearInterval(interval);
+    } else {
+      // console.log('User data not found in local storage');
+      formGroups.forEach((group) => group.classList.remove('hide'));
+      loginButton.classList.remove('hide');
+      loginPage.classList.remove('full-width');
+    }
+  };
+  
+  let interval;
+  
   useEffect(() => {
-    let interval;
-    const checkLocalStorage = () => {
-      const userData = localStorage.getItem('user');
-      if (userData) {
-        console.log('User data found in local storage:', userData);
-        setUser(JSON.parse(userData));
-        clearInterval(interval);
-      } else {
-        console.log('User data not found in local storage');
-      }
-    };
-    interval = setInterval(checkLocalStorage, 1000); // execute the hook every 1 second
+    interval = setInterval(checkLocalStorage, 100); // execute the hook every 1 second
     return () => clearInterval(interval); // clear the interval when the component unmounts
   }, []);
-
+  
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -45,11 +55,11 @@ function LoginPage() {
       const response = await loginUser(email, password);
       if (response && response.data && response.data.requestData && response.data.requestData.user) {
         const user = response.data.requestData.user; // Retrieve the 'user' data from the response
-        console.log('User from server:', user);
+        // console.log('User from server:', user);
         setUser(user);
-        localStorage.setItem('user', JSON.stringify(user));
+        // localStorage.setItem('user', JSON.stringify(user));
       } else {
-        console.log('User data not found in response:', response);
+        // console.log('User data not found in response:', response);
       }
     } catch (error) {
       console.log('Error:', error);
@@ -78,7 +88,81 @@ function LoginPage() {
     formattedDate = new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options);
   }
 
+  useEffect(() => {
+    const storedStatus = localStorage.getItem('newStatus');
+    if (storedStatus) {
+      setNewStatus(storedStatus);
+    }
+  }, []);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      console.log('is checking right now')
+      const storedStatus = localStorage.getItem('newStatus');
+      if (storedStatus === 'Request rejected' || storedStatus === 'Request approved') {
+        const approvalButtons = document.getElementById('approval-buttons-id');
+        const chosseContainer = document.querySelector('.chosse-containerr');
+        const hint = document.querySelector('.hint');
+        if (approvalButtons&& chosseContainer && hint) {
+          approvalButtons.classList.add('hide');
+          chosseContainer.classList.add('hide');
+          hint.classList.add('hide');
+        }
+        clearInterval(interval);
+      }
+    }, 100);
+    return () => clearInterval(interval);
+  }, []);
+
+  
+  function handleApprove() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const requestDataLS = JSON.parse(localStorage.getItem('requestData'));
+    const status = 'approved';
+    const requestData = {
+      user,
+      status,
+      requestDataLS
+    };
+    axios.post('/api/v1/approve', requestData)
+      .then(response => {
+        if (response.data.message === 'Request approved') {
+          console.log('Yes, it is approved.');
+          setNewStatus('Request approved');
+          localStorage.setItem('newStatus', 'Request approved');
+        }
+        console.log("user: ", response.data);
+
+      })
+      .catch(error => {
+        // Handle the error if needed
+        console.error(error);
+      });
+  }
+
+function handleReject() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const status = 'rejected';
+    const requestData = {
+      user,
+      status,
+    };
+    axios
+      .post('/api/v1/reject', requestData)
+      .then(response => {
+        console.log(response.data.message);
+        if (response.data.message === 'Request rejected') {
+          console.log('Yes, it is rejected.');
+          setNewStatus('Request rejected');
+          localStorage.setItem('newStatus', 'Request rejected');
+        }
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+  
 
   return (
     <div className="login-page">
@@ -115,11 +199,21 @@ function LoginPage() {
           </p>
         </div>
   
+
+
+
+{/*  */}
+
+{/*  */}
+
+{/*  */}
+
+
         {!loading && user && (
           <div className="chosse-container">
            {user && user.requestData && user.requestData.user && (
   <div className="welcome-user">
-    <img src={user.requestData.user.avatar && user.requestData.user.avatar.url} alt="" />
+    {/* <img src={user.requestData.user.avatar && user.requestData.user.avatar.url} alt="" cla/> */}
     <p>
       Welcome back,
       {user.requestData.user.gender === "female" && " Ms "}
@@ -151,11 +245,23 @@ function LoginPage() {
                 {user.requestData.message}!
               </p>
             )}
-{!loading && user && user.requestData && (
-  <div className="chosse-container">
+{!loading && user && user.requestData && user.requestData.takenRequest && (
+  <div className="chosse-containerr" id='parent-info'>
     {/* ... */}
+    {user.requestData.takenRequest.requesterAvatar && user.requestData.takenRequest.requesterName && (
+    <div className="requester_info">
+     <div className="info">
+      <p>requestDate: {user.requestData.takenRequest.requesterName}
+      <span>Name: {new Date (user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options)  }</span>
+      <br />
+      </p>
+     </div>
+     <img src={user.requestData.takenRequest.requesterAvatar} alt="Name of requester" className='requester-avatar' />
+  </div>
+    ) 
+    }
     {user.requestData.takenRequest && user.requestData.takenRequest.materialPicture && user.requestData.takenRequest.requestDate && (
-      <div className='material-info'>
+      <div className='material-infoo'>
         <p>
           <span>At: {new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options)}</span>
         </p>
@@ -167,8 +273,18 @@ function LoginPage() {
 )}
 
 
+
+{/*  */}
+
+{/*  */}
+
+{/*  */}
+
+
+
+
             {user.requestData.takenRequest && (
-              <div className="approval-buttons">
+              <div className="approval-buttons" id='approval-buttons-id'>
                 <button onClick={handleApprove} className="approve-button">Approved</button>
                 <button onClick={handleReject} className="reject-button">Rejected</button>
               </div>

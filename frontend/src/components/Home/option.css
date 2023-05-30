@@ -2,7 +2,7 @@
 .box {
   width: 90%;
   border: 1px solid #ccc;
-  margin: 0 5% 5% 5%;
+  margin: 5% 0 ;
   padding: 20px;
   color: white;
   font-weight: 700;
@@ -25,10 +25,7 @@
   background-image: url('https://res.cloudinary.com/dktkavyr3/image/upload/v1683557421/OIP_2_khhm2i.jpg');
   background-size: cover;
   background-position: center;
-  /* color:white; */
-
 }
-
 .box:nth-child(2)::before {
   background-image: url('https://res.cloudinary.com/dktkavyr3/image/upload/v1683557421/smiling-construction-worker-thrilled-to-be-site-morning-sun-64846142_vjcka7.jpg');
   background-size: cover;

@@ -8,7 +8,6 @@ const { connect } = require('mongoose');
 
 
 // Register User
-
 exports.registerUser = asyncErrorHandler(async (req, res, next) => {
   console.log(req.body)
     try {
@@ -39,8 +38,7 @@ exports.registerUser = asyncErrorHandler(async (req, res, next) => {
 
 
 exports.loginUser = asyncErrorHandler(async (req, res) => {
-    console.log(req.body)
-  
+    // console.log(req.body)
   const { email, password } = req.body;
   
     if (!email || !password) {
@@ -68,6 +66,7 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
         gender:user.gender,
         avatar: user.avatar,
         role: user.role,
+        email: user.email,
       },
       message: '', 
     };
@@ -86,12 +85,12 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
     let taken = false;
   
     materialRequests.forEach((request) => {
-      console.log('userId_of_Taken:', request.userId_of_Taken);
-console.log('user._id:', user._id);
-console.log('Comparison result:', request.userId_of_Taken._id.toString() === user._id.toString());
+      // console.log('userId_of_Taken:', request.userId_of_Taken);
+// console.log('user._id:', user._id);
+// console.log('Comparison result:', request.userId_of_Taken._id.toString() === user._id.toString());
 
       if (request.requesterId.toString() === user._id.toString()) {
-        console.log(' the guy who login requester  and this his id: ', request.requesterId);
+        // console.log(' the guy who login requester  and this his id: ', request.requesterId);
         if (request.status === 'pending') {
           requestData.message =  'Your request is pending. Please wait for approval.';
           const pendingRequest = {
@@ -133,7 +132,7 @@ console.log('Comparison result:', request.userId_of_Taken._id.toString() === use
           rejectedRequests.push(rejectedRequest);
         }
       } else if (request.userId_of_Taken._id.toString() === user._id.toString()) {
-        console.log('The user who logged in is userId_of_Taken and this is their ID:', request.userId_of_Taken);
+        // console.log('The user who logged in is userId_of_Taken and this is their ID:', request.userId_of_Taken);
         taken = true;
         requestData.message = 'You have a material that a requester needs. Please approve or reject the request.';
         const takenRequest = {
@@ -178,6 +177,60 @@ console.log('Comparison result:', request.userId_of_Taken._id.toString() === use
     const token = user.generateToken();
     res.status(200).json({ token, requestData});
   });
+
+exports.approveRequest = asyncErrorHandler(async (req, res) => {
+    console.log('approved', req.body)
+    const { user, status } = req.body;
+    await MaterialRequest.findOneAndUpdate(
+      { userId_of_taken: user._id },
+      { status },
+      { new: true }
+    );  
+    res.status(200).json({ message: 'Request approved' });
+  });
+
+exports.rejectRequest = asyncErrorHandler(async (req, res) => {
+    console.log('rejected', req.body)
+    const { user, status } = req.body;
+    await MaterialRequest.findOneAndUpdate(
+      { userId_of_taken: user._id },
+      { status },
+      { new: true }
+    );  
+    res.status(200).json({ message: 'Request rejected' });
+  });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // Get All Users --ADMIN

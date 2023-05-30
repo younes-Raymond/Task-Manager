@@ -217,3 +217,9 @@ animation-timing-function: linear
 100%{transform: rotate(.5turn)}
 }
 /* end custom loader  */
+
+.material-info 
+{
+  display: flex;
+  flex-direction: column;
+}

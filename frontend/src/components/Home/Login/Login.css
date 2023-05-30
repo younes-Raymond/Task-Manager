@@ -5,6 +5,7 @@
   align-items: center;
   justify-content: space-between;
   height: 100vh;
+  transition: 3s ease;
 }
 
 .login-form {
@@ -48,7 +49,12 @@
 .choose-container {
   display: none;
 }
-
+#parent-info 
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .show {
   display: flex;
   flex-direction: column;
@@ -61,13 +67,10 @@
   flex-direction: column;
   align-items: center;
 }
-
-/* .welcome-user */
- img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  margin-bottom: 10px;
+.welcome-user img 
+{
+  width: 30px;
+  height: 30px;
 }
 
 .welcome-user p {
@@ -97,12 +100,30 @@
   color: red;
   font-weight: 900;
 }
+.requester_info 
+{
+  width: 100%;
+  border: #0069d9 solid 1px;
+  margin: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border-radius: 15px;
+  align-items: center;
+  height: 100px;
+}
+.requester-avatar
+{
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
+}
 .hint span{
   color: black;
   font-family: 'Courier New', Courier, monospace;
   
 }
-.material-info  
+.material-infoo
 {
   display: flex;
   flex-direction: row;
@@ -111,6 +132,13 @@
   width: 100%;
   border: #007bff 1px solid;
   border-radius: 15px;
+
+}
+.material-infoo img 
+{
+  border-radius: 50%;
+  width: 90px;
+  height: 90px;
 }
 .approval-buttons button {
   display: block;
@@ -140,3 +168,19 @@
 }
 
 
+.hide {
+  display: none !important;
+}
+.show 
+{
+  display: block;
+}
+.full-width {
+  width: 100%;
+}
+.full-width button 
+{
+  width: 50%;
+  text-align: center; 
+  margin: 2% 25%  ;
+}

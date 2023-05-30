@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useRef} from 'react';
 import { getProducts } from '../../actions/productaction';
 import { sendRequest } from '../../actions/productaction';
 import { updateProduct } from '../../actions/productaction';
-// import { loginUser} from '../../actions/userAction';
 
 import './ProductDetailPage.css'; 
 
@@ -17,7 +16,7 @@ const ProductDetailPage = () => {
   const [destination, setDestination] = useState('');
   const [name, setName] = useState(''); 
   const [email, setEmail] = useState(''); 
-
+ const inputRef = useRef(null);
   
   useEffect(() => {
     const fetchProducts = async () => {
@@ -39,24 +38,24 @@ const ProductDetailPage = () => {
 
   const handleBuyit = async (productId, userId) => {
     setShowForm(productId); // Set showForm to the user's id when the button is clicked  
+    inputRef.current.focus()
   };
-
 
 
   const handleGetMaterial = async (event) => {
     const formId = event.target.id.split('-')[1];
     const productId = formId;
-    const destination = event.target.elements[`destination-${productId}`].value; // Get the destination value from the input field
-    const name = localStorage.getItem('name'); // Get the name value from localStorage
-    const email = JSON.parse(localStorage.getItem('user')).email; // Get the email value from localStorage
-    const userIdLS = localStorage.getItem('userId'); // Get the userId value from localStorage
-    console.log(userIdLS)
+    const destination = event.target.elements[`destination-${productId}`].value;
+    const name = localStorage.getItem('name');
+    const email = JSON.parse(localStorage.getItem('user')).requestData.email;
+    const userIdLS = localStorage.getItem('userIdLS');
+    console.log(userIdLS);
     setShowForm(true);
     try {
-      const updatedProduct = await updateProduct(productId, name, destination, email, userIdLS); // Pass the name, destination, and email values to the updateProduct function
+      const updatedProduct = await updateProduct(productId, name, destination, email, userIdLS);
       setResponse({
         productId: updatedProduct._id,
-        message: 'material bought successfully!',
+        message: 'Material bought successfully!',
       });
       setShowForm(false);
       const updatedProducts = products.map((material) => {
@@ -74,33 +73,31 @@ const ProductDetailPage = () => {
     }
   };
 
-
-  const handleDestinationChange = (event) => {
+const handleDestinationChange = (event) => {
     setDestination(event.target.value);
   };
   
-  // Render the input field
   const handleSendRequest = async (event, userId, productId) => {
     event.preventDefault();
-    const  userId_of_Taken  = document.querySelector('.user-id').textContent;
-    console.log(userId_of_Taken)
-    event.preventDefault();
+    const userId_of_Taken = document.querySelector('.user-id').textContent;
+    console.log("userId_of_Taken: ",userId_of_Taken);
     const formId = event.target.id.split('-')[1];
-    const name = localStorage.getItem('name'); // Get the name value from localStorage
-    const email = JSON.parse(localStorage.getItem('user')).email; // Get the email value from localStorage
-    const userIdLS = localStorage.getItem('userId'); // Get the userId value from localStorage
-    setShowForm(true); // Show the form
-
-    if (name && destination && email && userId_of_Taken) {
+    const user = JSON.parse(localStorage.getItem('user')); 
+    const email = user.requestData.email;
+    const name = user.requestData.name; 
+    const userIdLS = localStorage.getItem('userIdLS'); 
+    setShowForm(true); 
+    if (name && destination && email && userId_of_Taken) { 
       setSubmitting(true);
       try {
-        const response = await sendRequest(productId, name, destination, email, userIdLS, userId_of_Taken ); // Pass the name, destination, and email values to the sendRequest function
+        const response = await sendRequest(productId, name, destination, email, userIdLS, userId_of_Taken); 
+        console.log('this is the response: ', response);
         const updatedProduct = response.material;
         setResponse({
           productId: updatedProduct._id,
           message: 'Request sent successfully!',
         });
-        setShowForm(false); // Hide the form after the request is sent
+        setShowForm(false);
         const updatedProducts = products.map((material) => {
           if (material._id === productId) {
             return updatedProduct;
@@ -118,8 +115,8 @@ const ProductDetailPage = () => {
       setSubmitting(false);
     }
   };
-
-  // import axios from 'axios';
+  
+  
 
   if (loading) {
     return <div className="loading_container">
@@ -153,23 +150,24 @@ const ProductDetailPage = () => {
   <h3>Users who have taken this material:</h3>
   <ul>
     {material.users.map((user, index) => (
+      
       <li key={index}>
+        {console.log("im from material users array",user, "index: ",index)}
         <button onClick={() => handleBuy(material._id, user._id)}>Send Request</button> {/* Pass the user'to the handleBuy function */}
         <p>Name: {user.name}</p>
         <p>Destination: {user.destination}</p>
         <p>email: {user.email}</p>
         <p>Taken at: {new Date(user.takenAt).toLocaleString()}</p> 
-        <p className="user-id" style={{ display: 'none' }}>{user.userIdS}</p> {/* Add this line to display the userIdLS value */}
+        <p className="user-id" style={{ display: 'none' }}>{user._id}</p> {/* Add this line to display the userIdLS value */}
  <form 
   id={user._id} 
   className={`request-form ${showForm && showForm === user._id ? 'show' : ''}`} // Add the show class to the form when showForm is true and matches the user's id
   onSubmit={(event) => handleSendRequest (event, user._id, material._id)}
 >
           <label>
-            Destination:
+            DestinatioN:
             <input type="text" value={destination} onChange={handleDestinationChange} />
           </label>
-        
           <button type="submit" disabled={loading || submitting}>Submit</button>
         </form>
       </li>
@@ -193,6 +191,7 @@ const ProductDetailPage = () => {
 
 <label htmlFor={`destination-${material._id}`}>Destination:</label>
 <input
+ref={inputRef}
   type="text"
   id={`destination-${material._id}`}
   value={destination}

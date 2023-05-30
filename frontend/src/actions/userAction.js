@@ -1,34 +1,34 @@
 import axios from "axios";
 
-// Login User
+
+// login user 
 export const loginUser = async (email, password) => {
   try {
     const config = {
       headers: { 'Content-Type': 'application/json' },
     };
     const { data } = await axios.post('/api/v1/login', { email, password }, config);
-    console.log('Login User:', data); // log user object to console
-
-    // check if data excite and stored to db 
+    // console.log('Login User:', data); // log user object to console
     if (data.requestData) {
-      const user = {
-        // userId: data.user._id,
-        // email: data.user.email,
-        // name: data.user.name,
-        // avatar: data.user.avatar.url,
-        // gender: data.user.gender,
-        // role: data.user.role,
-        // takenAt: data.user.takenAt,
+      const requestData = {
         requestData: data.requestData,
       };
-      // localStorage.setItem('token', data.token);
-      // localStorage.setItem('userId', data.user._id);
+      const user = {
+        requestData: data.requestData.user,
+      };
+
+      localStorage.setItem('requestData', JSON.stringify(requestData));
       localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('name', data.requestData.name);
-    // } else {
-    //   console.log('the message not found')
-    // }
+      localStorage.setItem('name', data.requestData.user.name);
+      localStorage.setItem('userIdLS', data.requestData.user._id); // Store the user's _id
+
+      if (data.requestData.user.avatar && data.requestData.user.avatar.url) {
+        localStorage.setItem('avatar', data.requestData.user.avatar.url);
+      }
+    } else {
+      console.log('The requestData not found in the response:', data);
     }
+
     return data;
   } catch (error) {
     if (error.response && error.response.data.message) {
@@ -38,6 +38,7 @@ export const loginUser = async (email, password) => {
     }
   }
 };
+
 
 
 export const registerUser = async (userData) => {

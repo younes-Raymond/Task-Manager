@@ -199,24 +199,7 @@ exports.searchProducts = asyncErrorHandler(async (req, res, next) => {
 
 
 
-// Replace 'New Delhi' with the name of the post office branch you want to search
-// const postOfficeBranchName = 'New Delhi';
 
-// axios.get(`https://api.postalpincode.in/postoffice/${postOfficeBranchName}`)
-//   .then(response => {
-//     const data = response.data[0];
-//     console.log(data)
-//     if (data.Status === "Success") {
-//       const postOffices = data.PostOffice;
-//       postOffices.forEach(postOffice => {
-//         console.log(postOffice.Pincode);
-//       });
-//     } else {
-//       console.log("No post office found for the given city name");
-//     }
-//   })
-//   .catch(error => {
-//     console.log(error);
-//   });
+
 
 
