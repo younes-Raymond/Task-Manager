@@ -27,7 +27,7 @@
   background-position: center;
 }
 .box:nth-child(2)::before {
-  background-image: url('https://res.cloudinary.com/dktkavyr3/image/upload/v1683557421/smiling-construction-worker-thrilled-to-be-site-morning-sun-64846142_vjcka7.jpg');
+  background-image: url('https://res.cloudinary.com/dktkavyr3/image/upload/v1686334462/istockphoto-1256276026-170667a_rook7p.jpg');
   background-size: cover;
   background-position: center;
 }
@@ -55,6 +55,9 @@ color: white;
   z-index: 1; 
 }
 .box:nth-child(2) h2 {
+  color: black;
+}
+.box:nth-child(2) p {
   color: black;
 }
 .box:nth-child(3) {

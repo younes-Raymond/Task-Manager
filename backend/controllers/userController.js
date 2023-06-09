@@ -216,6 +216,58 @@ exports.rejectRequest = asyncErrorHandler(async (req, res) => {
 
 
 
+  exports.searchDocuments = asyncErrorHandler(async (req, res, next) => {
+    const keyword = req.query.keyword;
+  
+    // Define the collections you want to search in
+    const collections = [
+      { name: 'workers', displayName: 'Workers' },
+      { name: 'materials', displayName: 'Materials' }
+    ];
+  
+    const results = await Promise.all(
+      collections.map(async (collection) => {
+        const collectionName = collection.displayName;
+        const collectionData = db.collection(collection.name);
+  
+        const searchQuery = {
+          $search: {
+            index: 'default',
+            text: {
+              query: keyword,
+              path: {
+                wildcard: '*'
+              }
+            }
+          }
+        };
+  
+        const documents = await collectionData.aggregate([
+          searchQuery,
+          {
+            $project: {
+              _id: 0,
+              collectionName: {
+                $literal: collectionName
+              },
+              document: '$$ROOT'
+            }
+          }
+        ]).toArray();
+  
+        return {
+          collectionName,
+          documents
+        };
+      })
+    );
+  
+    res.status(200).json({
+      success: true,
+      results
+    });
+  });
+  
 
 
 
