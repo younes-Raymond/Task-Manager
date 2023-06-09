@@ -31,17 +31,14 @@
   background-size: cover;
   background-position: center;
 }
-
-
 .box:nth-child(3)::before {
   background-image: url('https://res.cloudinary.com/dktkavyr3/image/upload/v1683557421/R_1_ma9vem.jpg');
   background-size: cover;
   background-position: center;
 }
 .box h2, .box p {
-  position: relative; /* add position relative */
-  z-index: 1; /* set z-index to 1 to position in front of the overlay */
-  /* color: black; */
+  position: relative;
+  z-index: 1; 
 }
 .box:nth-child(2) h2 {
   color: black;
@@ -51,16 +48,13 @@
   border: 2px solid #ccc;
   border-radius: 15px;
 }
-
   .add-material-box {
     background-color: #cfb5b5;
   }
-  
   .show-products-box {
     background-color: #e6e6e6;
     width: 90%;
   }
-  
   button {
     background-color: #4CAF50;
     color: white;
@@ -76,12 +70,10 @@
     transition: all 0.3s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
   }
-  
   button:hover {
     padding: 12px 22px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
   }
-
   .non
   {
     width: 90%;
