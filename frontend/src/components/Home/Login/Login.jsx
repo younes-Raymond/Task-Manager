@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
-import { loginUser } from '../../../actions/userAction';
+import { loginUser
+ }
+from '../../../actions/userAction';
 import axios from 'axios';
 import './Login.css';
-localStorage.clear()
 
+// localStorage.clear()
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -14,7 +16,24 @@ function LoginPage() {
   const [loading, setLoading] = useState(false); // add loading state
   const dispatch = useDispatch();
   const [newStatus, setNewStatus] = useState(null);
+  const reqParentRef = useRef(null);
+  const [requestProcessed, setRequestProcessed] = useState(false);
+  const [logout, setLogout] = useState(false);
+
+
+  const LogoutButton = () => {
+    const handleLogout = () => {
+      // Clear the localStorage
+      localStorage.clear();
   
+      // Redirect to the login page or perform any other logout-related actions
+      // Here, we'll just reload the page as an example
+      window.location.reload();
+    };
+    handleLogout()
+  }
+
+
   // const location = useLocation();
   const checkLocalStorage = () => {
     const userData = localStorage.getItem('requestData');
@@ -40,11 +59,10 @@ function LoginPage() {
       loginPage.classList.remove('full-width');
     }
   };
-  
   let interval;
   
   useEffect(() => {
-    interval = setInterval(checkLocalStorage, 100); // execute the hook every 1 second
+    interval = setInterval(checkLocalStorage, 1000); // execute the hook every 1 second
     return () => clearInterval(interval); // clear the interval when the component unmounts
   }, []);
   
@@ -54,12 +72,10 @@ function LoginPage() {
     try {
       const response = await loginUser(email, password);
       if (response && response.data && response.data.requestData && response.data.requestData.user) {
-        const user = response.data.requestData.user; // Retrieve the 'user' data from the response
-        // console.log('User from server:', user);
+        const user = response.data.requestData.user; 
+        clearInterval(interval);
         setUser(user);
-        // localStorage.setItem('user', JSON.stringify(user));
       } else {
-        // console.log('User data not found in response:', response);
       }
     } catch (error) {
       console.log('Error:', error);
@@ -88,6 +104,8 @@ function LoginPage() {
     formattedDate = new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options);
   }
 
+
+
   useEffect(() => {
     const storedStatus = localStorage.getItem('newStatus');
     if (storedStatus) {
@@ -110,7 +128,7 @@ function LoginPage() {
         }
         clearInterval(interval);
       }
-    }, 100);
+    }, 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -127,12 +145,13 @@ function LoginPage() {
     axios.post('/api/v1/approve', requestData)
       .then(response => {
         if (response.data.message === 'Request approved') {
+          removeReqParent()
           console.log('Yes, it is approved.');
           setNewStatus('Request approved');
           localStorage.setItem('newStatus', 'Request approved');
+          removeReqParent()
         }
         console.log("user: ", response.data);
-
       })
       .catch(error => {
         // Handle the error if needed
@@ -155,6 +174,7 @@ function handleReject() {
           console.log('Yes, it is rejected.');
           setNewStatus('Request rejected');
           localStorage.setItem('newStatus', 'Request rejected');
+          removeReqParent()
         }
 
       })
@@ -162,7 +182,37 @@ function handleReject() {
         console.error(error);
       });
   }
+
+
+  const removeReqParent = () => {
+    if (reqParentRef.current) {
+      reqParentRef.current.remove();
+    }
+  };
   
+
+  useEffect(() => {
+    const storedStatus = localStorage.getItem('newStatus');
+    if (storedStatus) {
+      setNewStatus(storedStatus);
+    }
+    
+    if (requestProcessed && reqParentRef.current) {
+      reqParentRef.current.remove();
+    }
+  }, [requestProcessed]);
+  
+
+  const handleConfirm = async () => {
+ 
+    try {
+      const response = await axios.post('api/v1/confirm', user.requestData);
+      console.log('Confirmation sent successfully:', response.data);
+    } catch (error) {
+      console.error('Error sending confirmation:', error);
+    }
+ 
+  };
 
   return (
     <div className="login-page">
@@ -198,10 +248,6 @@ function handleReject() {
             New to Allamrt? <Link to="/register">Register here</Link>
           </p>
         </div>
-  
-
-
-
 {/*  */}
 
 {/*  */}
@@ -239,12 +285,17 @@ function handleReject() {
                 <button>Home</button>
               </Link>
             </div>
+
+            <div ref={reqParentRef}  id="req">         
             {user.requestData.message && (
               <p className='hint'>
                 <span>Hint:</span>
                 {user.requestData.message}!
               </p>
             )}
+
+
+
 {!loading && user && user.requestData && user.requestData.takenRequest && (
   <div className="chosse-containerr" id='parent-info'>
     {/* ... */}
@@ -273,14 +324,11 @@ function handleReject() {
 )}
 
 
-
 {/*  */}
 
 {/*  */}
 
 {/*  */}
-
-
 
 
             {user.requestData.takenRequest && (
@@ -290,14 +338,48 @@ function handleReject() {
               </div>
             )}
           </div>
+          
+          {user.requestData.message && user.requestData.message.includes("approved") && (
+  <div className="confirmation">
+    {console.log("Yes")}
+    <h4>
+      Are you get the material or not? Please Confirm or click{" "}
+      <span style={{ color: "orange" }}>"Not Yet".</span>
+    </h4>
+    <button
+    onClick={handleConfirm}
+      style={{ backgroundColor: "green" }}
+      className="confirm-button"
+      
+    >
+      Confirm
+    </button>
+    <button
+      style={{ backgroundColor: "orange" }}
+      className="not-yet-button"
+    >
+      Not Yet
+    </button>
+  </div>
+)}
+{user.requestData &&  ( 
+<button className="fb-logout-button" 
+style={{background : "gray", width: "20%", margin : "5% 0"}} 
+onClick={LogoutButton}>
+  LogOut
+</button>
+)}
+</div>
+
+
+
         )}
-  
         {loading && <p>Loading...</p>}
+       
       </form>
     </div>
   );
   
-
 }
 
 export default LoginPage;

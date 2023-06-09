@@ -53,7 +53,7 @@ export const getProducts = async () => {
 export const updateProduct = async (productId, name, destination, email, userIdLS) => {
   try {
     const config = { header: { "Content-Type": "application/json" } }
-    const { data } = await axios.put(`/api/v1/admin/material/${productId}`, { name, destination, email, userIdLS }, config);
+    const { data } = await axios.put(`/api/v1/admin/material/${productId}`, { name, destination, email, userIdLS}, config);
     return data;
   } catch (error) {
     throw new Error(error.response.data.message);

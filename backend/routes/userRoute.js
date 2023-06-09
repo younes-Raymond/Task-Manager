@@ -5,7 +5,9 @@ const {
   getAllUsers,
   updateUserTakenOf,
   approveRequest,
-  rejectRequest
+  rejectRequest,
+  confirmTaken
+
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
@@ -16,5 +18,6 @@ router.post('/login', loginUser);
 router.route('/admin/users').get(isAuthenticatedUser, authorizeRoles('admin'), getAllUsers);
 router.post('/approve', approveRequest);
 router.post('/reject', rejectRequest);
+router.post('/confirm', confirmTaken)
 
 module.exports = router;

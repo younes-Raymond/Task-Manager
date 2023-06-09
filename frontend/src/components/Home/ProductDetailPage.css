@@ -38,10 +38,11 @@
  
   .counter 
   {
-    background-color: var(--primary-color);
-    width: 40%;
+    width: 10%;
     border-radius: 6px;
     color: white;
+    font-weight: bolder;
+    text-align: center;
   }
   .counter.green {
     background-color: var(--primary-color);

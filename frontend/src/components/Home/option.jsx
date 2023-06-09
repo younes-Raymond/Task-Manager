@@ -7,10 +7,10 @@ import './option.css';
 const AddProductBox = () => {
   return (
     <div className='box'>
-      <h2>Add Materials</h2>
+      <h2>Dashboard</h2>
       <p>Click the button below to add a new materials:</p>
       <Link to="/add-material">
-        <button>+</button>
+        <button>Dashboard</button>
       </Link>
     </div>
   );
@@ -27,6 +27,7 @@ const ShowProductsBox = () => {
     </div>
   );
 };
+
 const LearnMoreBox = () => {
     return (
       <div className='box'>
@@ -39,12 +40,24 @@ const LearnMoreBox = () => {
     );
   };
 
+  const Jobs = () => {
+    return (
+      <div className='box'>
+        <h2>Jobs</h2>
+        <p>Click the button below to see All Jobs Available</p>
+        <Link to="/Jobs">
+          <button>Jobs Available</button>
+        </Link>
+      </div>
+    );
+  };
 const Optionbox = () => {
   return (
     <div>
       <AddProductBox />
       <ShowProductsBox />
       <LearnMoreBox />
+      <Jobs  />
     </div>
   );
 };

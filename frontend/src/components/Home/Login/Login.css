@@ -184,3 +184,16 @@
   text-align: center; 
   margin: 2% 25%  ;
 }
+.confirm-button {
+  background-color: green;
+}
+
+.not-yet-button {
+  background-color: orange;
+}
+
+.not-yet-text {
+  color: orange;
+}
+
+

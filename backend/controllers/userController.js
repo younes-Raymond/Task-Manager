@@ -204,19 +204,15 @@ exports.rejectRequest = asyncErrorHandler(async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  exports.confirmTaken = asyncErrorHandler(async (req, res) => {
+    const requestId = req.body.approvedRequests[0].requestId;
+  
+    // Remove the document with the specified requestId from the database
+    await MaterialRequest.findOneAndRemove({ requestId });
+  
+    console.log(`Document with requestId ${requestId} removed from the database.`);
+  });
+  
 
 
 
