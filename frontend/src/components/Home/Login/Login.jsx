@@ -25,10 +25,7 @@ function LoginPage() {
     const handleLogout = () => {
       // Clear the localStorage
       localStorage.clear();
-  
-      // Redirect to the login page or perform any other logout-related actions
-      // Here, we'll just reload the page as an example
-      window.location.reload();
+        window.location.reload();
     };
     handleLogout()
   }

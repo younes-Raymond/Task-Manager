@@ -87,3 +87,19 @@ export const registerUser = async (userData) => {
       }
     }
   };
+
+export const search = async (keyword) => {
+    try {
+      const response = await axios.get(`/api/v1/search?keyword=${keyword}`);
+      console.log(response.data)
+      return response.data; 
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else {
+        throw new Error(error.message);
+      }
+    }
+  };
+  
+  

@@ -22,6 +22,7 @@ const ProductDetailPage = () => {
     const fetchProducts = async () => {
       try {
         const data = await getProducts();
+        console.log(data)
         setProducts(data.products);
         setLoading(false);
       } catch (error) {

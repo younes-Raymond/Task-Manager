@@ -13,8 +13,6 @@ const dispatch = useDispatch()
   const [stock, setStock] = useState(0);
   const [category, setCategory] = useState('');
   
-
-
   const handleProductImageChange = (e) => {
     const files = e.target.files[0];
     setFileToBase(files);

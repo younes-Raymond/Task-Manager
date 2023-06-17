@@ -7,7 +7,10 @@ import Header from './components/Layouts/Header';
 import ProductDetailPage from './components/Home/ProductDetailPage';
 import LoginPage from './components/Home/Login/Login';
 import RegisterPage from './components/Home/Login/RegisterPage';
-
+import Search from './components/Layouts/Search';
+import Jobs from './components/Jobs/Jobs'
+import OptionDashboard from './components/Admin/options' 
+import AddWorkersForm from './components/Admin/add-workers' 
 
 const App = () => {
   return (
@@ -21,6 +24,10 @@ const App = () => {
           <Route path="/show-products" element={<ProductDetailPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/Jobs" element={<Jobs />} />
+          <Route path="/option" element={<OptionDashboard />} />
+          <Route path="/add-worker" element={<AddWorkersForm />} />
         </Routes>
       </Router>
     </>

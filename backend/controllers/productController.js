@@ -4,14 +4,13 @@ const MaterialRequest = require('../models/MaterialRequestModel');
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
 const mongoose = require('mongoose');
-// const admin = require('firebase-admin'); 
-// const axios = require('axios')
 
 
 // get all material from db and send it to the client side  
 exports.getProducts = asyncErrorHandler(async (req, res, next) => {
   try {
     const products = await Material.find();
+    console.log(products)
     if (!products) {
       return res.status(404).json({
         success: false,
@@ -191,9 +190,6 @@ const materialRequest = new MaterialRequest({
 
 
 
-
-
-
   // Get All Products
 exports.searchProducts = asyncErrorHandler(async (req, res, next) => {
   console.log(req.query);
@@ -221,8 +217,6 @@ exports.searchProducts = asyncErrorHandler(async (req, res, next) => {
  console.log(response);
  res.status(200).json(response)
 });
-
-
 
 
 

@@ -1,4 +1,6 @@
 const Workers = require('../models/userModel');
+const Materials = require('../models/productModel');
+
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
 const sendToken = require('../utils/sendToken');
@@ -214,63 +216,31 @@ exports.rejectRequest = asyncErrorHandler(async (req, res) => {
   });
   
 
-
-
-  exports.searchDocuments = asyncErrorHandler(async (req, res, next) => {
-    const keyword = req.query.keyword;
-  
-    // Define the collections you want to search in
-    const collections = [
-      { name: 'workers', displayName: 'Workers' },
-      { name: 'materials', displayName: 'Materials' }
-    ];
-  
-    const results = await Promise.all(
-      collections.map(async (collection) => {
-        const collectionName = collection.displayName;
-        const collectionData = db.collection(collection.name);
-  
-        const searchQuery = {
-          $search: {
-            index: 'default',
-            text: {
-              query: keyword,
-              path: {
-                wildcard: '*'
-              }
-            }
-          }
-        };
-  
-        const documents = await collectionData.aggregate([
-          searchQuery,
-          {
-            $project: {
-              _id: 0,
-              collectionName: {
-                $literal: collectionName
-              },
-              document: '$$ROOT'
-            }
-          }
-        ]).toArray();
-  
-        return {
-          collectionName,
-          documents
-        };
-      })
-    );
-  
-    res.status(200).json({
-      success: true,
-      results
-    });
-  });
-  
-
-
-
+  exports.search = async (req, res) => {
+    console.log(req.query)
+    const { keyword } = req.query;
+    try {
+      // Search in users collection
+      const users = await   Workers.find({
+        $or: [
+          { name: { $regex: keyword, $options: 'i' } },
+          { email: { $regex: keyword, $options: 'i' } }
+        ]
+      });
+      // Search in materials collection
+      const materials = await Materials.find({
+        $or: [
+          { name: { $regex: keyword, $options: 'i' } },
+          { description: { $regex: keyword, $options: 'i' } }
+        ]
+      });
+      res.status(200).json({ success: true, users, materials });
+      // console.log(materials)
+      // console.log(users);
+    } catch (error) {
+      res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+  };
 
 
 
@@ -291,3 +261,5 @@ exports.getAllUsers = asyncErrorHandler(async (req, res, next) => {
       users,
   });
 });
+
+
