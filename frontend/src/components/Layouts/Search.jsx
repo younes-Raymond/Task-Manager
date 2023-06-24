@@ -1,55 +1,66 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import { search } from '../../actions/userAction';
-
+import './Search.css'
 const Search = () => {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const keyword = searchParams.get('keyword');
   const [filteredMaterials, setFilteredMaterials] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await search(keyword);
-        console.log('data: ', data);
-        setFilteredMaterials(data?.materials || []);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, [keyword]);
-  
+    const storedData = localStorage.getItem('result');
+    if (storedData) {
+      const parsedData = JSON.parse(storedData);
+      setFilteredMaterials(parsedData.materials || []);
+      setFilteredUsers(parsedData.users || []);
+    }
+  }, [filteredUsers]);
 
   return (
-    <div className="materials-container">
-      <div className="helloworld">
-        <h1>hello world im search component </h1>
+    <div>
+      <div className="materials-container">
+        <h1>Material Results</h1>
+        {filteredMaterials.length > 0 ? (
+          filteredMaterials.map((material) => (
+            <div className="material-item" key={material._id}>
+              <div className="image-container">
+                <img src={material.images.url} alt="Material" />
+              </div>
+              <div className="material-details">
+                <strong>{material.name}</strong>
+                <p>{material.description}</p>
+                <p>Category: {material.category}</p>
+                <label htmlFor="stock">
+                  Stock:
+                  <span className={`counter ${material.stock > 0 ? 'green' : 'red'}`}>
+                    {material.stock}
+                  </span>
+                </label>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p>No materials found.</p>
+        )}
       </div>
-      {filteredMaterials.length > 0 ? (
-        filteredMaterials.map((material) => (
-          <div className="container" key={material._id}>
-            <div className="image-container">
-              <img src={material.images.url} alt="" />
+
+      <div className="user-container">
+        <h1>User Results</h1>
+        {filteredUsers.length > 0 ? (
+          filteredUsers.map((user) => (
+            <div className="user-item" key={user._id}>
+              <div className="avatar-container">
+                <img src={user.avatar.url} alt="User Avatar" />
+              </div>
+              <div className="user-details">
+                <strong>{user.name}</strong>
+                <p>Email: {user.email}</p>
+                <p>Gender: {user.gender}</p>
+                <p>Role: {user.role}</p>
+              </div>
             </div>
-            <div>
-              <strong>{material.name}</strong>({material.description})
-            </div>
-            <label htmlFor="stock">
-              Stock:
-              <p className={`counter ${material.stock > 0 ? 'green' : 'red'}`}>
-                {material.stock}
-              </p>
-            </label>
-            <div>
-              <p>category: {material.category}</p>
-            </div>
-          </div>
-        ))
-      ) : (
-        <p>No materials found.</p>
-      )}
+          ))
+        ) : (
+          <p>No users found.</p>
+        )}
+      </div>
     </div>
   );
 };

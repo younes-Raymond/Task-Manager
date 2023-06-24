@@ -72,8 +72,6 @@ export const registerUser = async (userData) => {
     });
 };
 
-
-
   // Get All Users ---ADMIN
   export const getAllUsers = async () => {
     try {
@@ -91,8 +89,11 @@ export const registerUser = async (userData) => {
 export const search = async (keyword) => {
     try {
       const response = await axios.get(`/api/v1/search?keyword=${keyword}`);
-      console.log(response.data)
-      return response.data; 
+      // console.log(response.data)
+      localStorage.setItem("result", JSON.stringify(response.data));
+      var storedData = JSON.parse(localStorage.getItem("result"));
+      console.log(storedData);
+      return response.data;
     } catch (error) {
       if (error.response && error.response.data.message) {
         throw new Error(error.response.data.message);
