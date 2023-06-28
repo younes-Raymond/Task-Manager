@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 exports.getProducts = asyncErrorHandler(async (req, res, next) => {
   try {
     const products = await Material.find();
-    console.log(products)
+    // console.log(products)
     if (!products) {
       return res.status(404).json({
         success: false,
@@ -87,7 +87,7 @@ try{
 // update the worker taken the material when worker click to get and fill the inpust and info 
 exports.updateUserTakenInfo = async (req, res) => {
   console.log('....',req.body)
-  const { name, destination, email, userIdLS } = req.body;
+  const { name, destination, email, userIdLS , longitude, latitude} = req.body;
   console.log('userIdS:', userIdLS); // log the userIdLS value
   const { productId } = req.params;
   try {
@@ -101,6 +101,8 @@ exports.updateUserTakenInfo = async (req, res) => {
       email,
       userIdLS,
       takenAt: Date.now(),
+      latitude,
+      longitude
     };
     material.users.push(user);
     material.stock -= 1;
@@ -217,6 +219,49 @@ exports.searchProducts = asyncErrorHandler(async (req, res, next) => {
  console.log(response);
  res.status(200).json(response)
 });
+
+
+exports.updateGeolocation = asyncErrorHandler(async (req, res, next) => {
+  console.log(req.body);
+  const { latitude, longitude, userIdLS, materialId } = req.body;
+  console.log("Update material:id:", materialId);
+
+  try {
+    if (!materialId) {
+      console.log('Invalid materialId:', materialId);
+      return;
+    }
+
+    // Find the material by its ID
+    const material = await Material.findOne({ _id: materialId });
+
+    if (material) {
+      // Find the user with the matching userIdLS
+      const user = material.users.find((user) => user.userIdLS === userIdLS);
+
+      if (user) {
+        // Update the user's latitude and longitude if they don't match the old values
+        if (user.latitude !== latitude || user.longitude !== longitude) {
+          user.latitude = latitude;
+          user.longitude = longitude;
+          await material.save(); // Save the changes to the material document
+          console.log('User location updated:', user);
+        } else {
+          console.log('User location already up to date:', user);
+        }
+      } else {
+        console.log('User not found for the given userIdLS:', userIdLS);
+      }
+    } else {
+      console.log('Material not found for the given materialId:', materialId);
+    }
+  } catch (error) {
+    console.error('Error updating user location:', error);
+  } finally {
+    // Send a response back to the client if needed
+  }
+});
+
 
 
 

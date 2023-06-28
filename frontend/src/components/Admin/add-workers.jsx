@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import './add-workers'
 const AddWorkerForm = () => {
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
@@ -21,7 +21,7 @@ const AddWorkerForm = () => {
       nationalId,
       legalInfo,
     };
-    console.log(workerData);
+console.log(workerData);
 
     // Reset form fields after submission
     setName("");
@@ -33,7 +33,7 @@ const AddWorkerForm = () => {
   };
 
   return (
-    <div className="add-worker-form">
+    <div id="add-workers">
       <h2>Add Worker</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-field">
@@ -95,7 +95,7 @@ const AddWorkerForm = () => {
             required
           ></textarea>
         </div>
-        <button type="submit">Add Worker</button>
+        <button type="submit" className="WRK-btn">Add Worker</button>
       </form>
     </div>
   );

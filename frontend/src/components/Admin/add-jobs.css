@@ -1,40 +1,29 @@
-/* add-workers.css */
 
-#add-workers {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    background-color: #0056b3;
-  }
-  
-  #add-workers  {
+.Position-container {
     max-width: 500px;
     margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: gray;
   }
   
-  #add-workers h2 {
+  .Position-container  h2 {
     text-align: center;
     margin-bottom: 20px;
   }
   
-  #add-workers form {
+  .Position-container {
     display: flex;
     flex-direction: column;
+    background-color: gray;
   }
   
-  #add-workers .form-field {
+  .Position-container form div {
     margin-bottom: 20px;
   }
   
-  #add-workers label {
+  .Position-container label {
     font-weight: bold;
   }
   
-  #add-workers input,
+  .Position-container input,
   textarea {
     width: 100%;
     padding: 10px;
@@ -42,7 +31,7 @@
     border-radius: 4px;
   }
   
-  .WRK-btn {
+  .Position-container button {
     padding: 10px 20px;
     background-color: #007bff;
     color: #fff;
@@ -51,7 +40,7 @@
     cursor: pointer;
   }
   
-  .WRK-btn:hover {
+  .Position-container button:hover {
     background-color: #0056b3;
   }
   

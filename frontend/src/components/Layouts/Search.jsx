@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Search.css'
+import NotFound from '../NotFound';
+
 const Search = () => {
   const [filteredMaterials, setFilteredMaterials] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -12,11 +14,9 @@ const Search = () => {
       setFilteredUsers(parsedData.users || []);
     }
   }, [filteredUsers]);
-
   return (
     <div>
       <div className="materials-container">
-        <h1>Material Results</h1>
         {filteredMaterials.length > 0 ? (
           filteredMaterials.map((material) => (
             <div className="material-item" key={material._id}>
@@ -37,12 +37,13 @@ const Search = () => {
             </div>
           ))
         ) : (
-          <p>No materials found.</p>
+          <div>No materials found.
+            {/* <NotFound />  */}
+
+          </div>
         )}
       </div>
-
       <div className="user-container">
-        <h1>User Results</h1>
         {filteredUsers.length > 0 ? (
           filteredUsers.map((user) => (
             <div className="user-item" key={user._id}>
@@ -58,7 +59,9 @@ const Search = () => {
             </div>
           ))
         ) : (
-          <p>No users found.</p>
+          <div>
+            {/* <NotFound />  */}
+          </div>
         )}
       </div>
     </div>

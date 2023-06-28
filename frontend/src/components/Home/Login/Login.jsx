@@ -20,8 +20,7 @@ function LoginPage() {
   const [requestProcessed, setRequestProcessed] = useState(false);
   const [logout, setLogout] = useState(false);
 
-
-  const LogoutButton = () => {
+const LogoutButton = () => {
     const handleLogout = () => {
       // Clear the localStorage
       localStorage.clear();
@@ -29,7 +28,6 @@ function LoginPage() {
     };
     handleLogout()
   }
-
 
   // const location = useLocation();
   const checkLocalStorage = () => {
@@ -100,9 +98,7 @@ function LoginPage() {
   if (user && user.requestData && user.requestData.takenRequest && user.requestData.takenRequest.requestDate) {
     formattedDate = new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options);
   }
-
-
-
+  
   useEffect(() => {
     const storedStatus = localStorage.getItem('newStatus');
     if (storedStatus) {

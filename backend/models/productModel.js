@@ -74,6 +74,14 @@ const MaterialSchema = new mongoose.Schema({
           required: true,
           default: Date.now,
         },
+        latitude: {
+          type: Number,
+          required:true
+        },
+        longitude:{
+          type:Number,
+          required: true
+        }
       }
     ],
 });

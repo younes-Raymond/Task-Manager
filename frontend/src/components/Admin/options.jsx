@@ -1,27 +1,40 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import './optionAdmin.css'
 
-
-
-const AddProductBox = () => {
+const Dashboard = () => {
   return (
     <div className='box'>
-      <h2>Add+ Workers </h2>
-      <p>Click the button below to Add+ or remove- Workers:</p>
-      <Link to="/add-worker">
-        <button>Add+..</button>
+      <h2>Dashboard</h2>
+      <p>Click the button below to controle By CRUDS System</p>
+      <Link to="/Jobs">
+      <button className='DS-btn'>CRUDS Data</button>
       </Link>
     </div>
   );
 };
 
-const ShowProductsBox = () => {
+
+const AddWorkers = () => {
+  return (
+    <div className='box'>
+      <h2>Add+ Workers </h2>
+      <p>Click the button below to Add+ or remove- Workers:</p>
+      <Link to="/add-worker">
+      <button className='DS-btn'>Add+..</button>
+      </Link>
+    </div>
+  );
+};
+
+
+const AddMaterials = () => {
   return (
     <div className='box'>
       <h2>Add+ Materials</h2>
       <p>Click the button below to ADD+ or remove- materials:</p>
       <Link to='/add-material'>
-        <button>Add+..</button>
+      <button className='DS-btn'>Add+..</button>
       </Link>
     </div>
   );
@@ -33,35 +46,30 @@ const ShowProductsBox = () => {
       <div className='box'>
         <h2>Post Jobs</h2>
         <p>Click the button below to Add+ Jobs Available:</p>
-        <Link to="/Jobs">
-          <button>Add+..</button>
+        <Link to="/add-jobs">
+          <button className='DS-btn'>Add+..</button>
         </Link>
       </div>
     );
-  };
+};
 
-  const Dashboard = () => {
-    return (
-      <div className='box'>
-        <h2>Dashboard</h2>
-        <p>Click the button below to controle By CRUDS System</p>
-        <Link to="/Jobs">
-          <button>Use CRUDS</button>
-        </Link>
-      </div>
-    );
-  };
-const Optionbox = () => {
+
+
+
+
+const OptionboxWorkers = () => {
   return (
+    <div className="DS-container">
     <div>
-      <AddProductBox />
-      <ShowProductsBox />
-      <Jobs  />
       <Dashboard  />
+      <AddWorkers />
+      <AddMaterials />
+      <Jobs  />
+    </div>
     </div>
   );
 };
 
-export default Optionbox;
+export default OptionboxWorkers;
 
 

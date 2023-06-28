@@ -11,6 +11,7 @@ import Search from './components/Layouts/Search';
 import Jobs from './components/Jobs/Jobs'
 import OptionDashboard from './components/Admin/options' 
 import AddWorkersForm from './components/Admin/add-workers' 
+import AddJobForm  from './components/Admin/add-Jobs';
 
 const App = () => {
   return (
@@ -26,8 +27,11 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/search" element={<Search />} />
           <Route path="/Jobs" element={<Jobs />} />
+        {/*  start    dashboard section  */}
           <Route path="/option" element={<OptionDashboard />} />
           <Route path="/add-worker" element={<AddWorkersForm />} />
+          <Route path="/add-Jobs" element={<AddJobForm />} />
+        {/*end dashboard section  */}
         </Routes>
       </Router>
     </>

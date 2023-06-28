@@ -50,10 +50,17 @@ export const getProducts = async () => {
 
 
 // Get from Get buttton when user
-export const updateProduct = async (productId, name, destination, email, userIdLS) => {
+export const updateProduct = async (productId, name, destination, email, userIdLS , latitude, longitude) => {
   try {
     const config = { header: { "Content-Type": "application/json" } }
-    const { data } = await axios.put(`/api/v1/admin/material/${productId}`, { name, destination, email, userIdLS}, config);
+    const { data } = await axios.put(`/api/v1/admin/material/${productId}`, {
+       name,
+      destination, 
+      email,
+      userIdLS,
+      latitude,
+      longitude
+    }, config);
     return data;
   } catch (error) {
     throw new Error(error.response.data.message);
