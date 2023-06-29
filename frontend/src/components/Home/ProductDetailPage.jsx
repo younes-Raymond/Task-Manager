@@ -71,7 +71,7 @@ const ProductDetailPage = () => {
     try {
       const { data } = await axios.get('https://api.ipify.org?format=json');
       const ipAddress = data.ip;
-      const url = `http://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
+      const url = `https://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
   
       axios
         .get(url)
@@ -124,11 +124,9 @@ const ProductDetailPage = () => {
       console.error('Error accessing geolocation:', error);
       // Handle the error here and call the function to get location by IP
       getLocationByIP(materialId);
+
     }
   };
-  
-  
-  
 
   const handleGetMaterial = async (event) => {
     const formId = event.target.id.split('-')[1];
