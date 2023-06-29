@@ -26,7 +26,6 @@ const WorkersSchema = new mongoose.Schema({
     enum: ['male', 'female', 'other'],
     required: true,
   },
- 
   avatar: {
     public_id: {
       type: String,
@@ -41,6 +40,10 @@ const WorkersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  NationalIDNumber: {
+   type: Number,
+   required: false,
+  },
   takenAt: {
     type: Date,
     default: Date.now,
@@ -48,7 +51,6 @@ const WorkersSchema = new mongoose.Schema({
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });
-
 
 
 WorkersSchema.methods.generateToken = function() {

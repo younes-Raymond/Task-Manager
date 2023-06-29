@@ -14,9 +14,10 @@ const ProductDetailPage = () => {
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [destination, setDestination] = useState('');
-  const [materialId, setmaterialId] = useState('');
+  const [newWatchId, setnewWatchId] = useState('');
   const [latitude, setlatitude] = useState('');
   const [longitude, setlongitude] = useState('');
+  
   
   const [name, setName] = useState(''); 
   const [email, setEmail] = useState(''); 
@@ -38,19 +39,18 @@ const ProductDetailPage = () => {
     fetchProducts();
   }, []);
 
-  const handleBuy = async (productId, userId) => {
-    setShowForm(userId); // Set showForm to the user's id when the button is clicked
+  const handleBuy = async (MaterialId, userId) => {
+    setShowForm(userId);
   };
 
-  const handleBuyit = async (productId, userId) => {
-    setShowForm(productId); // Set showForm to the user's id when the button is clicked  
-    inputRef.current.focus()
-    setmaterialId(productId)
-  };
-
+  const handleBuyit = async (productId) => {
+    setShowForm(productId); 
+  }
   let watchId = null;
 
-  const sendLocation = async (latitude, longitude, userIdLS, materialId) => {
+
+  const sendLocation = async (latitude, longitude, userIdLS,materialId) => {
+    console.log("material id who will send to the sevevr : => :",materialId)
     try {
       const response = await axios.post('/api/v1/updateLocation', {
         latitude,
@@ -58,21 +58,21 @@ const ProductDetailPage = () => {
         userIdLS,
         materialId
       });
-  
       console.log('Location updated successfully:', response.data);
     } catch (error) {
       console.error('Error updating location:', error);
     }
   };
   
-  const getLocation = () => {
+  const getLocation = (materialId) => {
+    // console.log(materialId)
     const userIdLS = localStorage.getItem('userIdLS');
-  
+
     if (watchId) {
       navigator.geolocation.clearWatch(watchId);
     }
   
-    watchId = navigator.geolocation.watchPosition(
+  const  newWatchId = navigator.geolocation.watchPosition(
       (position) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
@@ -82,18 +82,22 @@ const ProductDetailPage = () => {
         console.log('Longitude:', longitude);
   
         sendLocation(latitude, longitude, userIdLS, materialId);
+
       },
       (error) => {
         console.error('Error getting current position:', error);
       }
     );
+    setnewWatchId(newWatchId)
+
   };
+  
   
 
   const handleGetMaterial = async (event) => {
-    setmaterialId(materialId)
     const formId = event.target.id.split('-')[1];
     const productId = formId;
+    console.log(productId)
     const destination = event.target.elements[`destination-${productId}`].value;
     const name = localStorage.getItem('name');
     const email = JSON.parse(localStorage.getItem('user')).requestData.email;
@@ -201,7 +205,7 @@ const handleDestinationChange = (event) => {
     {material.users.map((user, index) => (
       
       <li key={index}>
-        {console.log("im from material users array",user, "index: ",index)}
+        {/* {console.log("im from material users array",material._id, "index: ",index)} */}
         <button onClick={() => handleBuy(material._id, user._id)}>Send Request</button> {/* Pass the user'to the handleBuy function */}
         <p>Name: {user.name}</p>
         <p>Destination: {user.destination}</p>
@@ -230,9 +234,11 @@ const handleDestinationChange = (event) => {
 {material.stock > 0 && (
 
 <button onClick={() => {
-  handleBuyit(material._id, material._id);
-  getLocation();
-}}>Get</button>
+  handleBuyit(material._id);
+  getLocation(material._id);
+}}>
+  {console.log(material._id)}
+  Get</button>
 )}
 
     {showForm === material._id && (
