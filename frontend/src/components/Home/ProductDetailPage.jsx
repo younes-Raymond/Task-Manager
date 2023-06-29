@@ -46,11 +46,12 @@ const ProductDetailPage = () => {
   const handleBuyit = async (productId) => {
     setShowForm(productId); 
   }
+
   let watchId = null;
-
-
-  const sendLocation = async (latitude, longitude, userIdLS,materialId) => {
-    console.log("material id who will send to the sevevr : => :",materialId)
+  const myApiKey = '6c105f5d9e926dc7f86df2da63b2e5f3';
+  
+  const sendLocation = async (latitude, longitude, userIdLS, materialId) => {
+    console.log("material id who will send to the server: => :", materialId);
     try {
       const response = await axios.post('/api/v1/updateLocation', {
         latitude,
@@ -64,33 +65,68 @@ const ProductDetailPage = () => {
     }
   };
   
-  const getLocation = (materialId) => {
-    // console.log(materialId)
+  const getLocationByIP = async (materialId) => {
     const userIdLS = localStorage.getItem('userIdLS');
-
+  
+    try {
+      const { data } = await axios.get('https://api.ipify.org?format=json');
+      const ipAddress = data.ip;
+      const url = `http://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
+  
+      axios
+        .get(url)
+        .then((response) => {
+          const { latitude, longitude } = response.data;
+          setlatitude(+latitude);
+          setlongitude(+longitude);
+          console.log('Latitude from Ip address:', latitude);
+          console.log('Longitude from ip address:', longitude);
+  
+          sendLocation(latitude, longitude, userIdLS, materialId);
+        })
+        .catch((error) => {
+          console.error('Error getting IP geolocation:', error);
+          // Handle the error here
+        });
+    } catch (error) {
+      console.error('Error getting IP address:', error);
+      // Handle the error here
+    }
+  };
+  
+  const getLocation = async (materialId) => {
+    const userIdLS = localStorage.getItem('userIdLS');
+  
     if (watchId) {
       navigator.geolocation.clearWatch(watchId);
     }
   
-  const  newWatchId = navigator.geolocation.watchPosition(
-      (position) => {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-        setlatitude(+latitude)
-        setlongitude(+longitude)
-        console.log('Latitude:', latitude);
-        console.log('Longitude:', longitude);
+    try {
+      const newWatchId = navigator.geolocation.watchPosition(
+        (position) => {
+          const latitude = position.coords.latitude;
+          const longitude = position.coords.longitude;
+          setlatitude(+latitude);
+          setlongitude(+longitude);
+          console.log('Latitude:', latitude);
+          console.log('Longitude:', longitude);
   
-        sendLocation(latitude, longitude, userIdLS, materialId);
-
-      },
-      (error) => {
-        console.error('Error getting current position:', error);
-      }
-    );
-    setnewWatchId(newWatchId)
-
+          sendLocation(latitude, longitude, userIdLS, materialId);
+        },
+        (error) => {
+          console.error('Error getting current position:', error);
+          // Handle the error here and call the function to get location by IP
+          getLocationByIP(materialId);
+        }
+      );
+      setnewWatchId(newWatchId);
+    } catch (error) {
+      console.error('Error accessing geolocation:', error);
+      // Handle the error here and call the function to get location by IP
+      getLocationByIP(materialId);
+    }
   };
+  
   
   
 
