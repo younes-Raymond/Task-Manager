@@ -70,12 +70,14 @@ const ProductDetailPage = () => {
   
     try {
       const { data } = await axios.get('https://api.ipify.org?format=json');
+      console.log(data)
       const ipAddress = data.ip;
-      const url = `https://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
+      const url = `http://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
   
       axios
         .get(url)
         .then((response) => {
+          console.log(response.data)
           const { latitude, longitude } = response.data;
           setlatitude(+latitude);
           setlongitude(+longitude);
