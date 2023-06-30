@@ -100,11 +100,16 @@ const getLocation = async (materialId) => {
           console.log('Longitude:', longitude);
           sendLocation(latitude, longitude, userIdLS, materialId);
         },
+
         (error) => {
+          switch(error.code) {
+
+          }
           console.error('Error getting current position:', error);
           // Handle the error here and call the function to get location by IP
           getLocationByIP(materialId);
-        }
+        },
+        {enableHighAccuracy: true }
       );
       setnewWatchId(newWatchId);
     } catch (error) {
