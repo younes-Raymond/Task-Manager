@@ -1,7 +1,6 @@
 import React, { useEffect, useState , useRef} from 'react';
-import { getProducts } from '../../actions/productaction';
-import { sendRequest } from '../../actions/productaction';
-import { updateProduct } from '../../actions/productaction';
+import { getProducts, sendRequest, updateProduct } from '../../actions/productaction';
+import MARKER from '../../assets/images/G-M-Marker.png'
 import axios from 'axios';
 import './ProductDetailPage.css'; 
 
@@ -17,11 +16,7 @@ const ProductDetailPage = () => {
   const [newWatchId, setnewWatchId] = useState('');
   const [latitude, setlatitude] = useState('');
   const [longitude, setlongitude] = useState('');
-  
-  
-  const [name, setName] = useState(''); 
-  const [email, setEmail] = useState(''); 
- const inputRef = useRef(null);
+  const inputRef = useRef(null);
 
   
   useEffect(() => {
@@ -41,16 +36,14 @@ const ProductDetailPage = () => {
 
   const handleBuy = async (MaterialId, userId) => {
     setShowForm(userId);
-  };
+};
 
   const handleBuyit = async (productId) => {
     setShowForm(productId); 
-  }
+}
 
-  let watchId = null;
-  const myApiKey = '6c105f5d9e926dc7f86df2da63b2e5f3';
-  
-  const sendLocation = async (latitude, longitude, userIdLS, materialId) => {
+let watchId = null;
+const sendLocation = async (latitude, longitude, userIdLS, materialId) => {
     console.log("material id who will send to the server: => :", materialId);
     try {
       const response = await axios.post('/api/v1/updateLocation', {
@@ -63,28 +56,22 @@ const ProductDetailPage = () => {
     } catch (error) {
       console.error('Error updating location:', error);
     }
-  };
+};
   
-  const getLocationByIP = async (materialId) => {
+const getLocationByIP = async (materialId) => {
     const userIdLS = localStorage.getItem('userIdLS');
-  
     try {
       const { data } = await axios.get('https://api.ipify.org?format=json');
-      console.log(data)
+      console.log(data);
       const ipAddress = data.ip;
-      const url = `http://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
-  
       axios
-        .get(url)
+        .post('/api/v1/updateGeolocationByIp', { ipAddress, userIdLS, materialId })
         .then((response) => {
-          console.log(response.data)
-          const { latitude, longitude } = response.data;
+          const { latitude , longitude } = response.data;
           setlatitude(+latitude);
           setlongitude(+longitude);
-          console.log('Latitude from Ip address:', latitude);
-          console.log('Longitude from ip address:', longitude);
-  
-          sendLocation(latitude, longitude, userIdLS, materialId);
+          console.log('Latitude from getlocationByIp:', latitude);
+          console.log('Longitude from getLocationByIp:', longitude);
         })
         .catch((error) => {
           console.error('Error getting IP geolocation:', error);
@@ -94,15 +81,14 @@ const ProductDetailPage = () => {
       console.error('Error getting IP address:', error);
       // Handle the error here
     }
-  };
-  
-  const getLocation = async (materialId) => {
+};
+
+const getLocation = async (materialId) => {
     const userIdLS = localStorage.getItem('userIdLS');
   
     if (watchId) {
       navigator.geolocation.clearWatch(watchId);
     }
-  
     try {
       const newWatchId = navigator.geolocation.watchPosition(
         (position) => {
@@ -112,7 +98,6 @@ const ProductDetailPage = () => {
           setlongitude(+longitude);
           console.log('Latitude:', latitude);
           console.log('Longitude:', longitude);
-  
           sendLocation(latitude, longitude, userIdLS, materialId);
         },
         (error) => {
@@ -128,12 +113,12 @@ const ProductDetailPage = () => {
       getLocationByIP(materialId);
 
     }
-  };
+};
 
-  const handleGetMaterial = async (event) => {
+const handleGetMaterial = async (event) => {
     const formId = event.target.id.split('-')[1];
     const productId = formId;
-    console.log(productId)
+    console.log("productId from handleGetMaterial" ,productId)
     const destination = event.target.elements[`destination-${productId}`].value;
     const name = localStorage.getItem('name');
     const email = JSON.parse(localStorage.getItem('user')).requestData.email;
@@ -146,6 +131,7 @@ const ProductDetailPage = () => {
         productId: updatedProduct._id,
         message: 'Material bought successfully!',
       });
+      localStorage.setItem('materialObtained', 'true');
       setShowForm(false);
       const updatedProducts = products.map((material) => {
         if (material._id === productId) {
@@ -160,13 +146,13 @@ const ProductDetailPage = () => {
         message: 'Error buying material.',
       });
     }
-  };
+};
 
 const handleDestinationChange = (event) => {
     setDestination(event.target.value);
-  };
-  
-  const handleSendRequest = async (event, userId, productId) => {
+};
+
+const handleSendRequest = async (event, userId, productId) => {
     event.preventDefault();
     const userId_of_Taken = document.querySelector('.user-id').textContent;
     console.log("userId_of_Taken: ",userId_of_Taken);
@@ -205,8 +191,6 @@ const handleDestinationChange = (event) => {
     }
   };
   
-  
-
   if (loading) {
     return <div className="loading_container">
        <div className='custom-loader'></div>
@@ -233,7 +217,6 @@ const handleDestinationChange = (event) => {
               <p  className={`counter ${material.stock > 0 ? 'green' : 'red'}`}>{material.stock}</p>
             </label>
             <p>Category: {material.category}</p>
-
 {/* start   user container  */}
 <div className="users-container">
   <h3>Users who have taken this material:</h3>
@@ -242,12 +225,16 @@ const handleDestinationChange = (event) => {
       
       <li key={index}>
         {/* {console.log("im from material users array",material._id, "index: ",index)} */}
-        <button onClick={() => handleBuy(material._id, user._id)}>Send Request</button> {/* Pass the user'to the handleBuy function */}
+        <button onClick={() => handleBuy(material._id, user._id)}>Send Request</button>
+         {/* Pass the user'to the handleBuy function */}
         <p>Name: {user.name}</p>
         <p>Destination: {user.destination}</p>
         <p>email: {user.email}</p>
         <p>Taken at: {new Date(user.takenAt).toLocaleString()}</p> 
-        <p className="user-id" style={{ display: 'none' }}>{user._id}</p> {/* Add this line to display the userIdLS value */}
+        <p className="user-id" style={{ display: 'none' }}>{user._id}</p>
+        <a href={`https://www.google.com/maps/search/?api=1&query=${user.latitude},${user.longitude}`} target="_blank" rel="noopener noreferrer">
+  <img src={MARKER} class="Marker-G-Mps" alt="" />
+</a>
  <form 
   id={user._id} 
   className={`request-form ${showForm && showForm === user._id ? 'show' : ''}`} // Add the show class to the form when showForm is true and matches the user's id
@@ -264,16 +251,12 @@ const handleDestinationChange = (event) => {
   </ul>
 </div>
 {/* end user container */}
-
-
-
 {material.stock > 0 && (
-
 <button onClick={() => {
   handleBuyit(material._id);
   getLocation(material._id);
 }}>
-  {console.log(material._id)}
+  {/* {console.log(material._id)} */}
   Get</button>
 )}
 

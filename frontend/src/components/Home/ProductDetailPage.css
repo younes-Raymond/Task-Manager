@@ -224,3 +224,9 @@ animation-timing-function: linear
   display: flex;
   flex-direction: column;
 }
+.Marker-G-Mps 
+{    
+  width: 10%;
+  height: 10%;
+  margin: 10px 0 0 0;
+}

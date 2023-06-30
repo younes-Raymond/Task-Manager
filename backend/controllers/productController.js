@@ -4,6 +4,8 @@ const MaterialRequest = require('../models/MaterialRequestModel');
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
 const mongoose = require('mongoose');
+const axios = require('axios');
+const response = require('http-browserify/lib/response');
 
 
 // get all material from db and send it to the client side  
@@ -225,7 +227,6 @@ exports.updateGeolocation = asyncErrorHandler(async (req, res, next) => {
   console.log(req.body);
   const { latitude, longitude, userIdLS, materialId } = req.body;
   console.log("Update material:id:", materialId);
-
   try {
     if (!materialId) {
       console.log('Invalid materialId:', materialId);
@@ -264,6 +265,38 @@ exports.updateGeolocation = asyncErrorHandler(async (req, res, next) => {
 
 
 
-
+exports.updateGeolocationByIp = async (req, res) => {
+  console.log("the req body ", req.body);
+  const { ipAddress, userIdLS, materialId } = req.body;
+  const myApiKey = '6c105f5d9e926dc7f86df2da63b2e5f3';
+  const url = `http://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
+  try {
+    const response = await axios.get(url);
+    console.log("lat & lon response: ", response.data);
+    const { latitude, longitude } = response.data;
+    Material.findOneAndUpdate(
+      { _id: materialId, 'users.userIdLS': userIdLS },
+      { $set: { 'users.$.latitude': latitude, 'users.$.longitude': longitude } },
+      { new: true }
+    )
+      .then((updatedMaterial) => {
+        console.log(updatedMaterial);
+        if (updatedMaterial) {
+          console.log('Geolocation updated successfully');
+          res.json({ latitude, longitude }); // Send latitude and longitude in the response
+        } else {
+          console.log('Material not found or user not authorized');
+          res.status(404).json({ message: 'Material not found or user not authorized' });
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to update geolocation:', error.message);
+        res.status(500).json({ message: 'Failed to update geolocation' });
+      });
+  } catch (error) {
+    console.error('Error getting IP geolocation:', error.message);
+    res.status(500).json({ message: 'Error getting IP geolocation' });
+  }
+};
 
 
