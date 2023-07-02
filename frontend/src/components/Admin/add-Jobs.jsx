@@ -28,7 +28,7 @@ const AddJobForm = () => {
 
     // Send a POST request to the backend server
     axios
-      .post("api/v1/addJobs", formData)
+      .post("/api/v1/admin/addJobs", formData)
       .then((response) => {
         console.log("Job data sent successfully:", response.data);
         // Reset form fields after successful submission

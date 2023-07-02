@@ -3,11 +3,11 @@ const {
   registerUser,
   loginUser,
   getAllUsers,
-  updateUserTakenOf,
   approveRequest,
   rejectRequest,
   confirmTaken,
   search,
+  addJobs
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
@@ -16,10 +16,10 @@ const router = express.Router();
 router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.route('/admin/users').get(isAuthenticatedUser, authorizeRoles('admin'), getAllUsers);
-router.post('/approve', approveRequest);
-router.post('/reject', rejectRequest);
-router.post('/confirm', confirmTaken)
+router.post('/admin/approve', approveRequest);
+router.post('/admin/reject', rejectRequest);
+router.post('/admin/confirm', confirmTaken)
 router.get('/search', search)
-
+router.post('/admin/addJobs', addJobs)
 
 module.exports = router;

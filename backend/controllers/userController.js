@@ -7,8 +7,6 @@ const sendToken = require('../utils/sendToken');
 const MaterialRequest = require('../models/MaterialRequestModel');
 const { connect } = require('mongoose');
 
-
-
 // Register User
 exports.registerUser = asyncErrorHandler(async (req, res, next) => {
   console.log(req.body);
@@ -242,10 +240,33 @@ exports.search = async (req, res) => {
       res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
   };
-exports.addJobs = asyncErrorHandler(async (req, res ) => {
-    
-})
 
+exports.addJobs = asyncErrorHandler(async (req, res) => {
+  console.log(req.body)
+    try {
+      const { title, description, requirements, salary, email, phone } = req.body;
+  
+      // Create a new job document
+      const newJob = await Jobs.create({
+        title,
+        description,
+        requirements,
+        salary,
+        applicationDetails: {
+          email,
+          phone
+        }
+      });
+  
+      // Send a success response
+      res.status(200).json({ success: true, job: newJob });
+    } catch (error) {
+      // Handle any errors
+      console.error("Error creating job:", error);
+      res.status(500).json({ success: false, error: "Failed to create job" });
+    }
+});
+  
 
 
 
