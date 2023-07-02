@@ -33,7 +33,6 @@ const ProductDetailPage = () => {
     };
     fetchProducts();
   }, []);
-
   const handleBuy = async (MaterialId, userId) => {
     setShowForm(userId);
 };
@@ -57,7 +56,7 @@ const sendLocation = async (latitude, longitude, userIdLS, materialId) => {
       console.error('Error updating location:', error);
     }
 };
-  
+  // Create , Read , update , Delete 
 const getLocationByIP = async (materialId) => {
     const userIdLS = localStorage.getItem('userIdLS');
     try {
@@ -84,40 +83,59 @@ const getLocationByIP = async (materialId) => {
 };
 
 const getLocation = async (materialId) => {
-    const userIdLS = localStorage.getItem('userIdLS');
-  
-    if (watchId) {
-      navigator.geolocation.clearWatch(watchId);
-    }
-    try {
-      const newWatchId = navigator.geolocation.watchPosition(
-        (position) => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          setlatitude(+latitude);
-          setlongitude(+longitude);
-          console.log('Latitude:', latitude);
-          console.log('Longitude:', longitude);
-          sendLocation(latitude, longitude, userIdLS, materialId);
-        },
+  const userIdLS = localStorage.getItem('userIdLS');
 
-        (error) => {
-          switch(error.code) {
+  if (watchId) {
+    navigator.geolocation.clearWatch(watchId);
+  }
 
-          }
-          console.error('Error getting current position:', error);
-          // Handle the error here and call the function to get location by IP
+  try {
+    const newWatchId = navigator.geolocation.watchPosition(
+      (position) => {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+        setlatitude(+latitude);
+        setlongitude(+longitude);
+        console.log('Latitude:', latitude);
+        console.log('Longitude:', longitude);
+        sendLocation(latitude, longitude, userIdLS, materialId);
+      },
+      (error) => {
+        console.error('Error getting current position:', error);
+        if (error.message.includes('User denied Geolocation')) {
+          // Ask for GPS permission again
+          askForGPSPermission(materialId);
+        } else {
           getLocationByIP(materialId);
-        },
-        {enableHighAccuracy: true }
-      );
-      setnewWatchId(newWatchId);
-    } catch (error) {
-      console.error('Error accessing geolocation:', error);
-      // Handle the error here and call the function to get location by IP
-      getLocationByIP(materialId);
-
-    }
+        }
+      },
+      { enableHighAccuracy: true }
+    );
+    setnewWatchId(newWatchId);
+  } catch (error) {
+    console.error('Error accessing geolocation:', error);
+    // Handle the error here and call the function to get location by IP
+    getLocationByIP(materialId);
+  }
+};
+// Function to ask for GPS permission
+const askForGPSPermission = async (materialId) => {
+  try {
+    await new Promise((resolve, reject) => {
+      const confirmation = window.confirm('Please enable GPS for accurate location tracking.');
+      if (confirmation) {
+        resolve();
+      } else {
+        reject();
+      }
+    });
+    // GPS permission granted
+    getLocation(materialId);
+  } catch (error) {
+    console.error('GPS permission denied:', error);
+    // Handle the error here or show an error message
+    getLocationByIP(materialId);
+  }
 };
 
 const handleGetMaterial = async (event) => {
@@ -194,8 +212,8 @@ const handleSendRequest = async (event, userId, productId) => {
       }
       setSubmitting(false);
     }
-  };
-  
+};
+
   if (loading) {
     return <div className="loading_container">
        <div className='custom-loader'></div>

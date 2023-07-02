@@ -1,6 +1,6 @@
 const Workers = require('../models/userModel');
 const Materials = require('../models/productModel');
-
+const Jobs = require('../models/jobsModel');
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
 const sendToken = require('../utils/sendToken');
@@ -11,33 +11,38 @@ const { connect } = require('mongoose');
 
 // Register User
 exports.registerUser = asyncErrorHandler(async (req, res, next) => {
-  console.log(req.body)
-    try {
-      const myCloud = await cloudinary.uploader.upload(req.body.avatar, {
-        folder:"avatars",
-        width:150,
-        crop:"scale"
-      });
-  
-      const { name, email, gender, password } = req.body;
-  
-      const user = await Workers.create({
-        name, 
-        email,
-        gender,
-        password,
-        avatar: {
-          public_id:myCloud.public_id,
-          url:myCloud.secure_url
-        },
-      });
-      sendToken(user, 201, res);
-    } catch (error) {
-      console.log(error);
-      res.status(500).json({ message: "Server error" });
-    }
-  });
+  console.log(req.body);
+const { name, email, position, salary, gender, nationalId, phoneNumber, legalInfo, password } = req.body;
 
+  try {
+    const result = await cloudinary.uploader.upload(req.body.avatar[0], {
+      folder: "workers",
+      width: 150,
+      crop: "scale"
+    });
+
+    const user = await Workers.create({
+      name,
+      email,
+      position,
+      salary,
+      gender,
+      nationalId,
+      phoneNumber,
+      password,
+      legalInfo,
+      avatar: {
+        public_id: result.public_id,
+        url: result.secure_url
+      },
+    });
+
+    sendToken(user, 201, res);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 exports.loginUser = asyncErrorHandler(async (req, res) => {
     // console.log(req.body)
@@ -202,11 +207,7 @@ exports.rejectRequest = asyncErrorHandler(async (req, res) => {
     res.status(200).json({ message: 'Request rejected' });
   });
 
-
-
-
-
-  exports.confirmTaken = asyncErrorHandler(async (req, res) => {
+exports.confirmTaken = asyncErrorHandler(async (req, res) => {
     const requestId = req.body.approvedRequests[0].requestId;
   
     // Remove the document with the specified requestId from the database
@@ -216,7 +217,7 @@ exports.rejectRequest = asyncErrorHandler(async (req, res) => {
   });
   
 
-  exports.search = async (req, res) => {
+exports.search = async (req, res) => {
     console.log(req.query)
     const { keyword } = req.query;
     try {
@@ -241,6 +242,10 @@ exports.rejectRequest = asyncErrorHandler(async (req, res) => {
       res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
   };
+exports.addJobs = asyncErrorHandler(async (req, res ) => {
+    
+})
+
 
 
 
@@ -261,5 +266,3 @@ exports.getAllUsers = asyncErrorHandler(async (req, res, next) => {
       users,
   });
 });
-
-

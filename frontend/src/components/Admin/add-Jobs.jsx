@@ -6,33 +6,48 @@ const AddJobForm = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [requirements, setRequirements] = useState("");
+  const [salary, setSalary] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
-const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // Create a job object with the form data
-    const job = {
-      title,
-      description,
-      requirements,
-    };
+
+    // Check if email and phone are empty, and assign default values if they are
+    const defaultEmail = email === '' ? 'company@example.com' : email;
+    const defaultPhone = phone === '' ? '+1234567890' : phone;
+
+    // Create a FormData object
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("requirements", requirements);
+    formData.append("salary", salary);
+    formData.append("email", defaultEmail);
+    formData.append("phone", defaultPhone);
+
     // Send a POST request to the backend server
     axios
-      .post("https://your-api-endpoint.com/jobs", job)
+      .post("api/v1/addJobs", formData)
       .then((response) => {
         console.log("Job data sent successfully:", response.data);
         // Reset form fields after successful submission
         setTitle("");
         setDescription("");
         setRequirements("");
+        setSalary("");
+        setEmail("");
+        setPhone("");
       })
       .catch((error) => {
         console.error("Error sending job data:", error);
       });
   };
+
   return (
     <div className="Position-container">
       <h2>Add Job Position</h2>
-      <form onSubmit={handleSubmit} >
+      <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="title">Title:</label>
           <input
@@ -40,6 +55,7 @@ const handleSubmit = (e) => {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            placeholder="Enter job title"
             required
           />
         </div>
@@ -49,6 +65,7 @@ const handleSubmit = (e) => {
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            placeholder="Enter job description"
             required
           ></textarea>
         </div>
@@ -58,10 +75,46 @@ const handleSubmit = (e) => {
             id="requirements"
             value={requirements}
             onChange={(e) => setRequirements(e.target.value)}
+            placeholder="Enter job requirements"
             required
           ></textarea>
         </div>
-        <button type="submit">Add Job</button>
+        <div>
+          <label htmlFor="salary">Salary:</label>
+          <input
+            type="number"
+            id="salary"
+            value={salary}
+            onChange={(e) => setSalary(e.target.value)}
+            placeholder="Enter job salary"
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter company email"
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="phone">Phone:</label>
+          <input
+            type="tel"
+            id="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="Enter company phone number"
+            required
+          />
+        </div>
+        <div className="btn">
+          <button type="submit">Add Job</button>
+        </div>
       </form>
     </div>
   );

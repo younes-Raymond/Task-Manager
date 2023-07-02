@@ -8,8 +8,6 @@ const {
   rejectRequest,
   confirmTaken,
   search,
-
-
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
@@ -22,5 +20,6 @@ router.post('/approve', approveRequest);
 router.post('/reject', rejectRequest);
 router.post('/confirm', confirmTaken)
 router.get('/search', search)
+
 
 module.exports = router;

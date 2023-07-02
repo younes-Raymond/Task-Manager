@@ -1,21 +1,16 @@
-/* add-workers.css */
 
-#add-workers {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    background-color: #0056b3;
-  }
-  
   #add-workers  {
     max-width: 500px;
     margin: 0 auto;
     padding: 20px;
-    border: 1px solid #ccc;
     border-radius: 4px;
-    background-color: gray;
+    background-color: rgb(100, 98, 98);
+    color: white;
+
   }
-  
+  #add-workers h2 {
+    color: #fff;
+  }
   #add-workers h2 {
     text-align: center;
     margin-bottom: 20px;
@@ -36,10 +31,19 @@
   
   #add-workers input,
   textarea {
-    width: 100%;
+    width: 90%;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    margin: 2% 0%;
+  }
+  #add-workers select option {
+    background: #007bff;
+  } 
+  #add-workers textarea 
+  {
+    height: 60px;
+    width: 90%;
   }
   
   .WRK-btn {

@@ -109,7 +109,7 @@ exports.updateUserTakenInfo = async (req, res) => {
     material.users.push(user);
     material.stock -= 1;
     await material.save();
-    // console.log('material:', material); // log the material object
+    console.log('material:', material); // log the material object
     res.status(200).json(material);
   } catch (error) {
     console.log(error);
@@ -262,8 +262,6 @@ exports.updateGeolocation = asyncErrorHandler(async (req, res, next) => {
     // Send a response back to the client if needed
   }
 });
-
-
 
 exports.updateGeolocationByIp = async (req, res) => {
   console.log("the req body ", req.body);

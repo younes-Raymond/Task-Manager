@@ -18,7 +18,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(fileUpload());
 
-// const user = require('./routes/userRoute');
 const material = require('./routes/productRoute');
 const user = require('./routes/userRoute');
 app.use('/api/v1', user);

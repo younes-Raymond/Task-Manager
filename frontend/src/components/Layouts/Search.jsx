@@ -37,9 +37,9 @@ const Search = () => {
             </div>
           ))
         ) : (
-          <div>No materials found.
+          <div>
+          No materials found.
             {/* <NotFound />  */}
-
           </div>
         )}
       </div>

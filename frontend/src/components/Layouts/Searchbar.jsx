@@ -30,7 +30,7 @@ const Searchbar = () => {
         onChange={(e) => setKeyword(e.target.value)}
         className=""
         type="text"
-        placeholder="Search for products, brands and more"
+        placeholder="Search for Material, Workers and more"
       />
       <button type="submit" className="">
         <SearchIcon />

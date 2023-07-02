@@ -10,7 +10,7 @@ const dispatch = useDispatch()
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState([]);
-  const [stock, setStock] = useState(0);
+  const [stock, setStock] = useState(1);
   const [category, setCategory] = useState('');
   
   const handleProductImageChange = (e) => {
@@ -55,10 +55,9 @@ const handleSubmit = async (event) => {
       setCategory(event.target.value);
     }
   };
-
   return (
     <div className="containerr">
-      <h2>Here where you should AddProduct + +</h2>
+      <h2>Add Materials...</h2>
       <div className="option-container">
         <label htmlFor="list-option" className="label-option">Choose a Category:</label>
         <select name="category" id="list-option" required autoFocus onChange={handleChange} value={selectedValue}>
@@ -85,7 +84,7 @@ const handleSubmit = async (event) => {
           <br />
           <label htmlFor="description">Description:</label>
           <input 
-            placeholder="اكتب اكتر من  عشر حروف "
+            placeholder="where's this Material اكتب اكتر من  عشر حروف "
             type="text"
             id="description"
             value={description}
@@ -97,7 +96,6 @@ const handleSubmit = async (event) => {
           <br />
           <label htmlFor="images">Images:</label>
           <input
-            // multiple
             type="file"
             name="images"
             accept="image/*"
@@ -113,8 +111,8 @@ const handleSubmit = async (event) => {
             id="stock"
             value={stock}
             onChange={(event) => setStock(event.target.value)}
-            min={0}
-            max={10000}
+            min={1}
+            max={1000}
             required
           />
           <br />

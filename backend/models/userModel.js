@@ -8,12 +8,29 @@ const WorkersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  destination: {
-    type: String,
-    // required: true,
-  },
   email: {
     type: String,
+    required: true,
+  },
+  position: {
+    type:String,
+    required: false,
+  },
+  salary: {
+   type: Number,
+   required: true,
+  },
+  gender: {
+    type: String,
+    enum: ['male', 'female', 'other'],
+    required: true,
+  },
+  nationalId: {
+    type: String,
+    required: false,
+   },
+  phoneNumber: {
+    type: Number,
     required: true,
   },
   role: {
@@ -21,9 +38,12 @@ const WorkersSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user',
   },
-  gender: {
+  legalInfo: {
     type: String,
-    enum: ['male', 'female', 'other'],
+    required:false,
+  },
+  password: {
+    type: String,
     required: true,
   },
   avatar: {
@@ -35,14 +55,6 @@ const WorkersSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  NationalIDNumber: {
-   type: Number,
-   required: false,
   },
   takenAt: {
     type: Date,
