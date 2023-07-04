@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
 import { loginUser
  }
 from '../../../actions/userAction';
@@ -19,6 +21,7 @@ function LoginPage() {
   const reqParentRef = useRef(null);
   const [requestProcessed, setRequestProcessed] = useState(false);
   const [logout, setLogout] = useState(false);
+  const navigate = useNavigate();
 
 const LogoutButton = () => {
     const handleLogout = () => {
@@ -70,7 +73,12 @@ const LogoutButton = () => {
         const user = response.data.requestData.user; 
         clearInterval(interval);
         setUser(user);
+        alert('im here 76')
+        navigate('/');
       } else {
+        alert('im here 79')
+        navigate('/');
+        console.log('im here')
       }
     } catch (error) {
       console.log('Error:', error);
@@ -197,12 +205,22 @@ function handleReject() {
   
 
   const handleConfirm = async () => {
- 
     try {
       const response = await axios.post('api/v1/confirm', user.requestData);
       console.log('Confirmation sent successfully:', response.data);
+      if(response.data) {
+        alert('im here 241')
+        navigate('/search');
+      }  else {
+        navigate('/search');
+        console.log('im here')
+
+      }
     } catch (error) {
       console.error('Error sending confirmation:', error);
+      alert('im here 222')
+      navigate('/search');
+
     }
  
   };

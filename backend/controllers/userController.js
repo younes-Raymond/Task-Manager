@@ -203,7 +203,7 @@ exports.rejectRequest = asyncErrorHandler(async (req, res) => {
       { new: true }
     );  
     res.status(200).json({ message: 'Request rejected' });
-  });
+});
 
 exports.confirmTaken = asyncErrorHandler(async (req, res) => {
     const requestId = req.body.approvedRequests[0].requestId;
@@ -238,7 +238,7 @@ exports.search = async (req, res) => {
     } catch (error) {
       res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
-  };
+};
 
 exports.addJobs = asyncErrorHandler(async (req, res) => {
   console.log(req.body)

@@ -46,11 +46,10 @@ const handleSubmit = async (event) => {
   dispatch(createProduct(formData));
 }
 
-  const [selectedValue, setSelectedValue] = useState('');
+const [selectedValue, setSelectedValue] = useState('');
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
-  
     if (event.target.value === 'setting' || event.target.value === 'adapting' || event.target.value === 'cutting') {
       setCategory(event.target.value);
     }
@@ -84,7 +83,7 @@ const handleSubmit = async (event) => {
           <br />
           <label htmlFor="description">Description:</label>
           <input 
-            placeholder="where's this Material اكتب اكتر من  عشر حروف "
+            placeholder=" اكتب اكتر من  عشر حروف "
             type="text"
             id="description"
             value={description}
@@ -127,7 +126,7 @@ const handleSubmit = async (event) => {
             maxLength={30}
             required
           />
-          <input type="submit" value='Submit' className="btn" />
+          <input type="submit" value='Add Material..' className="btn" />
         </form>
       </div>
     </div>
@@ -135,3 +134,5 @@ const handleSubmit = async (event) => {
 };
 
 export default ProductForm;
+
+

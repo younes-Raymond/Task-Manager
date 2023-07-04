@@ -44,7 +44,7 @@ Create a new branch for your changes:
 Copy code   git checkout -b my-feature-branch
 Make your changes and commit them:
 Copy code   git add .
-   git commit -m "Add my feature"
+git commit -m "Add my feature"
 Push your changes to your forked repository:
 Copy code   git push origin my-feature-branch
 Create a pull request on the original repository to merge your changes.

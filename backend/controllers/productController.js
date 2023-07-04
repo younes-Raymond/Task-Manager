@@ -5,7 +5,6 @@ const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
 const mongoose = require('mongoose');
 const axios = require('axios');
-const response = require('http-browserify/lib/response');
 
 
 // get all material from db and send it to the client side  
@@ -83,8 +82,6 @@ try{
     next(error)
 }
 });
-
-
 
 // update the worker taken the material when worker click to get and fill the inpust and info 
 exports.updateUserTakenInfo = async (req, res) => {
@@ -192,8 +189,6 @@ const materialRequest = new MaterialRequest({
   }
 });
 
-
-
   // Get All Products
 exports.searchProducts = asyncErrorHandler(async (req, res, next) => {
   console.log(req.query);
@@ -264,13 +259,14 @@ exports.updateGeolocation = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports.updateGeolocationByIp = async (req, res) => {
-  console.log("the req body ", req.body);
+  console.log(req.body);
   const { ipAddress, userIdLS, materialId } = req.body;
   const myApiKey = '6c105f5d9e926dc7f86df2da63b2e5f3';
   const url = `http://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
   try {
     const response = await axios.get(url);
     console.log("lat & lon response: ", response.data);
+    // console.log(response.data)
     const { latitude, longitude } = response.data;
     Material.findOneAndUpdate(
       { _id: materialId, 'users.userIdLS': userIdLS },
@@ -296,5 +292,3 @@ exports.updateGeolocationByIp = async (req, res) => {
     res.status(500).json({ message: 'Error getting IP geolocation' });
   }
 };
-
-

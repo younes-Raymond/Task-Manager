@@ -28,8 +28,8 @@
 .Main-Mobile  input:not(.option-container,.btn)
 {
     width: 100%;
-    margin: 0 5% 3% 5%;
     height: 40px;
+    margin: 3% 5%;
     border-radius: 5px;
     color: black;
 
@@ -48,14 +48,14 @@
 }
 
 .containerr .btn {
-    width: 40%;
+    width: 80%;
     height: 40px;
-    border-radius: 10px;
+    border-radius: 5px;
     cursor: pointer;
-    margin: 0 30% 0 40%;
-    margin-bottom: 2%;
-    background: white;
-    color: black;
+    border: #007bff 1px solid;
+    margin: 10% 15%;
+    background-color: #007bff;
+    color: #fff;
     font-weight: 700;
 }
 select 

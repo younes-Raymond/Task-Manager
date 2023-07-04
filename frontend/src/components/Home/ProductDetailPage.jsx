@@ -5,6 +5,7 @@ import axios from 'axios';
 import './ProductDetailPage.css'; 
 
 const ProductDetailPage = () => {
+
   // State variables
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,7 +18,6 @@ const ProductDetailPage = () => {
   const [latitude, setlatitude] = useState('');
   const [longitude, setlongitude] = useState('');
   const inputRef = useRef(null);
-
   
   useEffect(() => {
     const fetchProducts = async () => {
@@ -37,7 +37,7 @@ const ProductDetailPage = () => {
     setShowForm(userId);
 };
 
-  const handleBuyit = async (productId) => {
+const handleBuyit = async (productId) => {
     setShowForm(productId); 
 }
 
@@ -56,7 +56,8 @@ const sendLocation = async (latitude, longitude, userIdLS, materialId) => {
       console.error('Error updating location:', error);
     }
 };
-  // Create , Read , update , Delete 
+
+// Create , Read , update , Delete 
 const getLocationByIP = async (materialId) => {
     const userIdLS = localStorage.getItem('userIdLS');
     try {

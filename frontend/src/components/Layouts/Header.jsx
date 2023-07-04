@@ -19,7 +19,6 @@ const Header = () => {
         setHideAccountIcon(true);
       }
     };
-
     let interval;
     if (!hideAccountIcon) {
       console.log('Checking local storage'); 
