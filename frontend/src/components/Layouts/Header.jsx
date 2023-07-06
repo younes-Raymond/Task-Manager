@@ -39,7 +39,7 @@ const Header = () => {
         </div>
         <div className="login-icon-container">
           {cloudinaryUrl ? (
-            <Link to="/login" >
+            <Link to="/profile" >
             <img src={cloudinaryUrl} alt="User Avatar" className="user-avatar" />
             </Link>
           ) : (

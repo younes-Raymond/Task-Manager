@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 // login user 
 export const loginUser = async (email, password) => {
   try {
@@ -38,8 +37,6 @@ export const loginUser = async (email, password) => {
     }
   }
 };
-
-
 
 export const registerUser = async (userData) => {
   console.log(userData); // log user data to console

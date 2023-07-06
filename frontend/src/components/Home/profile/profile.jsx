@@ -2,16 +2,13 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
-import { loginUser
- }
-from '../../../actions/userAction';
 import axios from 'axios';
-import './Login.css';
+import './profile.css';
+import TestPIc from '../../../assets/images/Banners/fashion-sale.png'
 
 // localStorage.clear()
 
-function LoginPage() {
+function ProfilePage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null); // add local state for user data
@@ -32,23 +29,21 @@ const LogoutButton = () => {
     };
     handleLogout()
   }
-
   // const location = useLocation();
-  const checkLocalStorage = () => {
+const checkLocalStorage = () => {
     const userData = localStorage.getItem('requestData');
     const formGroups = document.querySelectorAll('.login-form .form-group');
     const loginButton = document.querySelector('.login-form button');
     const loginPage = document.querySelector('.login-form');
-    const h2_Login = document.querySelector('.login-form h1');
-    
+
+
+
+
     if (userData) {
       // console.log('User data found in local storage:', userData);
       setUser(JSON.parse(userData));
       formGroups.forEach((group) => group.classList.add('hide'));
-      loginButton.classList.add('hide');
       loginPage.classList.add('full-width');
-      h2_Login.classList.add('hide');
-  
       // Clear the interval if user data is found
       clearInterval(interval);
     } else {
@@ -65,44 +60,22 @@ const LogoutButton = () => {
     return () => clearInterval(interval); // clear the interval when the component unmounts
   }, []);
   
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    try {
-      const response = await loginUser(email, password);
-      if (response && response.data && response.data.requestData && response.data.requestData.user) {
-        const user = response.data.requestData.user; 
-        clearInterval(interval);
-        setUser(user);
-        alert('im here 76')
-        navigate('/');
-      } else {
-        alert('im here 79')
-        navigate('/');
-        console.log('im here')
-      }
-    } catch (error) {
-      console.log('Error:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
+ 
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
   useEffect(() => {
     const chooseContainer = document.querySelector('.chosse-container');
-    const new_user = document.querySelector('.New-user');
     if (chooseContainer) { // add null check
       if (user) {
         chooseContainer.classList.add('show');
-        new_user.style = 'display:none;'
       } else {
         chooseContainer.classList.remove('show');
       }
     }
   }, [user]);
 
+    const profileImg  = localStorage.getItem('avatar')
+ 
   let formattedDate = '';
   if (user && user.requestData && user.requestData.takenRequest && user.requestData.takenRequest.requestDate) {
     formattedDate = new Date(user.requestData.takenRequest.requestDate).toLocaleDateString('ar', options);
@@ -178,7 +151,6 @@ function handleReject() {
           localStorage.setItem('newStatus', 'Request rejected');
           removeReqParent()
         }
-
       })
       .catch(error => {
         console.error(error);
@@ -192,7 +164,6 @@ function handleReject() {
     }
   };
   
-
   useEffect(() => {
     const storedStatus = localStorage.getItem('newStatus');
     if (storedStatus) {
@@ -204,6 +175,7 @@ function handleReject() {
     }
   }, [requestProcessed]);
   
+  const name = localStorage.getItem('name')
 
   const handleConfirm = async () => {
     try {
@@ -227,46 +199,21 @@ function handleReject() {
   };
 
   return (
+
+ 
+
+
     <div className="login-page">
-      <form onSubmit={handleSubmit} className="login-form">
-        <h1>Login</h1>
-        <div className="form-group">
-          <label htmlFor="email">Email:</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-            className="form-control"
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Password:</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            required
-            className="form-control"
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Login
-        </button>
-        <div className="register-link">
-          <p className='New-user'>
-            New to Allamrt? <Link to="/register">Register here</Link>
-          </p>
-        </div>
-{/*  */}
-
-{/*  */}
-
-{/*  */}
-
-
+       <div className="profile-cover">
+        <img src={profileImg} alt="" className='cover-img' />
+<div className="profile-circle">
+  <img src={profileImg} alt="" />
+</div>
+  </div>
+   <div className="name">
+    {name}
+   </div>
+      <div className="login-form">
         {!loading && user && (
           <div className="chosse-container">
            {user && user.requestData && user.requestData.user && (
@@ -388,10 +335,10 @@ onClick={LogoutButton}>
         )}
         {loading && <p>Loading...</p>}
        
-      </form>
+      </div>
     </div>
   );
   
 }
 
-export default LoginPage;
+export default ProfilePage;

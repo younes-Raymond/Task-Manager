@@ -12,6 +12,7 @@ import Jobs from './components/Jobs/Jobs'
 import OptionDashboard from './components/Admin/options' 
 import AddWorkersForm from './components/Admin/add-workers' 
 import AddJobForm  from './components/Admin/add-Jobs';
+import Profile from './components/Home/profile/profile'
 
 const App = () => {
   return (
@@ -32,6 +33,10 @@ const App = () => {
           <Route path="/add-worker" element={<AddWorkersForm />} />
           <Route path="/add-Jobs" element={<AddJobForm />} />
         {/*end dashboard section  */}
+        
+        {/* start profile section  */}
+        <Route path="/profile" element={<Profile />} />
+        {/* end  profile section  */}
         </Routes>
       </Router>
     </>

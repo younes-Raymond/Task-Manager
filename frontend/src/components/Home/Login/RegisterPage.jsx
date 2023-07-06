@@ -8,9 +8,14 @@ function RegisterPage() {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [position, setPosition] = useState('');
+  const [salary, setSalary] = useState('');
+  const [nationalId, setNationalId] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [gender, setGender] = useState('');
   const [avatar, setAvatar] = useState([]);
   const [password, setPassword] = useState('');
+  const [legalInfo, setLegalInfo] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const handleProductImageChange = (e) => {
@@ -35,21 +40,32 @@ const setFileToBase = (file) => {
       alert("Passwords do not match");
       return;
     }
-
     const formData = new FormData();
-    formData.set('name', name);
-    formData.set('email', email);
-    formData.set('gender', gender);
-    formData.set('password', password);
-    formData.append('avatar', avatar);
-    // console.log(formData.get('avatar')); // log the avatar file data
 
-    dispatch(registerUser(formData));
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("position", position);
+    formData.append("salary", salary);
+    formData.append("gender", gender);
+    formData.append("avatar", avatar);
+    formData.append("nationalId", nationalId);
+    formData.append("phoneNumber", phoneNumber);
+    formData.append("legalInfo", legalInfo);
+    formData.append("password", password); 
+console.log('form data: ',formData)    
+    try {
+      const response = await registerUser(formData);
+      // Handle the response if needed
+      console.log(response);
+    } catch (error) {
+      // Handle the error if needed
+      console.error(error);
+    }
   };
 
   return (
     <div className="register-page">
-      <h1>Register</h1>
+      <h2>Register Workers..</h2> 
       <form onSubmit={handleSubmit} className="register-form">
         <div>
           <label htmlFor="name">Name:</label>
@@ -95,6 +111,57 @@ const setFileToBase = (file) => {
             onChange={handleProductImageChange}
             required
           />
+        </div>
+        <div>
+          <label htmlFor="position">Position:</label>
+          <input
+            type="text"
+            id="position"
+            value={position}
+            onChange={(e) => setPosition(e.target.value)}
+            placeholder="Enter position"
+          />
+        </div>
+        <div>
+          <label htmlFor="nationalId">National ID Number:</label>
+          <input
+            type="text"
+            id="nationalId"
+            value={nationalId}
+            onChange={(e) => setNationalId(e.target.value)}
+            placeholder="Enter national ID number"
+          />
+        </div>
+        <div>
+          <label htmlFor="salary">Salary:</label>
+          <input
+            type="number"
+            id="salary"
+            value={salary}
+            onChange={(e) => setSalary(e.target.value)}
+            required
+            placeholder="Enter salary"
+          />
+        </div>
+        <div>
+          <label htmlFor="phoneNumber">Phone Number:</label>
+          <input
+            type="tel"
+            id="phoneNumber"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            placeholder="Enter phone number +212"
+          />
+        </div>
+        <div>
+          <label htmlFor="legalInfo">Legal Information:</label>
+          <textarea
+            id="legalInfo"
+            value={legalInfo}
+            onChange={(e) => setLegalInfo(e.target.value)}
+            required
+            placeholder="Enter legal information"
+          ></textarea>
         </div>
         <div>
           <label htmlFor="password">Password:</label>

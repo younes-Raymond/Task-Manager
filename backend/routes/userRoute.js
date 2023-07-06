@@ -7,7 +7,8 @@ const {
   rejectRequest,
   confirmTaken,
   search,
-  addJobs
+  addJobs,
+  getAllJobs
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
@@ -21,5 +22,7 @@ router.post('/admin/reject', rejectRequest);
 router.post('/admin/confirm', confirmTaken)
 router.get('/search', search)
 router.post('/admin/addJobs', addJobs)
+router.get('/getAlljobs', getAllJobs)
+
 
 module.exports = router;

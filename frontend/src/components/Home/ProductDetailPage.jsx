@@ -82,7 +82,6 @@ const getLocationByIP = async (materialId) => {
       // Handle the error here
     }
 };
-
 const getLocation = async (materialId) => {
   const userIdLS = localStorage.getItem('userIdLS');
 
@@ -214,7 +213,6 @@ const handleSendRequest = async (event, userId, productId) => {
       setSubmitting(false);
     }
 };
-
   if (loading) {
     return <div className="loading_container">
        <div className='custom-loader'></div>

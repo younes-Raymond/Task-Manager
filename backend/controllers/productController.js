@@ -131,9 +131,6 @@ exports.sendRequest = asyncErrorHandler(async (req, res, next) => {
     const material = await Material.findById(materialId);
     
 // Find the user inside the users array with the given userId_of_Taken
-// console.log(material);
-console.log('array', material.users);
-
 
 let foundUserIdLS;
 

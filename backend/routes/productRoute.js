@@ -6,7 +6,8 @@ const {
     sendRequest, 
     searchProducts, 
     updateGeolocation,
-    updateGeolocationByIp 
+    updateGeolocationByIp,
+    getAllJobs
 } = require('../controllers/productController');
 const router = express.Router();
 

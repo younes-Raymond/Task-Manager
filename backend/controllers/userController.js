@@ -265,7 +265,35 @@ exports.addJobs = asyncErrorHandler(async (req, res) => {
       res.status(500).json({ success: false, error: "Failed to create job" });
     }
 });
-  
+
+exports.getAllJobs = asyncErrorHandler(async (req, res) => {
+  console.log(req.body);
+  try {
+    const jobs = await Jobs.find();
+    if (!jobs) {
+      return res.status(404).json({
+        success: false,
+        message: 'No jobs found',
+      });
+    }
+    // Process the fetched jobs or return a response
+    res.status(200).json({
+      success: true,
+      data: jobs,
+    });
+  } catch (error) {
+    // Handle the error
+    console.error('Error fetching jobs:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching jobs',
+    });
+  }
+});
+
+
+
+
 
 
 
