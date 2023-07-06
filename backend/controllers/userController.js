@@ -6,10 +6,13 @@ const cloudinary = require('cloudinary');
 const sendToken = require('../utils/sendToken');
 const MaterialRequest = require('../models/MaterialRequestModel');
 const { connect } = require('mongoose');
+const fs = require('fs');
+const { promisify } = require('util');
 
 // Register User
 exports.registerUser = asyncErrorHandler(async (req, res, next) => {
   console.log(req.body);
+
 const { name, email, position, salary, gender, nationalId, phoneNumber, legalInfo, password } = req.body;
 
   try {
@@ -295,11 +298,50 @@ exports.getAllJobs = asyncErrorHandler(async (req, res) => {
 
 
 
+const readFileAsync = promisify(fs.readFile);
 
+exports.applyJob = asyncErrorHandler(async (req, res, next) => {
+  console.log(req.body);
+  console.log(req.files);
+  try {
+    const { jobId, name, email, message } = req.body;
+    const file = req.files.file;
 
+    if (!file) {
+      return res.status(400).json({ success: false, message: 'No file found in the request' });
+    }
 
+    // Convert the file data to base64 encoding
+    const fileData = file.data.toString('base64');
 
+    // Upload the base64-encoded file to Cloudinary
+    const result = await cloudinary.uploader.upload(`data:${file.mimetype};base64,${fileData}`, {
+      folder: 'applicants',
+      resource_type: 'auto'
+    });
 
+    // Get the secure URL of the uploaded file
+    const fileUrl = result.secure_url;
+
+    // Find the job post by its ID
+    const jobPost = await Jobs.findById(jobId);
+
+    if (!jobPost) {
+      return res.status(404).json({ success: false, message: 'Job post not found' });
+    }
+    jobPost.counter += 1; 
+    // Push the new applicant's information to the applicants array
+    jobPost.applicants.push({ name, email, file: fileUrl, message });
+
+    // Save the updated job post
+    await jobPost.save();
+
+    res.status(200).json({ success: true, message: 'Form submitted successfully' });
+  } catch (error) {
+    console.error('Error applying for job:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
 
 
 

@@ -42,13 +42,6 @@ export const getProducts = async () => {
   }
 };
 
-
-
-
-
-
-
-
 // Get from Get buttton when user
 export const updateProduct = async (productId, name, destination, email, userIdLS , latitude, longitude) => {
   try {

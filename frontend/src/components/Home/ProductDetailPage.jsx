@@ -39,6 +39,8 @@ const ProductDetailPage = () => {
 
 const handleBuyit = async (productId) => {
     setShowForm(productId); 
+    console.log(productId)
+    localStorage.setItem('materialId', productId)
 }
 
 let watchId = null;
