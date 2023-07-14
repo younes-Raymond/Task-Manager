@@ -27,7 +27,7 @@ class SearchFeatures {
 
         // console.log(queryCopy);
         removeFields.forEach(key => delete queryCopy[key]);
-        console.log(queryCopy);
+        // console.log(queryCopy);
 
         // price filter
         let queryString = JSON.stringify(queryCopy);

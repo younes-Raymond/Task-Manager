@@ -10,7 +10,7 @@ import {
   ALL_PRODUCTS_FAIL,
   SLIDER_PRODUCTS_REQUEST,
   SLIDER_PRODUCTS_SUCCESS,
-  SLIDER_PRODUCTS_FAIL  
+  SLIDER_PRODUCTS_FAIL
 } from "../constants/productConstants";
 // New material ---ADMIN
 export  const createProduct = (productData) => async (dispatch) => {
@@ -34,7 +34,6 @@ export  const createProduct = (productData) => async (dispatch) => {
 export const getProducts = async () => {
   try {
     const { data } = await axios.get('/api/v1/admin/products/all');
-    // console.log(data); // add this line to log the data
     return data;
   } catch (error) {
     console.log(error.message)
@@ -59,9 +58,6 @@ export const updateProduct = async (productId, name, destination, email, userIdL
     throw new Error(error.response.data.message);
   }
 };
-
-
-
 
 // send a request to the worker who already use the material 
 export const sendRequest = async (materialId, name, destination, email, userIdLS, userId_of_Taken) => {

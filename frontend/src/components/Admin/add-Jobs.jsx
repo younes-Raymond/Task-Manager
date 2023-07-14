@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import './add-jobs.css'
+import Loading from "../Layouts/loading";
+import SideBar from '../Admin/SideBar/SideBar';
+
 
 const AddJobForm = () => {
   const [title, setTitle] = useState("");
@@ -9,6 +12,8 @@ const AddJobForm = () => {
   const [salary, setSalary] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -40,11 +45,17 @@ const AddJobForm = () => {
         setPhone("");
       })
       .catch((error) => {
+        setLoading(true)
         console.error("Error sending job data:", error);
       });
   };
+  if(loading){
+    return <Loading />
+  }
 
   return (
+    <div className="wrapper">
+      <SideBar /> 
     <div className="Position-container">
       <h2>Add Job Position</h2>
       <form onSubmit={handleSubmit}>
@@ -116,6 +127,7 @@ const AddJobForm = () => {
           <button type="submit">Add Job</button>
         </div>
       </form>
+    </div>
     </div>
   );
 };

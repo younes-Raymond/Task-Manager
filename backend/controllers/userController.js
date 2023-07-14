@@ -187,7 +187,7 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
   });
 
 exports.approveRequest = asyncErrorHandler(async (req, res) => {
-    console.log('approved', req.body)
+    // console.log('approved', req.body)
     const { user, status } = req.body;
     await MaterialRequest.findOneAndUpdate(
       { userId_of_taken: user._id },
@@ -198,7 +198,7 @@ exports.approveRequest = asyncErrorHandler(async (req, res) => {
   });
 
 exports.rejectRequest = asyncErrorHandler(async (req, res) => {
-    console.log('rejected', req.body)
+    // console.log('rejected', req.body)
     const { user, status } = req.body;
     await MaterialRequest.findOneAndUpdate(
       { userId_of_taken: user._id },
@@ -214,7 +214,7 @@ exports.confirmTaken = asyncErrorHandler(async (req, res) => {
     // Remove the document with the specified requestId from the database
     await MaterialRequest.findOneAndRemove({ requestId });
   
-    console.log(`Document with requestId ${requestId} removed from the database.`);
+    // console.log(`Document with requestId ${requestId} removed from the database.`);
 });
   
 exports.search = async (req, res) => {
@@ -298,11 +298,10 @@ exports.getAllJobs = asyncErrorHandler(async (req, res) => {
 
 
 
-const readFileAsync = promisify(fs.readFile);
 
 exports.applyJob = asyncErrorHandler(async (req, res, next) => {
-  console.log(req.body);
-  console.log(req.files);
+  // console.log(req.body);
+  // console.log(req.files);
   try {
     const { jobId, name, email, message } = req.body;
     const file = req.files.file;
@@ -355,4 +354,10 @@ exports.getAllUsers = asyncErrorHandler(async (req, res, next) => {
       success: true,
       users,
   });
+});
+
+
+exports.getAllMaterialRequester = asyncErrorHandler(async (req, res) => {
+  const materialRequesters = await MaterialRequest.find();
+  res.status(200).json(materialRequesters);
 });

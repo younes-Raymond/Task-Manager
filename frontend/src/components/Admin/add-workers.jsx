@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import './add-workers.css';
 import axios from 'axios';
+import SideBar from "./SideBar/SideBar";
 
 const AddWorkerForm = () => {
   const [name, setName] = useState("");
@@ -70,6 +71,9 @@ const AddWorkerForm = () => {
 
 
   return (
+    <>
+    <div className="wrapper">
+      <SideBar /> 
     <div id="add-workers">
       <h2>Add Worker...</h2>
       <form onSubmit={handleSubmit}>
@@ -173,6 +177,8 @@ const AddWorkerForm = () => {
         <button type="submit" className="WRK-btn">Add Worker</button>
       </form>
     </div>
+    </div>
+    </>
   );
 };
 

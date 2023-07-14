@@ -9,7 +9,8 @@ const {
   search,
   addJobs,
   getAllJobs,
-  applyJob
+  applyJob,
+  getAllMaterialRequester,
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
@@ -23,8 +24,11 @@ router.post('/admin/reject', rejectRequest);
 router.post('/admin/confirm', confirmTaken)
 router.get('/search', search)
 router.post('/admin/addJobs', addJobs)
-router.get('/getAlljobs', getAllJobs)
+router.get('/jobs', getAllJobs)
 router.post('/applyJob', applyJob)
+router.get('/materialrequesters', getAllMaterialRequester)
+router.get('/workers', getAllUsers)
+
 
 
 module.exports = router;

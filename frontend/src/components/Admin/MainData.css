@@ -1,0 +1,14 @@
+.Chart-container
+{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+.CloseButton
+{
+    position: relative;
+    z-index: 10;
+} 

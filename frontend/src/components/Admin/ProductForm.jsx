@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import './add-material.css';
 import { createProduct, clearErrors } from '../../actions/productaction';
 import { useDispatch, useSelector } from 'react-redux';
-
+import SideBar from './SideBar/SideBar'
 const ProductForm = () => {
   
 const dispatch = useDispatch()
@@ -55,7 +55,11 @@ const [selectedValue, setSelectedValue] = useState('');
     }
   };
   return (
-    <div className="containerr">
+    <>
+    <div className="wrapper">
+     <SideBar />            
+    <div className="containerr">  
+      <div className="Main-Mobile"> 
       <h2>Add Materials...</h2>
       <div className="option-container">
         <label htmlFor="list-option" className="label-option">Choose a Category:</label>
@@ -65,8 +69,7 @@ const [selectedValue, setSelectedValue] = useState('');
           <option value="adapting">Adapting</option>
           <option value="setting">Setting</option>
         </select>
-      </div>        
-      <div className="Main-Mobile"> 
+      </div>
         <form onSubmit={handleSubmit}>
           <label htmlFor="name">Name:</label>
           <input
@@ -130,6 +133,8 @@ const [selectedValue, setSelectedValue] = useState('');
         </form>
       </div>
     </div>
+    </div>    
+    </>
   );
 };
 

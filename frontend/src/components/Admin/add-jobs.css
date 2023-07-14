@@ -1,9 +1,9 @@
 .Position-container {
-  max-width: 500px;
   margin: 0 auto;
-  background-color: gray;
+  background: repeating-linear-gradient(99deg, black, transparent 950px);
   border-radius: 2%;
   color: #fff;
+  width: 60%;
 }
 .Position-container h2 {
   text-align: center;

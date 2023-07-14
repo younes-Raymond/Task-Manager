@@ -3,10 +3,10 @@ import { useDispatch } from 'react-redux';
 import { Link, Navigate, useLocation } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 import './profile.css';
 import TestPIc from '../../../assets/images/Banners/fashion-sale.png'
-
-// localStorage.clear()
+import Loading from '../../Layouts/loading';
 
 function ProfilePage() {
   const [email, setEmail] = useState('');
@@ -24,20 +24,17 @@ const LogoutButton = () => {
     const handleLogout = () => {
       // Clear the localStorage
       localStorage.clear();
-        window.location.reload();
         navigate('/login')
     };
     handleLogout()
   }
+  
   // const location = useLocation();
 const checkLocalStorage = () => {
     const userData = localStorage.getItem('requestData');
     const formGroups = document.querySelectorAll('.login-form .form-group');
     const loginButton = document.querySelector('.login-form button');
     const loginPage = document.querySelector('.login-form');
-
-
-
 
     if (userData) {
       // console.log('User data found in local storage:', userData);
@@ -229,7 +226,7 @@ function handleReject() {
 )}
             {user.requestData.user.role === 'admin' && (
               <div className="dashboard">
-                <Link to="/add-material">
+                <Link to="/admin/dashboard">
                   <button>Dashboard</button>
                 </Link>
               </div>
@@ -323,9 +320,9 @@ function handleReject() {
 )}
 {user.requestData &&  ( 
 <button className="fb-logout-button" 
-style={{background : "gray", width: "20%", margin : "5% 0"}} 
+style={{background : "gray", width: "20%", margin : "5% 0", fontWeight: "bold"}} 
 onClick={LogoutButton}>
-  LogOut
+  <LogoutOutlinedIcon /> Logout
 </button>
 )}
 </div>
@@ -333,7 +330,7 @@ onClick={LogoutButton}>
 
 
         )}
-        {loading && <p>Loading...</p>}
+        {loading && <Loading /> }
        
       </div>
     </div>

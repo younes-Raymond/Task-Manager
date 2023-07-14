@@ -7,7 +7,7 @@ const Dashboard = () => {
     <div className='box'>
       <h2>Dashboard</h2>
       <p>Click the button below to controle By CRUDS System</p>
-      <Link to="/Jobs">
+      <Link to="/admin/dashboard">
       <button className='DS-btn'>CRUDS Data</button>
       </Link>
     </div>

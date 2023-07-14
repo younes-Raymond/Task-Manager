@@ -68,20 +68,8 @@ export const registerUser = async (userData) => {
       }
     });
 };
-
   // Get All Users ---ADMIN
-  export const getAllUsers = async () => {
-    try {
-      const { data } = await axios.get('/api/v1/admin/users');
-      return data.users;
-    } catch (error) {
-      if (error.response && error.response.data.message) {
-        throw new Error(error.response.data.message);
-      } else {
-        throw new Error(error.message);
-      }
-    }
-  };
+
 
 export const search = async (keyword) => {
     try {
@@ -99,5 +87,40 @@ export const search = async (keyword) => {
       }
     }
   };
+
+  export const getAllUsers = async () => {
+    try {
+      const { data } = await axios.get('/api/v1/workers');
+      return data;
+    } catch (error) {
+      if (error.response && error.response.data.message) {
+        throw new Error(error.response.data.message);
+      } else {
+        throw new Error(error.message);
+      }
+    }
+  };
+
+  export const getAllMaterialRequester = async () => {
+    try {
+      const response = await axios.get('/api/v1/materialrequesters');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching material requesters:', error);
+      throw error;
+    }
+  };
+
+  export const getAllJobs = async () => {
+    try {
+     const response = await axios.get('/api/v1/jobs');
+     return response.data;
+    } catch (error) {
+      console.error('Error fetching jobs requesters:', error)
+      throw error;
+    }
+  }
+  
+
   
   

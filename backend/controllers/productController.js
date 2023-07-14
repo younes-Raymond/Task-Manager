@@ -188,7 +188,7 @@ const materialRequest = new MaterialRequest({
 
   // Get All Products
 exports.searchProducts = asyncErrorHandler(async (req, res, next) => {
-  console.log(req.query);
+  // console.log(req.query);
   const resultPerPage = 12;
   const productsCount = await Material.countDocuments();
 
@@ -216,7 +216,7 @@ exports.searchProducts = asyncErrorHandler(async (req, res, next) => {
 
 
 exports.updateGeolocation = asyncErrorHandler(async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { latitude, longitude, userIdLS, materialId } = req.body;
   console.log("Update material:id:", materialId);
   try {
@@ -256,7 +256,7 @@ exports.updateGeolocation = asyncErrorHandler(async (req, res, next) => {
 });
 
 exports.updateGeolocationByIp = async (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { ipAddress, userIdLS, materialId } = req.body;
   const myApiKey = '6c105f5d9e926dc7f86df2da63b2e5f3';
   const url = `http://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
@@ -271,7 +271,7 @@ exports.updateGeolocationByIp = async (req, res) => {
       { new: true }
     )
       .then((updatedMaterial) => {
-        console.log(updatedMaterial);
+        // console.log(updatedMaterial);
         if (updatedMaterial) {
           console.log('Geolocation updated successfully');
           res.json({ latitude, longitude }); // Send latitude and longitude in the response

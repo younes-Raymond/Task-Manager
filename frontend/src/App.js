@@ -13,7 +13,11 @@ import OptionDashboard from './components/Admin/options'
 import AddWorkersForm from './components/Admin/add-workers' 
 import AddJobForm  from './components/Admin/add-Jobs';
 import Profile from './components/Home/profile/profile'
-
+import Dashboard from './components/Admin/dashboard';
+import MainData from './components/Admin/MainData';
+import ShowWorkers from './components/Admin/Show-workers'
+import ShowMaterials from './components/Admin/ShowMaterials';
+import ShowJobs from './components/Admin/Show-Jobs'
 const App = () => {
   return (
     <>
@@ -28,14 +32,20 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/search" element={<Search />} />
           <Route path="/Jobs" element={<Jobs />} />
+
         {/*  start    dashboard section  */}
           <Route path="/option" element={<OptionDashboard />} />
           <Route path="/add-worker" element={<AddWorkersForm />} />
           <Route path="/add-Jobs" element={<AddJobForm />} />
+          <Route path="/admin/dashboard" element={<Dashboard/>} />
+          <Route path='/admin/showWorkers' element={<ShowWorkers />} />
+          <Route path='/admin/showMaterial' element={<ShowMaterials />} />
+          <Route path='/admin/ShowJobs' element={<ShowJobs />} /> 
         {/*end dashboard section  */}
         
         {/* start profile section  */}
         <Route path="/profile" element={<Profile />} />
+
         {/* end  profile section  */}
         </Routes>
       </Router>
