@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.17f47629.css",
+    "main.js": "/static/js/main.0c2317c3.js",
+    "static/media/logo.png": "/static/media/logo.849f32a51303397bde21.png",
+    "static/media/G-M-Marker.png": "/static/media/G-M-Marker.afb7d7f9259f705190ea.png",
+    "static/media/404-not-found.svg": "/static/media/404-not-found.f58b723c5e420e43683574327be5529a.svg",
+    "static/media/fashion-sale.png": "/static/media/fashion-sale.622421ebd5597b45561c.png",
+    "index.html": "/index.html"
+  },
+  "entrypoints": [
+    "static/css/main.17f47629.css",
+    "static/js/main.0c2317c3.js"
+  ]
+}
