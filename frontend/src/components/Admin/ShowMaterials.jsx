@@ -24,7 +24,6 @@ const ShowMaterials = () => {
     if (!material.length) {
       return <Loading />;
     }
-  
     const handleDelete = async (id) => {
       try {
         await axios.delete(`/api/v1/material/${id}`);
@@ -92,7 +91,7 @@ const ShowMaterials = () => {
 
 
                     <td>{formatDate(Material.createdAt)}</td>
-                    <td>
+                    <td className='Edit-Delete-container'>
                       <button className='Edit'>
                         Edit:
                         <Edit /> 

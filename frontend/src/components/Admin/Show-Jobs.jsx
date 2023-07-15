@@ -6,7 +6,7 @@ import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import axios from 'axios';
 import Loading from '../Layouts/loading'
-
+import { formatDate } from '../../utils/DateFormat';
 const ShowMaterials = () => {
   const [Jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,15 +39,13 @@ const ShowMaterials = () => {
     }
   };
 
- 
-
   return (
     <div className='wrapper'>
       <SideBar />
       <table className="table-container">
         <thead>
           <tr>
-            <th>Name</th>
+            <th>Title</th>
             <th>Description</th>
             <th>Requirements</th>
             <th>Counter</th>
@@ -74,9 +72,9 @@ const ShowMaterials = () => {
                   'N/A'
                 )}
               </td>
-              <td>{job.createdAt}</td>
+              <td>{formatDate(job.createdAt)}</td>
 
-              <td>
+              <td className='Edit-Delete-container'>
                 <button className='Edit'>
                   Edit:
                   <Edit />

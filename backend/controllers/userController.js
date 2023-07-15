@@ -5,23 +5,20 @@ const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
 const sendToken = require('../utils/sendToken');
 const MaterialRequest = require('../models/MaterialRequestModel');
-const { connect } = require('mongoose');
-const fs = require('fs');
-const { promisify } = require('util');
+const sgMail = require('@sendgrid/mail');
 
 // Register User
 exports.registerUser = asyncErrorHandler(async (req, res, next) => {
   console.log(req.body);
-
-const { name, email, position, salary, gender, nationalId, phoneNumber, legalInfo, password } = req.body;
-
+const { name, email, position, salary, gender, nationalId, phoneNumber, legalInfo, password} = req.body;
   try {
     const result = await cloudinary.uploader.upload(req.body.avatar[0], {
       folder: "workers",
       width: 150,
       crop: "scale"
     });
-
+    // const password = generatePassword(10);
+    console.log(password);
     const user = await Workers.create({
       name,
       email,
@@ -37,12 +34,15 @@ const { name, email, position, salary, gender, nationalId, phoneNumber, legalInf
         url: result.secure_url
       },
     });
+    // await sendPasswordEmail(name ,email, password, gender);
     sendToken(user, 201, res);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 });
+
+
 
 exports.loginUser = asyncErrorHandler(async (req, res) => {
     // console.log(req.body)
@@ -363,4 +363,71 @@ exports.deleteUser = asyncErrorHandler(async (req, res) => {
   }
 });
 
+exports.deleteJob = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Jobs.findByIdAndRemove(id);
+    res.status(200).json({ success: true, message: 'Job deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Unable to delete job' });
+  }
+};
+
+
+
+
+// // Generate a password with at least one special character ('$')
+// const generatePassword = (length) => {
+//   const specialChar = '$';
+//   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  
+//   let password = '';
+//   let hasSpecialChar = false;
+
+//   // Generate the password
+//   for (let i = 0; i < length; i++) {
+//     // Ensure at least one special character
+//     if (i === Math.floor(length / 2) && !hasSpecialChar) {
+//       password += specialChar;
+//       hasSpecialChar = true;
+//     } else {
+//       const randomIndex = Math.floor(Math.random() * characters.length);
+//       password += characters[randomIndex];
+//     }
+//   }
+
+//   // Add random characters until a special character is included
+//   while (!hasSpecialChar) {
+//     const randomIndex = Math.floor(Math.random() * length);
+//     password = password.substring(0, randomIndex) + specialChar + password.substring(randomIndex + 1);
+//     hasSpecialChar = true;
+//   }
+
+//   return password;
+// };
+// // Generate a password of length 10 (including 1 special character)
+
+
+
+
+// const sendPasswordEmail = async (name, email, password, gender) => {
+//   try {
+//     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    
+//     const msg = {
+//       to: email,
+//       from: process.env.SENDGRID_MAIL,
+//       subject: 'Worker Account Details',
+//       text: `Dear ${name},\n\nYour account has been created. Your password is: ${password}\n\nBest regards,\nYour Company Name`,
+//     };
+
+//     const result = await sgMail.send(msg);
+//     console.log('Email sent successfully!');
+//     console.log(result);
+//   } catch (error) {
+//     console.log('Error sending email:', error);
+//   }
+// };
+
+// sendPasswordEmail('younes', 'ysexstin@gmail.com', '377408unn', 'Male');
 

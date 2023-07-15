@@ -74,12 +74,9 @@ const LogoutButton = () => {
         const user = response.data.requestData.user; 
         clearInterval(interval);
         setUser(user);
-        alert('im here 76')
         navigate('/');
       } else {
-        alert('im here 79')
         navigate('/');
-        console.log('im here')
       }
     } catch (error) {
       console.log('Error:', error);
@@ -88,8 +85,7 @@ const LogoutButton = () => {
     }
   };
   
-  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-
+const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   useEffect(() => {
     const chooseContainer = document.querySelector('.chosse-container');
     const new_user = document.querySelector('.New-user');

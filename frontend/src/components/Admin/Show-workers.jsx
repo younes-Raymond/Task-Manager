@@ -6,6 +6,8 @@ import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import axios from 'axios';
 import Loading from '../Layouts/loading'
+import { formatDate } from '../../utils/DateFormat';
+
 const ShowWorkers = () => {
   const [workers, setWorkers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,7 +32,7 @@ const ShowWorkers = () => {
   };
   return (
     <div className='wrapper'>
-        <SideBar />
+  <SideBar />
       {loading? (
         <Loading />
       ) : (
@@ -56,8 +58,9 @@ const ShowWorkers = () => {
                 <td>
                   <img src={worker.avatar.url} alt="" />
                   </td>
-                <td>{worker.takenAt}</td>
-                <td>
+                <td>{formatDate(worker.takenAt)}</td>
+                
+                <td className='Edit-Delete-container'>
                 <button className='Edit'>
                     Edit:
                         <Edit /> 
@@ -67,6 +70,7 @@ const ShowWorkers = () => {
                     <Delete />
                 </button>   
                 </td>
+
               </tr>
             ))}
           </tbody>

@@ -50,7 +50,7 @@ const navMenu = [
   },
   {
     icon: <WorkHistoryOutlinedIcon />,
-    label: "Jobs",
+    label: "Add+ Jobs",
     ref: "/add-Jobs",
 },
     {
@@ -84,7 +84,8 @@ const SideBar = ({ activeTab, setToggleSideBar }) => {
     
 
 return (
-        <aside className="aside">
+
+<aside className="aside sidebar-container">          
           <div className="Avatar">
             <Avatar alt="Avatar" src={user.avatar.url} />
             <div className="UserInfo">

@@ -5,8 +5,8 @@
     width: 100%;
     justify-content: space-around;
     background: rgb(124, 224, 224);
+    height: 100%;
 }
-
 .table-container
 {
     width: 100%;
@@ -15,18 +15,13 @@
 }
 .wrapper thead 
 {
-    /* background: aqua; */
     font-weight: 900;
-
 }
 .wrapper tbody
 {
-    /* background-color: bisque; */
     width: 100%;
     height: 200px;
-
 }
-
 tbody td 
 {
     background-color: #200f30;
@@ -35,24 +30,7 @@ tbody td
     font-weight: bold;
     width: 10%;
     border-radius: 10px;
-}
-
-.wrapper  button 
-{
-    width: 65px;
-    height: 45px;
-    font-size: 10px;
-    margin-right: 10%;
-}
-.Delete 
-{
- background-color: red;
-}
-
-.Edit
-{
-    margin-right:5% ;
-}
+}  
 .CloseButton
 {
     display: none;
@@ -64,22 +42,19 @@ tbody td
     border-radius: 10px;
     background-position: cover;
   }
-
 li
 {
     list-style-type: none;
 }
-
 .user-separator {
     border: none;
     border-top: 1px solid #ccc;
     margin: 8px 0;
-  }
+}
 .hide 
 {
     visibility: hidden;
 }  
-
 .show 
 {
     visibility: visible;
@@ -91,4 +66,25 @@ li
 .Name 
 {
     font-size: 10px;
+}
+.wrapper tbody .Edit-Delete-container button
+{ 
+    width: 90%;
+    height: 50px;
+    margin: 2% 5%;
+    font-size: smaller;
+}
+.Delete 
+{
+ background-color: rgb(147, 10, 10);
+}
+.Delete:hover{
+    background-color: rgb(245, 23, 23);
+}
+.Edit 
+{
+ background-color: rgb(14, 141, 14);
+}
+.Edit:hover{
+    background-color: rgb(141, 216, 29);
 }

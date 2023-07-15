@@ -4,19 +4,21 @@ import React from 'react'
 import './Jobs.css'
 import { format } from 'url'
 import Loading  from '../Layouts/loading'
+import { getAllJobs } from '../../actions/userAction'
 
 const Jobs = () => {
   const [jobPosts, setJobPosts] = useState([])
  const [loading, setLoading ] = useState(true)
+
   useEffect(() => {
     fetchJobPosts()
   }, [])
 
   const fetchJobPosts = async () => {
     try {
-      const response = await axios.get("/api/v1/getAlljobs")
-      setJobPosts(response.data.data)
-      console.log(response.data.data);
+      const response = await getAllJobs()
+      console.log(response.data)
+      setJobPosts(response.data)
       setLoading(false)
     } catch (error) {
       console.error("Error fetching job posts:", error)

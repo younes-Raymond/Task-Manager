@@ -11,7 +11,8 @@ const {
   getAllJobs,
   applyJob,
   getAllMaterialRequester,
-  deleteUser
+  deleteUser,
+  deleteJob
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
@@ -30,6 +31,6 @@ router.post('/applyJob', applyJob)
 router.get('/materialrequesters', getAllMaterialRequester)
 router.get('/workers', getAllUsers)
 router.delete('/users/:id', deleteUser);
-
+router.delete('/job/:id', deleteJob);
 
 module.exports = router;

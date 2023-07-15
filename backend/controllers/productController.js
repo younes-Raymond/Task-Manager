@@ -6,8 +6,37 @@ const cloudinary = require('cloudinary');
 const mongoose = require('mongoose');
 const axios = require('axios');
 
+// Create material ---ADMIN
+exports.createProduct = asyncErrorHandler(async (req, res, next) => {
+  // console.log(req.body)
+const {name,description,stock,images, category} = req.body
+try{
+    const result = await cloudinary.uploader.upload(images, {
+        folder:"Materials",
+        width:300,
+        crop:"scale"
+    });
+    const material = await Material.create({
+        name:name,
+        description,
+        stock,
+        images: {
+            public_id:result.public_id,
+            url:result.secure_url
+        },
+        category
+    });
+    res.status(201).json({
+        success:true,
+        material
+    })
 
-// get all material from db and send it to the client side  
+} catch(error) {
+    console.log(error);
+    next(error)
+}
+});
+// get all materials from db and send it to the client side  
 exports.getProducts = asyncErrorHandler(async (req, res, next) => {
   try {
     const products = await Material.find();
@@ -51,41 +80,9 @@ const userId = req.query.userId;
   }
 });
 
-
-// Create material ---ADMIN
-exports.createProduct = asyncErrorHandler(async (req, res, next) => {
-  console.log(req.body)
-const {name,description,stock,images, category} = req.body
-try{
-    const result = await cloudinary.uploader.upload(images, {
-        folder:"Materials",
-        width:300,
-        crop:"scale"
-    });
-    const material = await Material.create({
-        name:name,
-        description,
-        stock,
-        images: {
-            public_id:result.public_id,
-            url:result.secure_url
-        },
-        category
-    });
-    res.status(201).json({
-        success:true,
-        material
-    })
-
-} catch(error) {
-    console.log(error);
-    next(error)
-}
-});
-
 // update the worker taken the material when worker click to get and fill the inpust and info 
 exports.updateUserTakenInfo = async (req, res) => {
-  console.log('....',req.body)
+  // console.log('....',req.body)
   const { name, destination, email, userIdLS , longitude, latitude} = req.body;
   console.log('userIdS:', userIdLS); // log the userIdLS value
   const { productId } = req.params;
@@ -116,19 +113,20 @@ exports.updateUserTakenInfo = async (req, res) => {
 
 
 exports.sendRequest = asyncErrorHandler(async (req, res, next) => {
-  // console.log(req.body);
-  console.log(req.body.userId_of_Taken);
+  console.log('sendequest function => :',req.body);
+  // console.log(req.body.userId_of_Taken);
   const { materialId, name, destination, email, userIdLS, requesterDestination } = req.body;
   const userId_of_Taken = req.body.userId_of_Taken;
   try {
     // Find the user who made the request
     const requester = await Workers.findById(userIdLS);
-
+    console.log(requester); // Check the retrieved 'requester' object and its properties
+       
     // Find the user who will receive the material
     const worker = await Workers.findById(userId_of_Taken);
-
+    
     // Find the material
-    const material = await Material.findById(materialId);
+    const material = await Material .findById(materialId);
     
 // Find the user inside the users array with the given userId_of_Taken
 
