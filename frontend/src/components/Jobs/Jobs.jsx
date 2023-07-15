@@ -3,10 +3,11 @@ import { useEffect, useState } from 'react'
 import React from 'react'
 import './Jobs.css'
 import { format } from 'url'
+import Loading  from '../Layouts/loading'
 
 const Jobs = () => {
   const [jobPosts, setJobPosts] = useState([])
-
+ const [loading, setLoading ] = useState(true)
   useEffect(() => {
     fetchJobPosts()
   }, [])
@@ -16,13 +17,12 @@ const Jobs = () => {
       const response = await axios.get("/api/v1/getAlljobs")
       setJobPosts(response.data.data)
       console.log(response.data.data);
-
+      setLoading(false)
     } catch (error) {
       console.error("Error fetching job posts:", error)
     }
   }
 
-const LS = localStorage.getItem('')
 
   const handleApplyClick = (jobId) => {
     setJobPosts((prevJobPosts) =>
@@ -96,10 +96,14 @@ const LS = localStorage.getItem('')
     return acceptedFileTypes.includes(file.type)
   }
 
+  if(loading){
+    return <Loading /> 
+  }
+
   return (
     <div className="jobs-container">
       <h2 className="company-name">AllMart-Company...</h2>
-      {jobPosts.length > 0 ? (
+      {jobPosts &&jobPosts.length > 0 ? (
         jobPosts.map((jobPost) => (
           <div className="job-listing" key={jobPost._id}>
             <h3 className="job-title">{jobPost.title}</h3>

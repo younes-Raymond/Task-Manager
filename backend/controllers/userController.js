@@ -37,7 +37,6 @@ const { name, email, position, salary, gender, nationalId, phoneNumber, legalInf
         url: result.secure_url
       },
     });
-
     sendToken(user, 201, res);
   } catch (error) {
     console.log(error);
