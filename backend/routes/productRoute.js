@@ -7,7 +7,7 @@ const {
     searchProducts, 
     updateGeolocation,
     updateGeolocationByIp,
-    getAllJobs
+    deleteMaterial,
 } = require('../controllers/productController');
 const router = express.Router();
 
@@ -18,6 +18,6 @@ router.route('/admin/material/:productId').put(updateUserTakenInfo);
 router.route('/material/request').post(sendRequest);
 router.route('/updateLocation').post(updateGeolocation)
 router.post('/updateGeolocationByIp', updateGeolocationByIp)
-
+router.delete('/material/:id', deleteMaterial);
 
 module.exports = router;

@@ -289,3 +289,14 @@ exports.updateGeolocationByIp = async (req, res) => {
     res.status(500).json({ message: 'Error getting IP geolocation' });
   }
 };
+
+
+exports.deleteMaterial =  asyncErrorHandler( async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Material.findByIdAndRemove(id);
+    res.status(200).json({ success: true, message: 'Material deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Unable to delete material' });
+  }
+});

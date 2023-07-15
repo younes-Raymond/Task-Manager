@@ -28,11 +28,12 @@ const ShowMaterials = () => {
     const handleDelete = async (id) => {
       try {
         await axios.delete(`/api/v1/material/${id}`);
-        setMaterial(material.filter((material) => material._id!== id));
+        setMaterial(material.filter((material) => material._id !== id));
       } catch (error) {
         console.log(error);
       }
-    };  
+    };
+     
     return (
         <div className='wrapper'>
           <SideBar />

@@ -294,10 +294,6 @@ exports.getAllJobs = asyncErrorHandler(async (req, res) => {
 });
 
 
-
-
-
-
 exports.applyJob = asyncErrorHandler(async (req, res, next) => {
   // console.log(req.body);
   // console.log(req.files);
@@ -341,14 +337,10 @@ exports.applyJob = asyncErrorHandler(async (req, res, next) => {
   }
 });
 
-
-
-
 // Get All Users --ADMIN
 exports.getAllUsers = asyncErrorHandler(async (req, res, next) => {
-
   const users = await Workers.find();
-
+ console.log(users)
   res.status(200).json({
       success: true,
       users,
@@ -360,3 +352,15 @@ exports.getAllMaterialRequester = asyncErrorHandler(async (req, res) => {
   const materialRequesters = await MaterialRequest.find();
   res.status(200).json(materialRequesters);
 });
+
+exports.deleteUser = asyncErrorHandler(async (req, res) => {
+  try {
+    const { id } = req.params;
+    const worker = await Workers.findByIdAndRemove(id);
+    res.status(200).json({ success: true, message: 'User deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Unable to delete user' });
+  }
+});
+
+

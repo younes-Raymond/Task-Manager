@@ -22,7 +22,7 @@ const ShowWorkers = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/users/${id}`);
+      await axios.delete(`/api/v1/users/${id}`);
       setWorkers(workers.filter((worker) => worker._id!== id));
     } catch (error) {
       console.log(error);
@@ -31,7 +31,6 @@ const ShowWorkers = () => {
   return (
     <div className='wrapper'>
         <SideBar />
-      {/* <h1 className="text-center mb-4">All Workers</h1> */}
       {loading? (
         <Loading />
       ) : (

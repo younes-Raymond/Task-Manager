@@ -22,7 +22,12 @@ const ShowMaterials = () => {
   }, []);
 
   if (!Jobs.length || loading) {
-    return <Loading />
+    return (
+      <div>
+      <SideBar />
+      <Loading />
+      </div>
+    ) 
    }
 
   const handleDelete = async (id) => {
