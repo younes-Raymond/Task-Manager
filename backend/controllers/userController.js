@@ -9,7 +9,7 @@ const sgMail = require('@sendgrid/mail');
 
 // Register User
 exports.registerUser = asyncErrorHandler(async (req, res, next) => {
-  console.log(req.body);
+  // console.log(req.body);
 const { name, email, position, salary, gender, nationalId, phoneNumber, legalInfo, password} = req.body;
   try {
     const result = await cloudinary.uploader.upload(req.body.avatar[0], {
@@ -41,7 +41,6 @@ const { name, email, position, salary, gender, nationalId, phoneNumber, legalInf
     res.status(500).json({ message: "Server error" });
   }
 });
-
 
 
 exports.loginUser = asyncErrorHandler(async (req, res) => {
@@ -217,7 +216,7 @@ exports.confirmTaken = asyncErrorHandler(async (req, res) => {
 });
   
 exports.search = async (req, res) => {
-    console.log(req.query)
+    // console.log(req.query)
     const { keyword } = req.query;
     try {
       // Search in users collection
@@ -243,7 +242,7 @@ exports.search = async (req, res) => {
 };
 
 exports.addJobs = asyncErrorHandler(async (req, res) => {
-  console.log(req.body)
+  // console.log(req.body)
     try {
       const { title, description, requirements, salary, email, phone } = req.body;
   
@@ -293,7 +292,6 @@ exports.getAllJobs = asyncErrorHandler(async (req, res) => {
   }
 });
 
-
 exports.applyJob = asyncErrorHandler(async (req, res, next) => {
   // console.log(req.body);
   // console.log(req.files);
@@ -340,13 +338,11 @@ exports.applyJob = asyncErrorHandler(async (req, res, next) => {
 // Get All Users --ADMIN
 exports.getAllUsers = asyncErrorHandler(async (req, res, next) => {
   const users = await Workers.find();
- console.log(users)
   res.status(200).json({
       success: true,
       users,
   });
 });
-
 
 exports.getAllMaterialRequester = asyncErrorHandler(async (req, res) => {
   const materialRequesters = await MaterialRequest.find();
@@ -405,29 +401,32 @@ exports.deleteJob = async (req, res) => {
 
 //   return password;
 // };
-// // Generate a password of length 10 (including 1 special character)
+// Generate a password of length 10 (including 1 special character)
 
 
 
 
-// const sendPasswordEmail = async (name, email, password, gender) => {
-//   try {
-//     sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    
-//     const msg = {
-//       to: email,
-//       from: process.env.SENDGRID_MAIL,
-//       subject: 'Worker Account Details',
-//       text: `Dear ${name},\n\nYour account has been created. Your password is: ${password}\n\nBest regards,\nYour Company Name`,
-//     };
+const sendPasswordEmail = async (name, email, password, gender) => {
 
-//     const result = await sgMail.send(msg);
-//     console.log('Email sent successfully!');
-//     console.log(result);
-//   } catch (error) {
-//     console.log('Error sending email:', error);
-//   }
-// };
+  try {
+    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    const msg = {
+      to: email,
+      from: process.env.SENDGRID_MAIL,
+      subject: 'Worker Account Details',
+      text: `Dear ${name},\n\nYour account has been created. Your password is: ${password}\n\nBest regards,\nYour Company Name`,
+    };
+    const result = await sgMail.send(msg);
+    console.log('Email sent successfully!');
+    console.log(result);
+  } catch (error) {
+    console.log('Error sending email:', error);
+  }
 
-// sendPasswordEmail('younes', 'ysexstin@gmail.com', '377408unn', 'Male');
+};
+
+
+sendPasswordEmail('younes', 'youneshero436@gmail.com', '377408unn', 'Male');
+
+
 

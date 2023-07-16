@@ -108,7 +108,7 @@ const getLocation = async (materialId) => {
           // Ask for GPS permission again
           askForGPSPermission(materialId);
         } else {
-          getLocationByIP(materialId);
+          getLocationByIP(materialId); // argument materialID 
         }
       },
       { enableHighAccuracy: true }

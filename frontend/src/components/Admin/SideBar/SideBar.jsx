@@ -1,12 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import EqualizerIcon from '@mui/icons-material/Equalizer';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import InventoryIcon from '@mui/icons-material/Inventory';
 import GroupIcon from '@mui/icons-material/Group';
-import ReviewsIcon from '@mui/icons-material/Reviews';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import LogoutIcon from '@mui/icons-material/Logout';
-import PlusOneOutlinedIcon from '@mui/icons-material/PlusOneOutlined';
 import WorkIcon from '@mui/icons-material/Work';
 import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
@@ -69,27 +66,21 @@ const SideBar = ({ activeTab, setToggleSideBar }) => {
     const navigate = useNavigate();
     // const { enqueueSnackbar } = useSnackbar();
     const Iuser  = JSON.parse(localStorage.getItem('user'));
-    console.log(Iuser);
-    const user = {
-        avatar: { url: "https://res.cloudinary.com/dktkavyr3/image/upload/v1683465912/kl158ttezvjxbjddsxet.jpg" },
-        name: "",
-        email: "raymondyounes2@gmail.com",
-        role: 'Admin'
-    };
-
-    const handleLogout = () => {
+    
+    // console.log('sideBar => : ', Iuser.requestData);
+   const user = Iuser.requestData;
+  const handleLogout = () => {
       localStorage.clear()
         navigate("/login");
     }
     
 
 return (
-
-<aside className="aside sidebar-container">          
+          <aside className="aside sidebar-container">          
           <div className="Avatar">
             <Avatar alt="Avatar" src={user.avatar.url} />
             <div className="UserInfo">
-            <span className="UserName">{user.role}</span>
+            {/* <span className="UserName">{user.role}</span> */}
             <span className="UserName">{user.name}</span>
               <span className="UserEmail">{user.email}</span>
             </div>

@@ -7,6 +7,7 @@ import Edit from '@mui/icons-material/Edit';
 import axios from 'axios';
 import Loading from '../Layouts/loading'
 import { formatDate } from '../../utils/DateFormat';
+
 const ShowMaterials = () => {
   const [Jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -39,6 +40,7 @@ const ShowMaterials = () => {
     }
   };
 
+
   return (
     <div className='wrapper'>
       <SideBar />
@@ -62,15 +64,19 @@ const ShowMaterials = () => {
               <td>{job.requirements.join(', ')}</td>
               <td>{job.counter}</td>
               <td>
-                {job.applicants && job.applicants.length > 0 ? (
-                  <ul className='applicants'>
-                    {job.applicants.map((applicant, index) => (
-                      <li key={index}>{applicant.name} ({applicant.email})</li>
-                    ))}
-                  </ul>
-                ) : (
-                  'N/A'
-                )}
+              {job.applicants && job.applicants.length > 0? (
+  <ul className='applicants'>
+    {job.applicants.map((applicant, index) => (
+      <li key={index}>
+        <a href={applicant.file} download target='_blanck'>
+          {applicant.name} ({applicant.email})
+        </a>
+      </li>
+    ))}
+  </ul>
+) : (
+  'N/A'
+)}
               </td>
               <td>{formatDate(job.createdAt)}</td>
 
@@ -91,5 +97,6 @@ const ShowMaterials = () => {
     </div>
   );
 };
+
 
 export default ShowMaterials;

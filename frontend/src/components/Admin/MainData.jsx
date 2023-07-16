@@ -37,10 +37,10 @@ const MainData = () => {
     fetchData();
   }, []);
 
-  console.log('Jobs: => ', Jobs);
-  console.log('Materials: => ', Materials);
-  console.log('Workers: => ', Workers);
-  console.log('MaterialRequester: =>', MaterialRequester);
+  // console.log('Jobs: => ', Jobs);
+  // console.log('Materials: => ', Materials);
+  // console.log('Workers: => ', Workers);
+  // console.log('MaterialRequester: =>', MaterialRequester);
 
   const workersBarChartData = {
     labels: Workers.map(worker => worker.name),

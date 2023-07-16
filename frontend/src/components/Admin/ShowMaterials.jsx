@@ -32,7 +32,6 @@ const ShowMaterials = () => {
         console.log(error);
       }
     };
-     
     return (
         <div className='wrapper'>
           <SideBar />
@@ -48,7 +47,7 @@ const ShowMaterials = () => {
                   <th>stock</th>
                   <th>Image</th>
                   <th>Users</th>
-                  <th>created At</th>
+                  <th>Register At</th>
                   <th>Modification</th>
                 </tr>
               </thead>
@@ -88,8 +87,6 @@ const ShowMaterials = () => {
     </div>
   )}
 </td>
-
-
                     <td>{formatDate(Material.createdAt)}</td>
                     <td className='Edit-Delete-container'>
                       <button className='Edit'>

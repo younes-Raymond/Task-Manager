@@ -6,9 +6,11 @@ import logo from '../../assets/images/logo.png';
 import './Header.css';
 
 const Header = () => {
+
   const [cloudinaryUrl, setCloudinaryUrl] = useState('');
   const [hideAccountIcon, setHideAccountIcon] = useState(false);
   const accountIconRef = React.useRef(null);
+
 
   useEffect(() => {
     const checkLocalStorage = () => {
@@ -27,7 +29,6 @@ const Header = () => {
 
     return () => clearInterval(interval);
   }, [hideAccountIcon]);
-  
   return (
     <header className="Header">
       <div className="container">

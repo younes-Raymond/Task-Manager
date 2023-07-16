@@ -6,6 +6,8 @@ const cloudinary = require('cloudinary');
 const mongoose = require('mongoose');
 const axios = require('axios');
 
+
+
 // Create material ---ADMIN
 exports.createProduct = asyncErrorHandler(async (req, res, next) => {
   // console.log(req.body)
@@ -110,7 +112,6 @@ exports.updateUserTakenInfo = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-
 
 exports.sendRequest = asyncErrorHandler(async (req, res, next) => {
   console.log('sendequest function => :',req.body);
@@ -298,3 +299,5 @@ exports.deleteMaterial =  asyncErrorHandler( async (req, res) => {
     res.status(500).json({ success: false, message: 'Unable to delete material' });
   }
 });
+
+

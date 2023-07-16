@@ -56,7 +56,7 @@ const WorkersSchema = new mongoose.Schema({
       required: true,
     },
   },
-  takenAt: {
+  registerAt: {
     type: Date,
     default: Date.now,
   },
