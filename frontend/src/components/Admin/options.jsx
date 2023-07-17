@@ -20,7 +20,7 @@ const AddWorkers = () => {
     <div className='box'>
       <h2>Add+ Workers </h2>
       <p>Click the button below to Add+ or remove- Workers:</p>
-      <Link to="/add-worker">
+      <Link to="/admin/add-worker">
       <button className='DS-btn'>Add+..</button>
       </Link>
     </div>
@@ -33,7 +33,7 @@ const AddMaterials = () => {
     <div className='box'>
       <h2>Add+ Materials</h2>
       <p>Click the button below to ADD+ or remove- materials:</p>
-      <Link to='/add-material'>
+      <Link to='/admin/add-material'>
       <button className='DS-btn'>Add+..</button>
       </Link>
     </div>
@@ -46,7 +46,7 @@ const AddMaterials = () => {
       <div className='box'>
         <h2>Post Jobs</h2>
         <p>Click the button below to Add+ Jobs Available:</p>
-        <Link to="/add-jobs">
+        <Link to="/admin/add-jobs">
           <button className='DS-btn'>Add+..</button>
         </Link>
       </div>

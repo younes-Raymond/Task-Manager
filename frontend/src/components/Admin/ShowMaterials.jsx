@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getProducts } from '../../actions/productaction';
 import './Show-workers.css'
-import SideBar from './SideBar/SideBar'
+import SideBar  from './SideBar/SideBar'
 import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
 import axios from 'axios';
@@ -20,9 +20,13 @@ const ShowMaterials = () => {
       };
       fetchMaterials();
     }, []);
-  
     if (!material.length) {
-      return <Loading />;
+      return (
+        <div>
+       <SideBar />
+       <Loading />;
+        </div>
+      )
     }
     const handleDelete = async (id) => {
       try {
@@ -105,6 +109,6 @@ const ShowMaterials = () => {
           )}
         </div>
       );
-  };
-
+};
+ 
 export default ShowMaterials;

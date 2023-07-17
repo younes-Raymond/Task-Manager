@@ -15,7 +15,7 @@ const AddProductBox = () => {
     <div className='box'>
       <h2>Dashboard</h2>
       <p>Click the button below to add a new materials:</p>
-      <Link to="/option">
+      <Link to="/admin/option">
         <button>Dashboard</button>
       </Link>
     </div>

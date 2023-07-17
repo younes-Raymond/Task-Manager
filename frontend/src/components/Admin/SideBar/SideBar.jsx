@@ -28,7 +28,7 @@ const navMenu = [
     {
         icon: <AddBoxIcon />,
         label: "Add Material",
-        ref: "/add-material",
+        ref: "/admin/add-material",
     },
     {
         icon: <GroupIcon />,
@@ -38,7 +38,7 @@ const navMenu = [
     {
         icon: <PersonAddAlt1Icon />,
         label: "Add Worker",
-        ref: "/add-worker",
+        ref: "/admin/add-worker",
     },
     {
       icon: <WorkIcon />,
@@ -48,7 +48,7 @@ const navMenu = [
   {
     icon: <WorkHistoryOutlinedIcon />,
     label: "Add+ Jobs",
-    ref: "/add-Jobs",
+    ref: "/admin/add-Jobs",
 },
     {
         icon: <AccountBoxIcon />,

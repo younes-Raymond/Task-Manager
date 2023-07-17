@@ -22,15 +22,10 @@ const ShowMaterials = () => {
     fetchJobs();
   }, []);
 
-  if (!Jobs.length || loading) {
-    return (
-      <div>
-      <SideBar />
-      <Loading />
-      </div>
-    ) 
+  if (!Jobs.length) {
+      return <SideBar />
    }
-
+    
   const handleDelete = async (id) => {
     try {
       await axios.delete(`/api/v1/job/${id}`);
@@ -39,7 +34,6 @@ const ShowMaterials = () => {
       console.log(error);
     }
   };
-
 
   return (
     <div className='wrapper'>
@@ -65,9 +59,9 @@ const ShowMaterials = () => {
               <td>{job.counter}</td>
               <td>
               {job.applicants && job.applicants.length > 0? (
-  <ul className='applicants'>
+  <ul>
     {job.applicants.map((applicant, index) => (
-      <li key={index}>
+      <li key={index} className='applicant'>
         <a href={applicant.file} download target='_blanck'>
           {applicant.name} ({applicant.email})
         </a>
@@ -96,6 +90,8 @@ const ShowMaterials = () => {
       </table>
     </div>
   );
+
+
 };
 
 
