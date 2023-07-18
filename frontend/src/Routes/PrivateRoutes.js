@@ -1,9 +1,10 @@
-// ProtectedRoute.js
+
 import { Outlet, Navigate } from 'react-router-dom';
 
 const PrivateRoutes = () => {
 
   const user = localStorage.getItem('user');
+  
   const isLoggedIn = !!user;
 
   return(
@@ -14,3 +15,7 @@ const PrivateRoutes = () => {
 
 
 export default PrivateRoutes;
+
+
+
+

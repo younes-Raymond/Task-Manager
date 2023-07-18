@@ -19,6 +19,10 @@ import ShowWorkers from './components/Admin/Show-workers'
 import ShowMaterials from './components/Admin/ShowMaterials';
 import ShowJobs from './components/Admin/Show-Jobs'
 import PrivateRoutes from './Routes/PrivateRoutes';
+import CheckUserRole from './Routes/checkUserRole';
+
+const userRole = CheckUserRole();
+console.log(userRole)
 
 
 const App = () => {
@@ -36,9 +40,11 @@ const App = () => {
           <Route path="/search" element={<Search />} />
           <Route path="/Jobs" element={<Jobs />} />
           {/* start users section                        */}
-
-        {/*  start   admin   dashboard section  */}
-        <Route path="/admin/option" element={<OptionDashboard />} />
+      
+            {userRole === 'admin' && (
+              <>
+          {/*  start   admin   dashboard section  */}
+          <Route path="/admin/option" element={<OptionDashboard />} />
           <Route path="/admin/add-worker" element={<AddWorkersForm />} />
           <Route path="/admin/add-Jobs" element={<AddJobForm />} />
           <Route path="/admin/dashboard" element={<Dashboard/>} />
@@ -48,10 +54,14 @@ const App = () => {
           <Route path='/admin/ShowJobs' element={<ShowJobs />} /> 
         {/*end   admin   dashboard section  */}
 
+              </>
+        )}
+
         {/* start profile section  */}
         <Route path="/profile" element={<Profile />} />
         {/* end  profile section  */}
           </Route>
+
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />
           {/* <Route path="/" element={<Optionbox />} /> */}   
@@ -60,7 +70,7 @@ const App = () => {
       </Router>
     </>
   );
-  
+
 };
 
 export default App;

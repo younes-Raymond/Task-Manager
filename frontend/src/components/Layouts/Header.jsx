@@ -29,6 +29,8 @@ const Header = () => {
 
     return () => clearInterval(interval);
   }, [hideAccountIcon]);
+
+  
   return (
     <header className="Header">
       <div className="container">

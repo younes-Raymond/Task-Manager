@@ -42,7 +42,6 @@ const { name, email, position, salary, gender, nationalId, phoneNumber, legalInf
   }
 });
 
-
 exports.loginUser = asyncErrorHandler(async (req, res) => {
     // console.log(req.body)
   const { email, password } = req.body;
@@ -182,7 +181,7 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
   
     const token = user.generateToken();
     res.status(200).json({ token, requestData});
-  });
+});
 
 exports.approveRequest = asyncErrorHandler(async (req, res) => {
     // console.log('approved', req.body)
@@ -369,64 +368,4 @@ exports.deleteJob = async (req, res) => {
   }
 };
 
-
-
-
-// // Generate a password with at least one special character ('$')
-// const generatePassword = (length) => {
-//   const specialChar = '$';
-//   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  
-//   let password = '';
-//   let hasSpecialChar = false;
-
-//   // Generate the password
-//   for (let i = 0; i < length; i++) {
-//     // Ensure at least one special character
-//     if (i === Math.floor(length / 2) && !hasSpecialChar) {
-//       password += specialChar;
-//       hasSpecialChar = true;
-//     } else {
-//       const randomIndex = Math.floor(Math.random() * characters.length);
-//       password += characters[randomIndex];
-//     }
-//   }
-
-//   // Add random characters until a special character is included
-//   while (!hasSpecialChar) {
-//     const randomIndex = Math.floor(Math.random() * length);
-//     password = password.substring(0, randomIndex) + specialChar + password.substring(randomIndex + 1);
-//     hasSpecialChar = true;
-//   }
-
-//   return password;
-// };
-// Generate a password of length 10 (including 1 special character)
-
-
-
-
-const sendPasswordEmail = async (name, email, password, gender) => {
-
-  try {
-    sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-    const msg = {
-      to: email,
-      from: process.env.SENDGRID_MAIL,
-      subject: 'Worker Account Details',
-      text: `Dear ${name},\n\nYour account has been created. Your password is: ${password}\n\nBest regards,\nYour Company Name`,
-    };
-    const result = await sgMail.send(msg);
-    console.log('Email sent successfully!');
-    console.log(result);
-  } catch (error) {
-    console.log('Error sending email:', error);
-  }
-
-};
-
-
-sendPasswordEmail('younes', 'youneshero436@gmail.com', '377408unn', 'Male');
-
-
-
+ 

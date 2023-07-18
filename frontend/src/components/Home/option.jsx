@@ -1,14 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './option.css';
-import { 
-  getLocation, 
-  getLocationByIP,
-  sendLocation
-
-} 
-from '../../utils/geolocationUtils'
-
+import checkUserRole from '../../Routes/checkUserRole';
 
 const AddProductBox = () => {
   return (
@@ -21,8 +14,9 @@ const AddProductBox = () => {
     </div>
   );
 };
+
 const ShowProductsBox = () => {
-    return (
+  return (
     <div className='box'>
       <h2>Show Material</h2>
       <p>Click the button below to see all materials:</p>
@@ -32,17 +26,19 @@ const ShowProductsBox = () => {
     </div>
   );
 };
+
 const Jobs = () => {
-    return (
-      <div className='box'>
-        <h2>Jobs</h2>
-        <p>Click the button below to see All Jobs Available</p>
-        <Link to="/Jobs">
-          <button>Jobs Available</button>
-        </Link>
-      </div>
-    );
+  return (
+    <div className='box'>
+      <h2>Jobs</h2>
+      <p>Click the button below to see All Jobs Available</p>
+      <Link to="/Jobs">
+        <button>Jobs Available</button>
+      </Link>
+    </div>
+  );
 };
+
 const LearnMoreBox = () => {
   return (
     <div className='box'>
@@ -56,11 +52,12 @@ const LearnMoreBox = () => {
 };
 
 const Optionbox = () => {
+  const userRole = checkUserRole();
   return (
     <div>
-      <AddProductBox />
+      {userRole !== 'user' && <AddProductBox />}
       <ShowProductsBox />
-      <Jobs  />
+      <Jobs />
       <LearnMoreBox />
     </div>
   );

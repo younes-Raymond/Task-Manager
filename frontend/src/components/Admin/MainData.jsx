@@ -54,7 +54,6 @@ const MainData = () => {
       },
     ],
   };
- 
   const materialsBarChartData = {
     labels: Materials.map(material => material.name),
     datasets: [
@@ -78,7 +77,6 @@ const MainData = () => {
       },
     ],
   };
-  
   const materialRequesterPieChartData = {
     labels: MaterialRequester.map(requester => requester.requesterName),
     datasets: [
@@ -90,7 +88,6 @@ const MainData = () => {
       },
     ],
   };
-
   const jobsBarChartData = {
     labels: Jobs.map(job => job.title),
     datasets: [
@@ -103,8 +100,7 @@ const MainData = () => {
       },
     ],
   };
-
-
+  
   return (
     <>
       <div className="Chart-container">
