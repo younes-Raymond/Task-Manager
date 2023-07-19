@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {useEffect, useState }from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Optionbox from './components/Home/option';
 import ProductForm from './components/Admin/ProductForm.jsx';
@@ -19,18 +19,18 @@ import ShowWorkers from './components/Admin/Show-workers'
 import ShowMaterials from './components/Admin/ShowMaterials';
 import ShowJobs from './components/Admin/Show-Jobs'
 import PrivateRoutes from './Routes/PrivateRoutes';
-import CheckUserRole from './Routes/checkUserRole';
+import CheckUserRole  from './Routes/checkUserRole';
 
-const userRole = CheckUserRole();
-console.log(userRole)
+
+const userRole = CheckUserRole()
 
 
 const App = () => {
-  
+
   return (
     <>
       <Router>
-        <Header />
+        {userRole !== 'unknown' && <Header />}
         <Routes>
           <Route element={<PrivateRoutes /> }>
            {/* start user section              */}

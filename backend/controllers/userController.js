@@ -206,14 +206,67 @@ exports.rejectRequest = asyncErrorHandler(async (req, res) => {
 });
 
 exports.confirmTaken = asyncErrorHandler(async (req, res) => {
-    const requestId = req.body.approvedRequests[0].requestId;
-    
-    // Remove the document with the specified requestId from the database
-    await MaterialRequest.findOneAndRemove({ requestId });
+  console.log(req.body);
+  console.log(req.body.approvedRequests[0].userOfTaken);
+  const requestId = req.body.approvedRequests[0].requestId;
+  const requesterId = req.body.approvedRequests[0].requesterId;
+
+  // Find the material request by its requestId
+  const materialRequest = await MaterialRequest.findOne({ requestId });
+
+  if (!materialRequest) {
+    return res.status(404).json({ message: 'Material request not found' });
+  }
+
+  // Update the userIdLS in the material's users array with the requesterId
+  const materialId = materialRequest.materialId;
+  const material = await Materials.findById(materialId);
+
+  if (!material) {
+    return res.status(404).json({ message: 'Material not found' });
+  }
+
+  const userOfTaken = req.body.approvedRequests[0].userOfTaken;
+  const updatedUsersArray = material.users.map(async (user) => {
+    if (user.userIdLS.toString() === userOfTaken._id.toString()) { // Compare the user's userIdLS with the _id property of userOfTaken
+      user.userIdLS = requesterId;
   
-    // console.log(`Document with requestId ${requestId} removed from the database.`);
+      // Find the worker by the requesterId
+      try {
+        const worker = await Workers.findById(requesterId);
+        if (worker) {
+          user.email = worker.email;       // Update email from worker
+          user.name = worker.name;         // Update name from worker
+          user.takenAt = Date.now();       // Update takenAt with the current date
+        } else {
+          console.log(`Worker with ID ${requesterId} not found.`);
+          // Handle the case when worker is not found, e.g., show an error message or take appropriate action.
+        }
+      } catch (error) {
+        console.error('Error while finding the worker:', error);
+        // Handle the error if needed, e.g., show an error message or take appropriate action.
+      }
+    }
+    return user;
+  });
+  
+  // Wait for all the promises in the updatedUsersArray to resolve
+  const updatedUsers = await Promise.all(updatedUsersArray);
+  
+  // Update the material's users array
+  material.users = updatedUsers;
+  
+  // Save the updated material
+  await material.save();
+  
+
+  // Remove the material request document from the database
+  await MaterialRequest.findOneAndRemove({ requestId });
+
+  console.log(`Material request with requestId ${requestId} removed from the database.`);
+  res.status(200).json({ message: 'Material request confirmed successfully' });
 });
-  
+
 exports.search = async (req, res) => {
     // console.log(req.query)
     const { keyword } = req.query;

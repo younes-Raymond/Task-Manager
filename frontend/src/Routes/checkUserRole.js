@@ -1,6 +1,6 @@
 const checkUserRole = () => {
     const user = JSON.parse(localStorage.getItem('user'));
-    const userRole = user.requestData.role;
+    const userRole = user?.requestData?.role;
   
     if (userRole === 'admin') {
       return 'admin';

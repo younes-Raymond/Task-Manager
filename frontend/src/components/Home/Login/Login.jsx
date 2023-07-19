@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../../../actions/userAction';
 import './Login.css';
 import Loading  from '../../Layouts/loading';
+
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -18,8 +19,9 @@ function LoginPage() {
     try {
       const response = await loginUser(email, password);
       if (response.token) {
-        // Handle successful login
+        // Handle successful logi
         navigate('/profile');
+        window.location.reload()
       } 
     } catch (error) {
       alert("Sorry, we couldn't find an account with that email and password");
@@ -28,14 +30,19 @@ function LoginPage() {
       return setLoading(false);
     }
   };
-if(!loading) {
-  <Loading />
+
+if(loading) {
+  return  <Loading />
 }
 
   return (
     <div className="login-page">
+     <div className="intro-welcome">
+        <h1>Welcome to your company Ajial </h1>
+      </div>
       <form onSubmit={handleSubmit} className="login-form">
-        <h1>Login</h1>
+      
+        <h2>Login</h2>
         <div className="form-group">
           <label htmlFor="email">Email:</label>
           <input

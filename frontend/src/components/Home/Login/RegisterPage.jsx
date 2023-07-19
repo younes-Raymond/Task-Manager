@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { registerUser } from '../../../actions/userAction';
-
 import './registerPage.css';
-
+import KeyboardReturnOutlinedIcon from '@mui/icons-material/KeyboardReturnOutlined';
+import { Link } from 'react-router-dom';
 function RegisterPage() {
   const dispatch = useDispatch();
   const [name, setName] = useState('');
@@ -64,6 +64,17 @@ console.log('form data: ',formData)
   };
 
   return (
+    <>
+    <div className="wrapperr">
+      <div className="Already-Have-Account">
+      <label htmlFor="">I Already Have  Acount: </label>
+      <Link to='/login'>
+      <button>
+      <KeyboardReturnOutlinedIcon />
+      </button>
+      </Link>
+     
+    </div>
     <div className="register-page">
       <h2>Register Workers..</h2> 
       <form onSubmit={handleSubmit} className="register-form">
@@ -188,6 +199,8 @@ console.log('form data: ',formData)
         <button type="submit" className="register-button">Register</button>
       </form>
     </div>
+    </div>
+    </>
   );
 }
 
