@@ -3,7 +3,10 @@ import { getProducts, sendRequest, updateProduct } from '../../actions/productac
 import MARKER from '../../assets/images/G-M-Marker.png'
 import axios from 'axios';
 import './ProductDetailPage.css'; 
-
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 const ProductDetailPage = () => {
 
   // State variables
@@ -17,6 +20,7 @@ const ProductDetailPage = () => {
   const [newWatchId, setnewWatchId] = useState('');
   const [latitude, setlatitude] = useState('');
   const [longitude, setlongitude] = useState('');
+  const [detailsVisibility, setDetailsVisibility] = useState({});
   const inputRef = useRef(null);
   
   useEffect(() => {
@@ -39,7 +43,6 @@ const ProductDetailPage = () => {
 
 const handleBuyit = async (productId) => {
     setShowForm(productId); 
-    console.log(productId)
     localStorage.setItem('materialId', productId)
 }
 
@@ -225,6 +228,13 @@ const handleSendRequest = async (event, userId, productId) => {
   if (error) {
     return <div>Error: {error}</div>;
   }
+
+  const handleToggleDetails = (materialId) => {
+    setDetailsVisibility((prevDetails) => ({
+      ...prevDetails,
+      [materialId]: !prevDetails[materialId],
+    }));
+  };
   return (
 //  start the material container 
     <div className="material-container">
@@ -233,7 +243,17 @@ const handleSendRequest = async (event, userId, productId) => {
           <div className="material-image">
             <img src={material.images.url} alt={material.name} onError={(e) => console.log(e)}  />
           </div>
-          <div className="material-info">
+
+   
+          <div
+            className={`moreLessIcon ${detailsVisibility[material._id] ? 'less' : 'more'}`}
+            onClick={() => handleToggleDetails(material._id)}
+          >
+            {detailsVisibility[material._id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+          </div>
+
+
+<div className={`material-info ${detailsVisibility[material._id] ? 'show' : 'hide'}`}>
             <h2>{material.name}</h2>
             <p>{material.description}</p>
             <label htmlFor="stock">
@@ -289,8 +309,6 @@ const handleSendRequest = async (event, userId, productId) => {
        className={material.stock > 0 ? 'show' : ''} 
        onSubmit={handleGetMaterial}
        >
-
-
 <label htmlFor={`destination-${material._id}`}>Destination:</label>
 <input
 ref={inputRef}
@@ -300,14 +318,19 @@ ref={inputRef}
   onChange={(event) => setDestination(event.target.value)}
   disabled={loading || submitting}
 />
-
-
     <button type="submit"  disabled={loading || submitting}>Submit</button>
       </form>
-
     )}
           </div>
-          <div className={`light ${material.stock > 0 ? 'green' : 'red'}`}></div>
+
+
+          <div className={`light ${material.stock > 0 ? 'green' : 'red'}`}>
+      {material.stock > 0 ? (
+        <div><ThumbUpIcon style={{ display: 'inline-block' }} /></div>
+      ) : (
+        <div><ThumbDownAltIcon style={{ display: 'inline-block' }} /></div>
+      )}
+    </div>
         </div>
       ))}
     </div>

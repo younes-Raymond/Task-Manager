@@ -206,7 +206,7 @@ function handleReject() {
             <div className="materials">
               <Link to="/show-products">
                 <button>
-                  See Materials <br />
+                  قاءمة المعدات<br />
                   <HandymanIcon />
                 </button>
               </Link>
