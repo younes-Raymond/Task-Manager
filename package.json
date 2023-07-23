@@ -7,7 +7,7 @@
     "build": "cd backend && npm install && cd ../frontend && npm install && npm run build",
     "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
     "start:backend": "cd backend && npm start",
-    "start:frontend": "cd frontend && npm start",
+    "start:frontend": "cd frontend && PORT=3001 npm start",
     "server": "/frontend/build/index.html",
     "dev": "concurrently \"npm run server\" \"npm run frontend\"",
     "install:all": "cd ../backend && npm install && cd ../frontend && npm install",
