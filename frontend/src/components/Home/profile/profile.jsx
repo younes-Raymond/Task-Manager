@@ -51,14 +51,19 @@ const LogoutButton = () => {
 
   const getMaterialRequests = async () => {
     try {
-      // Parse the user key from localStorage
       const user = JSON.parse(localStorage.getItem('user'));
-  
-      // Make a POST request to the /api/v1/getrequests endpoint with the user data
       const response = await axios.post('/api/v1/getReguests', user);
-      console.log(response.data.requestData);
-      // Set the material requests data to the state
-      setMaterialRequests(response.data);
+      // console.log(response.data);
+      const requestData = response.data.requestData;
+      if(response.data.requestData){
+      localStorage.setItem('requestData', JSON.stringify(requestData));
+      localStorage.setItem('name', response.data.requestData.user.name);
+      localStorage.setItem('userIdLS', response.data.requestData.user._id); 
+      localStorage.setItem('avatar', response.data.requestData.user.avatar.url);
+    } else {
+      console.log('no data come from server ')
+    }
+      setMaterialRequests(response.data); 
     } catch (error) {
       console.error('Error fetching material requests:', error);
     }
@@ -106,7 +111,6 @@ const LogoutButton = () => {
     return () => clearInterval(interval);
   }, []);
 
-  
   function handleApprove() {
     const user = JSON.parse(localStorage.getItem('user'));
     const requestDataLS = JSON.parse(localStorage.getItem('requestData'));
@@ -168,10 +172,9 @@ function handleReject() {
     }
   }, [requestProcessed]);
   
-
   const handleConfirm = async () => {
     try {
-      const response = await axios.post('api/v1/confirm', reQSrV.requestData);
+      const response = await axios.post('api/v1/confirm', reQSrV);
       console.log('Confirmation sent successfully:', response.data);
       if (response.data && response.data.message === 'Material request confirmed successfully') {
         document.querySelector('.confirmation').remove()
@@ -195,27 +198,27 @@ function handleReject() {
       <div className="name">
         {name}
       </div>
-  
       <div className="User-container">
         {user && (
           <div className="chosse-container">
-            {user.requestData && (
+            {user.gender && (
               <div className="welcome-user">
                 <p>
                   Welcome back,
-                  {user.requestData.gender === "female" && " Ms "}
-                  {user.requestData.gender === "male" && " Mc "}
-                  {user.requestData.name}! What would you like to visit first?
+                  {user.gender === "female" && " Ms "}
+                  {user.gender === "male" && " Mc "}
+                  {user.name}! What would you like to visit first?
                 </p>
               </div>
             )}
-            {user.requestData?.role === 'admin' && (
+            {user.role === 'admin' && (
               <div className="dashboard">
                 <Link to="/admin/dashboard">
                   <button>Dashboard <br /><DashboardCustomizeIcon /></button>
                 </Link>
               </div>
             )}
+            
             <div className="materials">
               <Link to="/show-products">
                 <button>
@@ -235,40 +238,40 @@ function handleReject() {
             </div>
 
             <div ref={reqParentRef} id="req">
-              {user.requestData?.message && (
+              {reQSrV && (
                 <p className='hint'>
                   <span>Hint:</span>
-                  {user.requestData.message}!
+                  {reQSrV.message}!
                 </p>
               )}
   
-              {reQSrV && reQSrV.requestData?.takenRequest && (
+              {reQSrV && reQSrV.takenRequest && (
                 <div className="chosse-containerr" id='parent-info'>
                   {/* ... */}
-                  {reQSrV.requestData.takenRequest?.requesterAvatar && reQSrV.requestData.takenRequest?.requesterName && (
+                  {reQSrV.takenRequest && reQSrV.takenRequest.requesterAvatar && reQSrV.takenRequest.requesterName && (
                     <div className="requester_info">
                       <div className="info">
-                        <p> Name: {reQSrV.requestData.takenRequest?.requesterName} <br />
-                        <span> Date : {formatDate(reQSrV.requestData.takenRequest?.requestDate) }</span>
+                        <p> Name: {reQSrV.takenRequest.requesterName} <br />
+                        <span> Date : {formatDate(reQSrV.takenRequest?.requestDate) }</span>
                         <br />
                         </p>
                       </div>
-                      <img src={reQSrV.requestData.takenRequest?.requesterAvatar} alt="Name of requester" className='requester-avatar' />
+                      <img src={reQSrV.takenRequest?.requesterAvatar} alt="Name of requester" className='requester-avatar' />
                     </div>
                   )}
-                  {reQSrV.requestData.takenRequest && reQSrV.requestData.takenRequest?.materialPicture && reQSrV.requestData.takenRequest?.requestDate && (
+                  {reQSrV.takenRequest && reQSrV.takenRequest?.materialPicture && reQSrV.takenRequest?.requestDate && (
                     <div className='material-infoo'>
                       <p>
-                        <span>At: {formatDate(reQSrV.requestData.takenRequest?.requestDate)}</span>
+                        <span>At: {formatDate(reQSrV.takenRequest?.requestDate)}</span>
                       </p>
-                      <img src={reQSrV.requestData.takenRequest?.materialPicture} alt="material picture" />
+                      <img src={reQSrV.takenRequest?.materialPicture} alt="material picture" />
                     </div>
                   )}
                   {/* ... */}
                 </div>
               )}
   
-              {reQSrV?.requestData?.takenRequest && (
+              {reQSrV?.takenRequest && (
                 <div className="approval-buttons" id='approval-buttons-id'>
                   <button onClick={handleApprove} className="approve-button">Approved</button>
                   <button onClick={handleReject} className="reject-button">Rejected</button>
@@ -283,7 +286,7 @@ function handleReject() {
         {/* ... */}
       </div>
   
-      {reQSrV?.requestData?.message && reQSrV.requestData?.message.includes("approved") && (
+      {reQSrV?.message && reQSrV?.message.includes("approved") && (
         <div className="confirmation">
           <h4>
             Are you get the material or not? Please Confirm or click{" "}

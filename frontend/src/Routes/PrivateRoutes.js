@@ -6,7 +6,7 @@ const PrivateRoutes = () => {
   const user = localStorage.getItem('user');
   
   const isLoggedIn = !!user;
-
+  
   return(
     isLoggedIn ? <Outlet/> : <Navigate to="/login" />
   )

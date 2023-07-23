@@ -114,7 +114,7 @@ exports.updateUserTakenInfo = async (req, res) => {
 };
 
 exports.sendRequest = asyncErrorHandler(async (req, res, next) => {
-  // console.log(req.body);
+  console.log(req.body);
   console.log(req.body.userId_of_Taken);
   const { materialId, name, destination, email, userIdLS, requesterDestination } = req.body;
   const userId_of_Taken = req.body.userId_of_Taken;

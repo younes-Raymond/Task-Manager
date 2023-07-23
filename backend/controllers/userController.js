@@ -43,37 +43,50 @@ const { name, email, position, salary, gender, nationalId, phoneNumber, legalInf
 });
 
 exports.loginUser = asyncErrorHandler(async (req, res) => {
-    // console.log(req.body)
+  // console.log(req.body)
   const { email, password } = req.body;
-  
-    if (!email || !password) {
-      res.status(400).json({ message: 'Please enter email and password' });
-      return;
-    }
-    const user = await Workers.findOne({ email }).select('+password');
-  
-    if (!user) {
-      res.status(401).json({ message: "Sorry, we couldn't find an account with that email and password" });
-      return;
-    }
-  
-    const isPasswordMatched = await user.comparePassword(password);
-  
-    if (!isPasswordMatched) {
-      res.status(401).json({ message: "Sorry, we couldn't find an account with that email and password" });
-      return;
-    }
 
-    const token = user.generateToken();
-    res.status(200).json({ token });
+  if (!email || !password) {
+    res.status(400).json({ message: 'Please enter email and password' });
+    return;
+  }
+
+  const user = await Workers.findOne({ email }).select('+password');
+
+  if (!user) {
+    res.status(401).json({ message: "Sorry, we couldn't find an account with that email and password" });
+    return;
+  }
+
+  const isPasswordMatched = await user.comparePassword(password);
+
+  if (!isPasswordMatched) {
+    res.status(401).json({ message: "Sorry, we couldn't find an account with that email and password" });
+    return;
+  }
+
+  const token = user.generateToken();
+
+  // Create an object containing the token and additional user data
+  const responseData = {
+    token,
+    user: {
+      _id: user._id,
+      name: user.name,
+      gender: user.gender,
+      avatar: user.avatar,
+      role: user.role,
+      email: user.email,
+      // Add any other user data you want to include
+    },
+  };
+  res.status(200).json(responseData);
 });
 
-
-
-
 exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
+  console.log('ishavingarequest', req.body);
   try {
-    const user = req.body.requestData;
+    const user = req.body;
 
     const updatedRequestData = {
       user: {

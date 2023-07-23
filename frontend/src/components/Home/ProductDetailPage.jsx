@@ -183,15 +183,18 @@ const handleDestinationChange = (event) => {
 const handleSendRequest = async (event, userId, productId) => {
     event.preventDefault();
     const userId_of_Taken = document.querySelector('.user-id').textContent;
-    console.log("userId_of_Taken: ",userId_of_Taken);
+    console.log("userId_of_Taken: ", userId_of_Taken);
     const formId = event.target.id.split('-')[1];
     const user = JSON.parse(localStorage.getItem('user')); 
-    const email = user.requestData.email;
-    const name = user.requestData.name; 
+    const email = user.email;
+    const name = user.name; 
     const userIdLS = localStorage.getItem('userIdLS'); 
     setShowForm(true); 
+
     if (name && destination && email && userId_of_Taken) { 
+
       setSubmitting(true);
+
       try {
         const response = await sendRequest(productId, name, destination, email, userIdLS, userId_of_Taken); 
         console.log('this is the response: ', response);

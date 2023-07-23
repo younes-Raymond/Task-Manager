@@ -65,17 +65,13 @@ const navMenu = [
 const SideBar = ({ activeTab, setToggleSideBar }) => {
     const navigate = useNavigate();
     // const { enqueueSnackbar } = useSnackbar();
-    const Iuser  = JSON.parse(localStorage.getItem('user'));
+    const user  = JSON.parse(localStorage.getItem('user'));
     
-    console.log('sideBar => : ', Iuser.requestData);
-   const user = Iuser.requestData;
   const handleLogout = () => {
       localStorage.clear()
         navigate("/login");
     }
     
-
-
 return (
           <aside className="aside sidebar-container">          
           <div className="Avatar">

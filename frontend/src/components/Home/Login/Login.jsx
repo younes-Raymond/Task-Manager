@@ -5,7 +5,6 @@ import { loginUser } from '../../../actions/userAction';
 import './Login.css';
 import Loading  from '../../Layouts/loading';
 
-
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

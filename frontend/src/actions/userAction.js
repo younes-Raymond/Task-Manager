@@ -7,27 +7,9 @@ export const loginUser = async (email, password) => {
       headers: { 'Content-Type': 'application/json' },
     };
     const { data } = await axios.post('/api/v1/login', { email, password }, config);
-    // console.log('Login User:', data); // log user object to console
-    if (data.requestData) {
-      const requestData = {
-        requestData: data.requestData,
-      };
-      const user = {
-        requestData: data.requestData.user,
-      };
-
-      localStorage.setItem('requestData', JSON.stringify(requestData));
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('name', data.requestData.user.name);
-      localStorage.setItem('userIdLS', data.requestData.user._id); // Store the user's _id
-
-      if (data.requestData.user.avatar && data.requestData.user.avatar.url) {
-        localStorage.setItem('avatar', data.requestData.user.avatar.url);
-      }
-    } else {
-      console.log('The requestData not found in the response:', data);
-    }
-
+    console.log(data)
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(data.user));
     return data;
   } catch (error) {
     if (error.response && error.response.data.message) {
@@ -69,7 +51,6 @@ export const registerUser = async (userData) => {
     });
 };
   // Get All Users ---ADMIN
-
 
 export const search = async (keyword) => {
     try {
