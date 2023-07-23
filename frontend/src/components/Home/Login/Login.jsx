@@ -19,7 +19,7 @@ function LoginPage() {
     try {
       const response = await loginUser(email, password);
       if (response.token) {
-        // Handle successful logi
+        // Handle successful login 
         navigate('/profile');
         window.location.reload()
       } 

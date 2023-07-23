@@ -64,18 +64,29 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
       return;
     }
 
-    const requestData = {
+    const token = user.generateToken();
+    res.status(200).json({ token });
+});
+
+
+
+
+exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
+  try {
+    const user = req.body.requestData;
+
+    const updatedRequestData = {
       user: {
         _id: user._id,
         name: user.name,
-        gender:user.gender,
+        gender: user.gender,
         avatar: user.avatar,
         role: user.role,
         email: user.email,
       },
-      message: '', 
+      message: '',
     };
-  
+
     const materialRequests = await MaterialRequest.find({
       $or: [
         { materialId: user._id },
@@ -83,21 +94,16 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
         { userId_of_Taken: user._id },
       ],
     }).populate('userId_of_Taken');
-  
+
     let pendingRequests = [];
     let approvedRequests = [];
     let rejectedRequests = [];
     let taken = false;
-  
-    materialRequests.forEach((request) => {
-      // console.log('userId_of_Taken:', request.userId_of_Taken);
-// console.log('user._id:', user._id);
-// console.log('Comparison result:', request.userId_of_Taken._id.toString() === user._id.toString());
 
+    materialRequests.forEach((request) => {
       if (request.requesterId.toString() === user._id.toString()) {
-        // console.log(' the guy who login requester  and this his id: ', request.requesterId);
         if (request.status === 'pending') {
-          requestData.message =  'Your request is pending. Please wait for approval.';
+          updatedRequestData.message = 'Your request is pending. Please wait for approval.';
           const pendingRequest = {
             materialId: request.materialId,
             requesterName: request.requesterName,
@@ -110,7 +116,7 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
           };
           pendingRequests.push(pendingRequest);
         } else if (request.status === 'approved') {
-          requestData.message = 'Your material request has been approved.';
+          updatedRequestData.message = 'Your material request has been approved.';
           const approvedRequest = {
             materialId: request.materialId,
             requesterName: request.requesterName,
@@ -123,7 +129,7 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
           };
           approvedRequests.push(approvedRequest);
         } else if (request.status === 'rejected') {
-        requestData.message =  'Your request has been rejected. Please try again later.';
+          updatedRequestData.message = 'Your request has been rejected. Please try again later.';
           const rejectedRequest = {
             materialId: request.materialId,
             requesterName: request.requesterName,
@@ -137,9 +143,8 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
           rejectedRequests.push(rejectedRequest);
         }
       } else if (request.userId_of_Taken._id.toString() === user._id.toString()) {
-        // console.log('The user who logged in is userId_of_Taken and this is their ID:', request.userId_of_Taken);
         taken = true;
-        requestData.message = 'You have a material that a requester needs. Please approve or reject the request.';
+        updatedRequestData.message = 'You have a material that a requester needs. Please approve or reject the request.';
         const takenRequest = {
           materialId: request.materialId,
           requesterName: request.requesterName,
@@ -158,29 +163,31 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
           userOfTaken: request.userId_of_Taken,
           userOfTakenData: request.userId_of_Taken,
         };
-        requestData.takenRequest = takenRequest;
+        updatedRequestData.takenRequest = takenRequest;
       }
-  });
-    
-  
+    });
+
     if (pendingRequests.length > 0) {
-      requestData.pendingRequests = pendingRequests;
+      updatedRequestData.pendingRequests = pendingRequests;
     }
-  
+
     if (approvedRequests.length > 0) {
-      requestData.approvedRequests = approvedRequests;
+      updatedRequestData.approvedRequests = approvedRequests;
     }
-  
+
     if (rejectedRequests.length > 0) {
-      requestData.rejectedRequests = rejectedRequests;
+      updatedRequestData.rejectedRequests = rejectedRequests;
     }
-  
+
     if (taken) {
-      requestData.taken = true;
+      updatedRequestData.taken = true;
     }
-  
-    const token = user.generateToken();
-    res.status(200).json({ token, requestData});
+
+    res.status(200).json({ requestData: updatedRequestData });
+  } catch (error) {
+    console.error('Error fetching material requests:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 exports.approveRequest = asyncErrorHandler(async (req, res) => {

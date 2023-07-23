@@ -3,7 +3,7 @@ const Workers = require('../models/userModel');
 const MaterialRequest = require('../models/MaterialRequestModel');
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
-const mongoose = require('mongoose');
+const { Types } = require('mongoose');
 const axios = require('axios');
 
 
@@ -114,20 +114,20 @@ exports.updateUserTakenInfo = async (req, res) => {
 };
 
 exports.sendRequest = asyncErrorHandler(async (req, res, next) => {
-  console.log('sendequest function => :',req.body);
-  // console.log(req.body.userId_of_Taken);
+  // console.log(req.body);
+  console.log(req.body.userId_of_Taken);
   const { materialId, name, destination, email, userIdLS, requesterDestination } = req.body;
   const userId_of_Taken = req.body.userId_of_Taken;
+  console.log('userIDOfTaken : => : ',userId_of_Taken)
   try {
     // Find the user who made the request
     const requester = await Workers.findById(userIdLS);
-    console.log(requester); // Check the retrieved 'requester' object and its properties
-       
+
     // Find the user who will receive the material
     const worker = await Workers.findById(userId_of_Taken);
-    
+
     // Find the material
-    const material = await Material .findById(materialId);
+    const material = await Material.findById(materialId);
     
 // Find the user inside the users array with the given userId_of_Taken
 
@@ -135,7 +135,7 @@ let foundUserIdLS;
 
 
 for (const user of material.users) {
-  if (user._id.toString() === userId_of_Taken){
+  if (user._id.toString() === userId_of_Taken.toString()){
     foundUserIdLS = user.userIdLS;
     break;
   }
@@ -149,7 +149,7 @@ if (!foundUserIdLS) {
 const materialRequest = new MaterialRequest({
   materialId,
   requesterId: userIdLS,
-  userId_of_Taken: foundUserIdLS, // Use the found userIdLS
+  userId_of_Taken: foundUserIdLS, 
   requestDate: new Date(),
   status: 'pending',
   name,
@@ -160,7 +160,7 @@ const materialRequest = new MaterialRequest({
   materialPicture: material.images.url,
 });
 
-    await materialRequest.save();
+  await materialRequest.save();
 
     // Store the response in a database
     const response = {
@@ -176,7 +176,6 @@ const materialRequest = new MaterialRequest({
       },
       requestDate: materialRequest.requestDate,
     };
-
     // Send the response back
     res.json(response);
   } catch (error) {

@@ -11,6 +11,7 @@ import HandymanIcon from '@mui/icons-material/Handyman';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { formatDate } from '../../../utils/DateFormat';
 
+
 function ProfilePage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -25,8 +26,7 @@ function ProfilePage() {
   const navigate = useNavigate();
   const profileImg  = localStorage.getItem('avatar')
   const name = localStorage.getItem('name')
-
-
+  const [materialRequests, setMaterialRequests] = useState(null);
 
 const LogoutButton = () => {
     const handleLogout = () => {
@@ -48,8 +48,25 @@ const LogoutButton = () => {
       setUser(JSON.parse(User));
     }
   };
+
+  const getMaterialRequests = async () => {
+    try {
+      // Parse the user key from localStorage
+      const user = JSON.parse(localStorage.getItem('user'));
+  
+      // Make a POST request to the /api/v1/getrequests endpoint with the user data
+      const response = await axios.post('/api/v1/getReguests', user);
+      console.log(response.data.requestData);
+      // Set the material requests data to the state
+      setMaterialRequests(response.data);
+    } catch (error) {
+      console.error('Error fetching material requests:', error);
+    }
+  };
+  
   useEffect(() => {
     checkLocalStorage();
+    getMaterialRequests();
   }, []);
 
   useEffect(() => {
@@ -140,9 +157,6 @@ function handleReject() {
       });
   }
 
-
-  
-  
   useEffect(() => {
     const storedStatus = localStorage.getItem('newStatus');
     if (storedStatus) {
@@ -195,7 +209,6 @@ function handleReject() {
                 </p>
               </div>
             )}
-  
             {user.requestData?.role === 'admin' && (
               <div className="dashboard">
                 <Link to="/admin/dashboard">
@@ -304,7 +317,6 @@ function handleReject() {
       {loading && <Loading />}
     </div>
   );
-  
   
 }
 
