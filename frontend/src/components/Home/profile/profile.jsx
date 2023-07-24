@@ -10,9 +10,9 @@ import HomeIcon from '@mui/icons-material/Home';
 import HandymanIcon from '@mui/icons-material/Handyman';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { formatDate } from '../../../utils/DateFormat';
-
-
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 function ProfilePage() {
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null); 
@@ -27,6 +27,9 @@ function ProfilePage() {
   const profileImg  = localStorage.getItem('avatar')
   const name = localStorage.getItem('name')
   const [materialRequests, setMaterialRequests] = useState(null);
+const [showConfirmation, setShowConfirmation] = useState(false);
+
+  const refreshInterval = 1000;
 
 const LogoutButton = () => {
     const handleLogout = () => {
@@ -40,7 +43,7 @@ const LogoutButton = () => {
   
   const checkLocalStorage = () => {
     const userData = localStorage.getItem('requestData');
-    const User = localStorage.getItem('user')
+    const User = localStorage.getItem('user');
     if (userData) {
       setReQSrV(JSON.parse(userData));
     }
@@ -55,6 +58,7 @@ const LogoutButton = () => {
       const response = await axios.post('/api/v1/getReguests', user);
       // console.log(response.data);
       const requestData = response.data.requestData;
+      // setUser(requestData);
       if(response.data.requestData){
       localStorage.setItem('requestData', JSON.stringify(requestData));
       localStorage.setItem('name', response.data.requestData.user.name);
@@ -69,10 +73,19 @@ const LogoutButton = () => {
     }
   };
   
-  useEffect(() => {
+  const refreshData = () => {
     checkLocalStorage();
     getMaterialRequests();
+  };
+
+  useEffect(() => {
+    refreshData();
+
+    const interval = setInterval(refreshData, refreshInterval);
+
+    return () => clearInterval(interval);
   }, []);
+
 
   useEffect(() => {
     const chooseContainer = document.querySelector('.chosse-container');
@@ -177,7 +190,8 @@ function handleReject() {
       const response = await axios.post('api/v1/confirm', reQSrV);
       console.log('Confirmation sent successfully:', response.data);
       if (response.data && response.data.message === 'Material request confirmed successfully') {
-        document.querySelector('.confirmation').remove()
+        // Set the showConfirmation state to false
+        setShowConfirmation(false);
         localStorage.removeItem('requestData');
       }
     } catch (error) {
@@ -186,13 +200,17 @@ function handleReject() {
     }
   };
   
+  
   return (
     <div className="Profile-container">
       <div className="profile-cover">
         <img src={profileImg} alt="" className='cover-img' />
         <div className="profile-circle">
-          <img src={profileImg} alt="" />
+          <img src={profileImg} alt="" /> 
         </div>
+        <div className="edit-btn">
+           <CameraAltIcon />
+           </div>
       </div>
   
       <div className="name">
@@ -286,27 +304,28 @@ function handleReject() {
         {/* ... */}
       </div>
   
-      {reQSrV?.message && reQSrV?.message.includes("approved") && (
-        <div className="confirmation">
-          <h4>
-            Are you get the material or not? Please Confirm or click{" "}
-            <span style={{ color: "orange" }}>"Not Yet".</span>
-          </h4>
-          <button
-            onClick={handleConfirm}
-            style={{ backgroundColor: "green" }}
-            className="confirm-button"
-          >
-            Confirm
-          </button>
-          <button
-            style={{ backgroundColor: "orange" }}
-            className="not-yet-button"
-          >
-            Not Yet
-          </button>
-        </div>
-      )}
+      {showConfirmation && reQSrV?.message && reQSrV?.message.includes("approved") && (
+  <div className="confirmation">
+    <h4>
+      Are you get the material or not? Please Confirm or click{" "}
+      <span style={{ color: "orange" }}>"Not Yet".</span>
+    </h4>
+    <button
+      onClick={handleConfirm}
+      style={{ backgroundColor: "green" }}
+      className="confirm-button"
+    >
+      Confirm
+    </button>
+    <button
+      style={{ backgroundColor: "orange" }}
+      className="not-yet-button"
+    >
+      Not Yet
+    </button>
+  </div>
+)}
+
   
      
         <button className="fb-logout-button"

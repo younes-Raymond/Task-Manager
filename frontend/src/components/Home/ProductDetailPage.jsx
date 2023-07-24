@@ -37,6 +37,7 @@ const ProductDetailPage = () => {
     };
     fetchProducts();
   }, []);
+  
   const handleBuy = async (MaterialId, userId) => {
     setShowForm(userId);
 };
