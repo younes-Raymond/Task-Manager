@@ -27,7 +27,8 @@ function ProfilePage() {
   const profileImg  = localStorage.getItem('avatar')
   const name = localStorage.getItem('name')
   const [materialRequests, setMaterialRequests] = useState(null);
-const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [intervalId, setIntervalId] = useState(null);
 
   const refreshInterval = 1000;
 
@@ -73,19 +74,20 @@ const LogoutButton = () => {
     }
   };
   
-  const refreshData = () => {
-    checkLocalStorage();
-    getMaterialRequests();
-  };
 
-  useEffect(() => {
-    refreshData();
+const refreshData = () => {
+  checkLocalStorage();
+  getMaterialRequests();
+  if (localStorage.getItem('requestData')) {
+    clearInterval(intervalId);
+  }
+};
 
-    const interval = setInterval(refreshData, refreshInterval);
-
-    return () => clearInterval(interval);
-  }, []);
-
+useEffect(() => {
+  const interval = setInterval(refreshData, refreshInterval);
+  setIntervalId(interval);
+  return () => clearInterval(interval);
+}, []);
 
   useEffect(() => {
     const chooseContainer = document.querySelector('.chosse-container');
@@ -190,8 +192,10 @@ function handleReject() {
       const response = await axios.post('api/v1/confirm', reQSrV);
       console.log('Confirmation sent successfully:', response.data);
       if (response.data && response.data.message === 'Material request confirmed successfully') {
-        // Set the showConfirmation state to false
-        setShowConfirmation(false);
+        const confirmationElement = document.querySelector('.confirmation');
+        if (confirmationElement) {
+          confirmationElement.style.visibility = 'hidden';
+        }
         localStorage.removeItem('requestData');
       }
     } catch (error) {
@@ -304,28 +308,27 @@ function handleReject() {
         {/* ... */}
       </div>
   
-      {showConfirmation && reQSrV?.message && reQSrV?.message.includes("approved") && (
-  <div className="confirmation">
-    <h4>
-      Are you get the material or not? Please Confirm or click{" "}
-      <span style={{ color: "orange" }}>"Not Yet".</span>
-    </h4>
-    <button
-      onClick={handleConfirm}
-      style={{ backgroundColor: "green" }}
-      className="confirm-button"
-    >
-      Confirm
-    </button>
-    <button
-      style={{ backgroundColor: "orange" }}
-      className="not-yet-button"
-    >
-      Not Yet
-    </button>
-  </div>
-)}
-
+      {reQSrV?.message && reQSrV?.message.includes("approved") && (
+        <div className="confirmation">
+          <h4>
+            Are you get the material or not? Please Confirm or click{" "}
+            <span style={{ color: "orange" }}>"Not Yet".</span>
+          </h4>
+          <button
+            onClick={handleConfirm}
+            style={{ backgroundColor: "green" }}
+            className="confirm-button"
+          >
+            Confirm
+          </button>
+          <button
+            style={{ backgroundColor: "orange" }}
+            className="not-yet-button"
+          >
+            Not Yet
+          </button>
+        </div>
+      )}
   
      
         <button className="fb-logout-button"

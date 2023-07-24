@@ -104,3 +104,19 @@ header
   display: flex;
   flex-direction: column;
 }
+
+.ring
+{
+    background: red;
+    color: white;
+    border: black 1px solid;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px; 
+}
+.notification 
+{
+    width: 5%;
+    height: 5%;
+    color: rgb(255, 32, 32);
+}
