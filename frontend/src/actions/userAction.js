@@ -67,7 +67,7 @@ export const search = async (keyword) => {
         throw new Error(error.message);
       }
     }
-  };
+};
 
   export const getAllUsers = async () => {
     try {

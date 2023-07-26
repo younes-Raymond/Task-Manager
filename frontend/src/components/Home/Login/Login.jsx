@@ -37,7 +37,7 @@ if(loading) {
   return (
     <div className="login-page">
      <div className="intro-welcome">
-        <h1>Welcome to your company Ajial </h1>
+        <h2>Welcome to your company Ajial </h2>
       </div>
       <form onSubmit={handleSubmit} className="login-form">
       

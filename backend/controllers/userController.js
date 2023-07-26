@@ -246,30 +246,30 @@ exports.confirmTaken = asyncErrorHandler(async (req, res) => {
     return res.status(404).json({ message: 'Material not found' });
   }
 
-  const userOfTaken = req.body.approvedRequests[0].userOfTaken;
+  const userOfTakenId = req.body.approvedRequests[0].userOfTaken._id;
 
-// Update the user in the material's users array
-for (const user of material.users) {
-  if (user.userIdLS.toString() === userOfTaken._id.toString()) { // Compare the user's userIdLS with the _id property of userOfTaken
-    console.log('User IDLS matched:', user._id); // Add this console.log statement to log the matched user's ID
-    user.userIdLS = requesterId;
-    // Find the worker by the requesterId
-    try {
-      const worker = await Workers.findById(requesterId);
-      if (worker) {
-        user.email = worker.email;       // Update email from worker
-        user.name = worker.name;         // Update name from worker
-        user.takenAt = Date.now();       // Update takenAt with the current date
-      } else {
-        console.log(`Worker with ID ${requesterId} not found.`);
-        // Handle the case when worker is not found, e.g., show an error message or take appropriate action.
+  // Update the user in the material's users array
+  for (const user of material.users) {
+    if (user.userIdLS.toString() === userOfTakenId.toString()) { // Compare the user's userIdLS with the userOfTakenId
+      console.log('User IDLS matched:', user._id);
+      user.userIdLS = requesterId;
+      // Find the worker by the requesterId
+      try {
+        const worker = await Workers.findById(requesterId);
+        if (worker) {
+          user.email = worker.email;       // Update email from worker
+          user.name = worker.name;         // Update name from worker
+          user.takenAt = Date.now();       // Update takenAt with the current date
+        } else {
+          console.log(`Worker with ID ${requesterId} not found.`);
+          // Handle the case when worker is not found, e.g., show an error message or take appropriate action.
+        }
+      } catch (error) {
+        console.error('Error while finding the worker:', error);
+        // Handle the error if needed, e.g., show an error message or take appropriate action.
       }
-    } catch (error) {
-      console.error('Error while finding the worker:', error);
-      // Handle the error if needed, e.g., show an error message or take appropriate action.
     }
   }
-}
 
   // Save the updated material
   await material.save();
@@ -281,32 +281,39 @@ for (const user of material.users) {
   res.status(200).json({ message: 'Material request confirmed successfully' });
 });
 
-
 exports.search = async (req, res) => {
-    // console.log(req.query)
-    const { keyword } = req.query;
-    try {
-      // Search in users collection
-      const users = await   Workers.find({
-        $or: [
-          { name: { $regex: keyword, $options: 'i' } },
-          { email: { $regex: keyword, $options: 'i' } }
-        ]
-      });
-      // Search in materials collection
-      const materials = await Materials.find({
-        $or: [
-          { name: { $regex: keyword, $options: 'i' } },
-          { description: { $regex: keyword, $options: 'i' } }
-        ]
-      });
-      res.status(200).json({ success: true, users, materials });
-      // console.log(materials)
-      // console.log(users);
-    } catch (error) {
-      res.status(500).json({ success: false, error: 'Internal Server Error' });
-    }
+  const { keyword } = req.query;
+  try {
+    // Search in Users collection
+    const users = await Workers.find({
+      $or: [
+        { name: { $regex: keyword, $options: 'i' } },
+        { email: { $regex: keyword, $options: 'i' } }
+      ]
+    });
+
+    // Search in Materials collection
+    const materials = await Materials.find({
+      $or: [
+        { name: { $regex: keyword, $options: 'i' } },
+        { description: { $regex: keyword, $options: 'i' } }
+      ]
+    });
+
+    // Search in Jobs collection
+    const jobs = await Jobs.find({
+      $or: [
+        { jobTitle: { $regex: keyword, $options: 'i' } },
+        { jobDescription: { $regex: keyword, $options: 'i' } }
+      ]
+    });
+
+    res.status(200).json({ success: true, users, materials, jobs });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
 };
+
 
 exports.addJobs = asyncErrorHandler(async (req, res) => {
   // console.log(req.body)

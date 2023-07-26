@@ -182,7 +182,7 @@ const handleDestinationChange = (event) => {
 const handleSendRequest = async (event, userId, productId) => {
     event.preventDefault();
     const userId_of_Taken = document.querySelector('.user-id').textContent;
-    console.log("userId_of_Taken: ", userId_of_Taken);
+    // console.log("userId_of_Taken: ", userId_of_Taken);
     const user = JSON.parse(localStorage.getItem('user')); 
     const email = user.email;
     const name = user.name; 
@@ -241,6 +241,7 @@ const handleSendRequest = async (event, userId, productId) => {
 //  start the material container 
     <div className="material-container">
       {products.map((material) => (
+
         <div key={material._id} className="material">
           <div className="material-image">
             <img src={material.images.url} alt={material.name} onError={(e) => console.log(e)}  />
@@ -335,6 +336,7 @@ ref={inputRef}
       )}
     </div>
         </div>
+
       ))}
     </div>
     // end the material container 
