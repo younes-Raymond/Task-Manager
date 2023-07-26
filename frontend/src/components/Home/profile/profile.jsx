@@ -13,8 +13,6 @@ import { formatDate } from '../../../utils/DateFormat';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 function ProfilePage() {
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [user, setUser] = useState(null); 
   const [reQSrV, setReQSrV] = useState(null);
   const [loading, setLoading] = useState(false); 
@@ -22,15 +20,12 @@ function ProfilePage() {
   const [newStatus, setNewStatus] = useState(null);
   const reqParentRef = useRef(null);
   const [requestProcessed, setRequestProcessed] = useState(false);
-  const [logout, setLogout] = useState(false);
   const navigate = useNavigate();
   const profileImg  = localStorage.getItem('avatar')
   const name = localStorage.getItem('name')
-  const [materialRequests, setMaterialRequests] = useState(null);
-  const [showConfirmation, setShowConfirmation] = useState(false);
   const [intervalId, setIntervalId] = useState(null);
 
-  const refreshInterval = 1000;
+  const refreshInterval = 3000;
 
 const LogoutButton = () => {
     const handleLogout = () => {
@@ -57,9 +52,7 @@ const LogoutButton = () => {
     try {
       const user = JSON.parse(localStorage.getItem('user'));
       const response = await axios.post('/api/v1/getReguests', user);
-      // console.log(response.data);
       const requestData = response.data.requestData;
-      // setUser(requestData);
       if(response.data.requestData){
       localStorage.setItem('requestData', JSON.stringify(requestData));
       localStorage.setItem('name', response.data.requestData.user.name);
@@ -68,7 +61,6 @@ const LogoutButton = () => {
     } else {
       console.log('no data come from server ')
     }
-      setMaterialRequests(response.data); 
     } catch (error) {
       console.error('Error fetching material requests:', error);
     }
@@ -105,25 +97,6 @@ useEffect(() => {
     if (storedStatus) {
       setNewStatus(storedStatus);
     }
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      console.log('is checking right now')
-      const storedStatus = localStorage.getItem('newStatus');
-      if (storedStatus === 'Request rejected' || storedStatus === 'Request approved') {
-        const approvalButtons = document.getElementById('approval-buttons-id');
-        const chosseContainer = document.querySelector('.chosse-containerr');
-        const hint = document.querySelector('.hint');
-        if (approvalButtons&& chosseContainer && hint) {
-          approvalButtons.classList.add('hide');
-          chosseContainer.classList.add('hide');
-          hint.classList.add('hide');
-        }
-        clearInterval(interval);
-      }
-    }, 1000);
-    return () => clearInterval(interval);
   }, []);
 
   function handleApprove() {

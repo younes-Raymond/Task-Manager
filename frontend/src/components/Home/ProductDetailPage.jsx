@@ -147,12 +147,10 @@ const askForGPSPermission = async (materialId) => {
 const handleGetMaterial = async (event) => {
     const formId = event.target.id.split('-')[1];
     const productId = formId;
-    console.log("productId from handleGetMaterial" ,productId)
     const destination = event.target.elements[`destination-${productId}`].value;
     const name = localStorage.getItem('name');
-    const email = JSON.parse(localStorage.getItem('user')).requestData.email;
+    const email = JSON.parse(localStorage.getItem('user')).email;
     const userIdLS = localStorage.getItem('userIdLS');
-    console.log(userIdLS);
     setShowForm(true);
     try {
       const updatedProduct = await updateProduct(productId, name, destination, email, userIdLS, latitude, longitude);
@@ -185,14 +183,13 @@ const handleSendRequest = async (event, userId, productId) => {
     event.preventDefault();
     const userId_of_Taken = document.querySelector('.user-id').textContent;
     console.log("userId_of_Taken: ", userId_of_Taken);
-    const formId = event.target.id.split('-')[1];
     const user = JSON.parse(localStorage.getItem('user')); 
     const email = user.email;
     const name = user.name; 
     const userIdLS = localStorage.getItem('userIdLS'); 
     setShowForm(true); 
 
-    if (name && destination && email && userId_of_Taken) { 
+    if (name && destination && email && userIdLS &&userId_of_Taken) { 
 
       setSubmitting(true);
 
@@ -222,6 +219,7 @@ const handleSendRequest = async (event, userId, productId) => {
       setSubmitting(false);
     }
 };
+
   if (loading) {
     return <div className="loading_container">
        <div className='custom-loader'></div>
@@ -303,6 +301,7 @@ const handleSendRequest = async (event, userId, productId) => {
 <button onClick={() => {
   handleBuyit(material._id);
   getLocation(material._id);
+  handleGetMaterial(material._id, latitude, longitude)
 }}>
   {/* {console.log(material._id)} */}
   Get</button>

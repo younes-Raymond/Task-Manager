@@ -100,3 +100,9 @@ main {
 {
     visibility: visible;
 }
+/* SideBar.css */
+@media (max-width: 768px) {
+  .aside {
+    visibility: hidden;
+  }
+}

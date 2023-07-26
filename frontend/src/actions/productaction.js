@@ -46,7 +46,7 @@ export const updateProduct = async (productId, name, destination, email, userIdL
   try {
     const config = { header: { "Content-Type": "application/json" } }
     const { data } = await axios.put(`/api/v1/admin/material/${productId}`, {
-       name,
+      name,
       destination, 
       email,
       userIdLS,

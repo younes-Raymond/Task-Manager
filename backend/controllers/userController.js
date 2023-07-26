@@ -84,7 +84,7 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
 });
 
 exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
-  console.log('ishavingarequest', req.body);
+  // console.log('ishavingarequest', req.body);
   try {
     const user = req.body;
 
@@ -247,38 +247,32 @@ exports.confirmTaken = asyncErrorHandler(async (req, res) => {
   }
 
   const userOfTaken = req.body.approvedRequests[0].userOfTaken;
-  const updatedUsersArray = material.users.map(async (user) => {
-    if (user.userIdLS.toString() === userOfTaken._id.toString()) { // Compare the user's userIdLS with the _id property of userOfTaken
-      user.userIdLS = requesterId;
-  
-      // Find the worker by the requesterId
-      try {
-        const worker = await Workers.findById(requesterId);
-        if (worker) {
-          user.email = worker.email;       // Update email from worker
-          user.name = worker.name;         // Update name from worker
-          user.takenAt = Date.now();       // Update takenAt with the current date
-        } else {
-          console.log(`Worker with ID ${requesterId} not found.`);
-          // Handle the case when worker is not found, e.g., show an error message or take appropriate action.
-        }
-      } catch (error) {
-        console.error('Error while finding the worker:', error);
-        // Handle the error if needed, e.g., show an error message or take appropriate action.
+
+// Update the user in the material's users array
+for (const user of material.users) {
+  if (user.userIdLS.toString() === userOfTaken._id.toString()) { // Compare the user's userIdLS with the _id property of userOfTaken
+    console.log('User IDLS matched:', user._id); // Add this console.log statement to log the matched user's ID
+    user.userIdLS = requesterId;
+    // Find the worker by the requesterId
+    try {
+      const worker = await Workers.findById(requesterId);
+      if (worker) {
+        user.email = worker.email;       // Update email from worker
+        user.name = worker.name;         // Update name from worker
+        user.takenAt = Date.now();       // Update takenAt with the current date
+      } else {
+        console.log(`Worker with ID ${requesterId} not found.`);
+        // Handle the case when worker is not found, e.g., show an error message or take appropriate action.
       }
+    } catch (error) {
+      console.error('Error while finding the worker:', error);
+      // Handle the error if needed, e.g., show an error message or take appropriate action.
     }
-    return user;
-  });
-  
-  // Wait for all the promises in the updatedUsersArray to resolve
-  const updatedUsers = await Promise.all(updatedUsersArray);
-  
-  // Update the material's users array
-  material.users = updatedUsers;
-  
+  }
+}
+
   // Save the updated material
   await material.save();
-  
 
   // Remove the material request document from the database
   await MaterialRequest.findOneAndRemove({ requestId });
@@ -286,6 +280,7 @@ exports.confirmTaken = asyncErrorHandler(async (req, res) => {
   console.log(`Material request with requestId ${requestId} removed from the database.`);
   res.status(200).json({ message: 'Material request confirmed successfully' });
 });
+
 
 exports.search = async (req, res) => {
     // console.log(req.query)

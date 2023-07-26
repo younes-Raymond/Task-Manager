@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import './optionAdmin.css'
 
 const Dashboard = () => {
+  
   return (
     <div className='box'>
+       <Link to="/admin/dashboard">
       <h2>Dashboard</h2>
       <p>Click the button below to controle By CRUDS System</p>
-      <Link to="/admin/dashboard">
       <button className='DS-btn'>CRUDS Data</button>
       </Link>
     </div>

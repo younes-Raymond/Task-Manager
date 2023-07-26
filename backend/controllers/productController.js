@@ -84,7 +84,7 @@ const userId = req.query.userId;
 
 // update the worker taken the material when worker click to get and fill the inpust and info 
 exports.updateUserTakenInfo = async (req, res) => {
-  // console.log('....',req.body)
+  console.log('....',req.body)
   const { name, destination, email, userIdLS , longitude, latitude} = req.body;
   console.log('userIdS:', userIdLS); // log the userIdLS value
   const { productId } = req.params;
@@ -114,25 +114,19 @@ exports.updateUserTakenInfo = async (req, res) => {
 };
 
 exports.sendRequest = asyncErrorHandler(async (req, res, next) => {
-  console.log(req.body);
-  console.log(req.body.userId_of_Taken);
+  console.log('sendRequest => ',req.body);
+  // console.log(req.body.userId_of_Taken);
   const { materialId, name, destination, email, userIdLS, requesterDestination } = req.body;
   const userId_of_Taken = req.body.userId_of_Taken;
-  console.log('userIDOfTaken : => : ',userId_of_Taken)
   try {
-    // Find the user who made the request
     const requester = await Workers.findById(userIdLS);
 
-    // Find the user who will receive the material
     const worker = await Workers.findById(userId_of_Taken);
-
-    // Find the material
     const material = await Material.findById(materialId);
     
 // Find the user inside the users array with the given userId_of_Taken
 
 let foundUserIdLS;
-
 
 for (const user of material.users) {
   if (user._id.toString() === userId_of_Taken.toString()){
@@ -159,9 +153,7 @@ const materialRequest = new MaterialRequest({
   requesterDestination: destination,
   materialPicture: material.images.url,
 });
-
   await materialRequest.save();
-
     // Store the response in a database
     const response = {
       message: 'Request sent successfully!',

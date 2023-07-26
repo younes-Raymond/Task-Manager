@@ -72,6 +72,7 @@ const SideBar = ({ activeTab, setToggleSideBar }) => {
         navigate("/login");
     }
     
+    
 return (
           <aside className="aside sidebar-container">          
           <div className="Avatar">
