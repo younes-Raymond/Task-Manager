@@ -13,13 +13,14 @@ const AboutUs = () => {
       videoFrame.style.display = "none";
     }
   }
-
+let x 
+console.log(typeof typeof(x))
   return (
     <div className="containerrr">
       <main>
         <article>
         <div className="introduction">
-          <h1 className="text-dark">Hello world, we are AllMarT:</h1>
+          <h1 className="text-dark">Hello Dear, we are AllMarT:</h1>
           <h2 className="text-dark">How to use this app?</h2>
         </div>
           <section>
@@ -52,6 +53,9 @@ const AboutUs = () => {
               Got questions or need assistance? Our dedicated support team is here for you. In the "Contact Us" section, you can find our contact details. Feel free to reach out anytime, and we'll be more than happy to assist you.
             </p>
             <div className="Links">
+              <div className="avatar">
+                <img src='https://res.cloudinary.com/dktkavyr3/image/upload/v1688848119/xgewlo5w1rcgz9qfjacf.jpg' alt="Avatart of dev" />
+              </div>
             <Link to='https://www.linkedin.com/in/younes-raymond-188a40241/'>
             <label htmlFor="">Younes Raymond: </label>
             <LinkedInIcon /> 
