@@ -1,43 +1,92 @@
+/* Styles for the container */
 .containerrr {
-    background-color: #f2f2f2;
-    background-color: #f2f2f2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
-  
-.intro {
   background-color: #f2f2f2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
-  h1,
-  h2,
-  h3 {
-    color: #333;
-  }
-  
-  section {
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 20px;
-    border-radius: 10px;
-  }
-  
-  section:first-child{
-    background-color: #d4edda;
+.introduction
+{
+  font-weight: bold;
+  color: black;
+  text-align: center;
+} 
 
+h1,
+h2,
+h3 {
+  color: #333;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Styles for each section */
+section {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+/* Styles for the alternating background color of sections */
+section:nth-child(odd) {
+  background-color: #d4edda;
+}
+
+/* Styles for links */
+a {
+  color: #ffc107;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: #ff9800;
+}
+
+/* Styles for the video iframe container */
+.embed-responsive {
+  margin-bottom: 20px;
+  background-color: #333;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.embed-responsive iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.Links 
+{
+  display: flex;
+}
+
+.Links a label
+{
+ color: black;
+ cursor: pointer;
+
+}
+.Links svg 
+{
+  color:  rgb(52, 52, 232);
+}
+/* Responsive styles for smaller screens */
+@media (max-width: 768px) {
+  .intro {
+    padding: 10px;
   }
-  section:nth-child(odd) {
-    background-color: #d4edda;
+
+  section {
+    padding: 15px;
   }
-  
- a {
-    color: #ffc107;
-  }
-  
-  .embed-responsive {
-    margin-bottom: 20px;
-    background-color: #333;
-  }
+
+  /* You can add more responsive styles as needed */
+}
+
