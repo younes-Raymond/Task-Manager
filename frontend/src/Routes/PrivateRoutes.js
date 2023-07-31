@@ -11,9 +11,9 @@ const PrivateRoutes = () => {
     isLoggedIn ? <Outlet/> : <Navigate to="/login" />
   )
   
+  
 };
-
-
+     
 export default PrivateRoutes;
 
 

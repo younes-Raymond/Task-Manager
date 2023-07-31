@@ -7,6 +7,7 @@ import Edit from '@mui/icons-material/Edit';
 import axios from 'axios';
 import Loading from '../Layouts/loading'
 import { formatDate } from '../../utils/DateFormat';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 const ShowMaterials = () => {
   const [Jobs, setJobs] = useState([]);
@@ -45,7 +46,7 @@ const ShowMaterials = () => {
             <th>Description</th>
             <th>Requirements</th>
             <th>Counter</th>
-            <th>Applicant</th>
+            <th>Workers who Applicant:</th>
             <th>Created At</th>
             <th>Modification</th>
           </tr>
@@ -63,6 +64,7 @@ const ShowMaterials = () => {
     {job.applicants.map((applicant, index) => (
       <li key={index} className='applicant'>
         <a href={applicant.file} download target='_blanck'>
+        <label htmlFor=""><PictureAsPdfIcon /> :</label>
           {applicant.name} ({applicant.email})
         </a>
       </li>

@@ -7,6 +7,7 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import ForwardToInboxTwoToneIcon from '@mui/icons-material/ForwardToInboxTwoTone';
 const ProductDetailPage = () => {
 
   // State variables
@@ -14,42 +15,44 @@ const ProductDetailPage = () => {
   const [error, setError] = useState(null);
   const [products, setProducts] = useState([]);
   const [response, setResponse] = useState(null);
-  const [showForm, setShowForm] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-  const [destination, setDestination] = useState('');
   const [newWatchId, setnewWatchId] = useState('');
   const [latitude, setlatitude] = useState('');
   const [longitude, setlongitude] = useState('');
   const [detailsVisibility, setDetailsVisibility] = useState({});
-  const inputRef = useRef(null);
-  
+  const defaultCountry = 'Morocco MA';
+  const latitudeRef = useRef('')
+  const longitudeRef = useRef('')
+
   useEffect(() => {
+    let isMounted = true; 
+  
     const fetchProducts = async () => {
       try {
         const data = await getProducts();
-        console.log(data)
-        setProducts(data.products);
-        setLoading(false);
+        if (isMounted) {
+          setProducts(data.products);
+          setLoading(false);
+        }
       } catch (error) {
-        setError(error.message);
-        setLoading(false);
+        if (isMounted) {
+          setError(error.message);
+          setLoading(false);
+        }
       }
     };
     fetchProducts();
-  }, []);
+    return () => {
+      
+      if (newWatchId) {
+        navigator.geolocation.clearWatch(newWatchId);
+      }
+      isMounted = false;
+    };
+  }, [newWatchId]); 
   
-  const handleBuy = async (MaterialId, userId) => {
-    setShowForm(userId);
-};
-
-const handleBuyit = async (productId) => {
-    setShowForm(productId); 
-    localStorage.setItem('materialId', productId)
-}
-
+  
 let watchId = null;
 const sendLocation = async (latitude, longitude, userIdLS, materialId) => {
-    console.log("material id who will send to the server: => :", materialId);
     try {
       const response = await axios.post('/api/v1/updateLocation', {
         latitude,
@@ -61,6 +64,8 @@ const sendLocation = async (latitude, longitude, userIdLS, materialId) => {
     } catch (error) {
       console.error('Error updating location:', error);
     }
+    latitudeRef.current = latitude;
+    longitudeRef.current = longitude;
 };
 
 // Create , Read , update , Delete 
@@ -88,6 +93,7 @@ const getLocationByIP = async (materialId) => {
       // Handle the error here
     }
 };
+
 const getLocation = async (materialId) => {
   const userIdLS = localStorage.getItem('userIdLS');
 
@@ -101,9 +107,7 @@ const getLocation = async (materialId) => {
         const latitude = position.coords.latitude;
         const longitude = position.coords.longitude;
         setlatitude(+latitude);
-        setlongitude(+longitude);
-        console.log('Latitude:', latitude);
-        console.log('Longitude:', longitude);
+        setlongitude(+longitude)
         sendLocation(latitude, longitude, userIdLS, materialId);
       },
       (error) => {
@@ -144,54 +148,43 @@ const askForGPSPermission = async (materialId) => {
   }
 };
 
-const handleGetMaterial = async (event) => {
-    const formId = event.target.id.split('-')[1];
-    const productId = formId;
-    const destination = event.target.elements[`destination-${productId}`].value;
-    const name = localStorage.getItem('name');
-    const email = JSON.parse(localStorage.getItem('user')).email;
-    const userIdLS = localStorage.getItem('userIdLS');
-    setShowForm(true);
-    try {
-      const updatedProduct = await updateProduct(productId, name, destination, email, userIdLS, latitude, longitude);
-      setResponse({
-        productId: updatedProduct._id,
-        message: 'Material bought successfully!',
-      });
-      localStorage.setItem('materialObtained', 'true');
-      setShowForm(false);
-      const updatedProducts = products.map((material) => {
-        if (material._id === productId) {
-          return updatedProduct;
-        }
-        return material;
-      });
-      setProducts(updatedProducts);
-    } catch (error) {
-      setResponse({
-        productId,
-        message: 'Error buying material.',
-      });
-    }
-};
-
-const handleDestinationChange = (event) => {
-    setDestination(event.target.value);
+const handleGetMaterial = async (material) => {
+  const { _id: productId } = material;
+  const name = localStorage.getItem('name');
+  const email = JSON.parse(localStorage.getItem('user')).email;
+  const userIdLS = localStorage.getItem('userIdLS');
+  const destination = defaultCountry;
+  try {
+    const updatedProduct = await updateProduct(productId, name, destination, email, userIdLS, latitude, longitude);
+    setResponse({
+      productId: updatedProduct._id,
+      message: 'Material bought successfully!',
+    });
+    localStorage.setItem('materialObtained', 'true');
+    const updatedProducts = products.map((material) => {
+      if (material._id === productId) {
+        return updatedProduct;
+      }
+      return material;
+    });
+    setProducts(updatedProducts);
+  } catch (error) {
+    setResponse({
+      productId,
+      message: 'Error buying material.',
+    });
+  }
 };
 
 const handleSendRequest = async (event, userId, productId) => {
     event.preventDefault();
-    const userId_of_Taken = document.querySelector('.user-id').textContent;
-    // console.log("userId_of_Taken: ", userId_of_Taken);
+    const userId_of_Taken = userId ;
     const user = JSON.parse(localStorage.getItem('user')); 
     const email = user.email;
     const name = user.name; 
     const userIdLS = localStorage.getItem('userIdLS'); 
-    setShowForm(true); 
-
-    if (name && destination && email && userIdLS &&userId_of_Taken) { 
-
-      setSubmitting(true);
+    const destination = defaultCountry;
+    if (name && destination && email && userIdLS && userId_of_Taken) { 
 
       try {
         const response = await sendRequest(productId, name, destination, email, userIdLS, userId_of_Taken); 
@@ -201,7 +194,7 @@ const handleSendRequest = async (event, userId, productId) => {
           productId: updatedProduct._id,
           message: 'Request sent successfully!',
         });
-        setShowForm(false);
+        // setShowForm(false);
         const updatedProducts = products.map((material) => {
           if (material._id === productId) {
             return updatedProduct;
@@ -216,7 +209,7 @@ const handleSendRequest = async (event, userId, productId) => {
           message: 'Error sending request.',
         });
       }
-      setSubmitting(false);
+      // setSubmitting(false);
     }
 };
 
@@ -231,12 +224,15 @@ const handleSendRequest = async (event, userId, productId) => {
     return <div>Error: {error}</div>;
   }
 
-  const handleToggleDetails = (materialId) => {
+  const handleToggleDetails = async (materialId) => {
     setDetailsVisibility((prevDetails) => ({
       ...prevDetails,
       [materialId]: !prevDetails[materialId],
     }));
   };
+  
+
+
   return (
 //  start the material container 
     <div className="material-container">
@@ -247,13 +243,15 @@ const handleSendRequest = async (event, userId, productId) => {
             <img src={material.images.url} alt={material.name} onError={(e) => console.log(e)}  />
           </div>
 
-   
           <div
-            className={`moreLessIcon ${detailsVisibility[material._id] ? 'less' : 'more'}`}
-            onClick={() => handleToggleDetails(material._id)}
-          >
-            {detailsVisibility[material._id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </div>
+  className={`moreLessIcon ${detailsVisibility[material._id] ? 'less' : 'more'}`}
+  onClick={() => {
+    handleToggleDetails(material._id);
+    getLocation(material._id);
+  }}
+>
+  {detailsVisibility[material._id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+</div>
 
 
 <div className={`material-info ${detailsVisibility[material._id] ? 'show' : 'hide'}`}>
@@ -270,63 +268,32 @@ const handleSendRequest = async (event, userId, productId) => {
   <ul>
     {material.users.map((user, index) => (
       
-      <li key={index}>
-        {/* {console.log("im from material users array",material._id, "index: ",index)} */}
-        <button onClick={() => handleBuy(material._id, user._id)}>Send Request</button>
+      <li key={index} id={user._id}>
+        <button onClick={(event) => handleSendRequest (event, user._id, material._id)}> <ForwardToInboxTwoToneIcon/></button>
          {/* Pass the user'to the handleBuy function */}
         <p>Name: {user.name}</p>
-        <p>Destination: {user.destination}</p>
+        <p>Country: {user.destination}</p>
         <p>email: {user.email}</p>
         <p>Taken at: {new Date(user.takenAt).toLocaleString()}</p> 
-        <p className="user-id" style={{ display: 'none' }}>{user._id}</p>
         <a href={`https://www.google.com/maps/search/?api=1&query=${user.latitude},${user.longitude}`} target="_blank" rel="noopener noreferrer">
   <img src={MARKER} class="Marker-G-Mps" alt="" />
 </a>
- <form 
-  id={user._id} 
-  className={`request-form ${showForm && showForm === user._id ? 'show' : ''}`} // Add the show class to the form when showForm is true and matches the user's id
-  onSubmit={(event) => handleSendRequest (event, user._id, material._id)}
->
-          <label>
-            DestinatioN:
-            <input type="text" value={destination} onChange={handleDestinationChange} />
-          </label>
-          <button type="submit" disabled={loading || submitting}>Submit</button>
-        </form>
       </li>
     ))}
   </ul>
 </div>
+
 {/* end user container */}
 {material.stock > 0 && (
-<button onClick={() => {
-  handleBuyit(material._id);
-  getLocation(material._id);
-  handleGetMaterial(material._id, latitude, longitude)
-}}>
-  {/* {console.log(material._id)} */}
-  Get</button>
-)}
+    <button className='Get' onClick={() => {
+      handleGetMaterial(material); // Pass the latitude and longitude here
+    }}>
+      {/* {console.log(material._id)} */}
+      Get
+    </button>
+  )}
 
-    {showForm === material._id && (
-      <form id={`form-${material._id}`}
-       className={material.stock > 0 ? 'show' : ''} 
-       onSubmit={handleGetMaterial}
-       >
-<label htmlFor={`destination-${material._id}`}>Destination:</label>
-<input
-ref={inputRef}
-  type="text"
-  id={`destination-${material._id}`}
-  value={destination}
-  onChange={(event) => setDestination(event.target.value)}
-  disabled={loading || submitting}
-/>
-    <button type="submit"  disabled={loading || submitting}>Submit</button>
-      </form>
-    )}
           </div>
-
 
           <div className={`light ${material.stock > 0 ? 'green' : 'red'}`}>
       {material.stock > 0 ? (

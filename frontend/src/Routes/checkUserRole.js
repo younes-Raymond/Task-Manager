@@ -3,13 +3,13 @@ const checkUserRole = () => {
     const userRole = user?.role;
   
     if (userRole === 'admin') {
-      console.log('admin');
+      // console.log('admin');
       return 'admin';
     } else if (userRole === 'user') {
-      console.log('user');
+      // console.log('user');
       return 'user';
     } else {
-      console.log('unknown')
+      // console.log('unknown')
       return 'unknown';
     }
   };

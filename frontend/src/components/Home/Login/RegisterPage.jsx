@@ -17,7 +17,7 @@ function RegisterPage() {
   const [password, setPassword] = useState('');
   const [legalInfo, setLegalInfo] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-
+  const role = 'unknown' 
   const handleProductImageChange = (e) => {
     const files = e.target.files[0];
     setFileToBase(files);
@@ -52,6 +52,7 @@ const setFileToBase = (file) => {
     formData.append("phoneNumber", phoneNumber);
     formData.append("legalInfo", legalInfo);
     formData.append("password", password); 
+    formData.append('role', role);
 console.log('form data: ',formData)    
     try {
       const response = await registerUser(formData);

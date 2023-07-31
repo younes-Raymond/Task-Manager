@@ -11,6 +11,7 @@ import HandymanIcon from '@mui/icons-material/Handyman';
 import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { formatDate } from '../../../utils/DateFormat';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
+import SettingsSuggestTwoToneIcon from '@mui/icons-material/SettingsSuggestTwoTone';
 function ProfilePage() {
 
   const [user, setUser] = useState(null); 
@@ -21,10 +22,10 @@ function ProfilePage() {
   const reqParentRef = useRef(null);
   const [requestProcessed, setRequestProcessed] = useState(false);
   const navigate = useNavigate();
-  const profileImg  = localStorage.getItem('avatar')
   const name = localStorage.getItem('name')
+  const profileImg = localStorage.getItem('avatar')
   const [intervalId, setIntervalId] = useState(null);
-
+  const [selectedFile, setSelectedFile] = useState(null);
   const refreshInterval = 3000;
 
 const LogoutButton = () => {
@@ -176,9 +177,51 @@ function handleReject() {
       // Handle the error if needed
     }
   };
+
+const handleImageUpload = async (event) => {
+  const file = event.target.files[0];
+  setSelectedFile(file);
+
+  // Convert the image to base64 format
+  const reader = new FileReader();
+  reader.onloadend = async () => {
+    const base64String = reader.result;
+    
+    // Include the base64 image data in the request
+    const formData = new FormData();
+    formData.append('image', base64String);
+    formData.append('userId', user._id);
+
+    try {
+      // Replace 'YOUR_API_ENDPOINT' with your actual API endpoint for image upload
+      const res = await axios.post('/api/v1/updateprofileimg', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      let NewAvatar = res.data.worker.avatar.url
+       localStorage.setItem('avatar',NewAvatar)
+      console.log('Image upload successful:', res.data);
+    } catch (error) {
+      // Handle the error if the image upload fails
+      console.error('Image upload failed:', error);
+    }
+  };
+
+  reader.onerror = (error) => {
+    // Handle any error that might occur during the conversion
+    console.error('Image conversion failed:', error);
+  };
+
+  reader.readAsDataURL(file);
+};
+
   
   
+  
+
   return (
+    <div className="wrapperR">
     <div className="Profile-container">
       <div className="profile-cover">
         <img src={profileImg} alt="" className='cover-img' />
@@ -186,8 +229,18 @@ function handleReject() {
           <img src={profileImg} alt="" /> 
         </div>
         <div className="edit-btn">
-           <CameraAltIcon />
-           </div>
+      <label htmlFor="fileInput">
+        <CameraAltIcon />
+      </label>
+      <input
+        type="file"
+        accept="image/*"
+        id="fileInput"
+        style={{ display: 'none' }}
+        onChange={handleImageUpload}
+      />
+    </div>
+
       </div>
   
       <div className="name">
@@ -207,16 +260,16 @@ function handleReject() {
               </div>
             )}
             {user.role === 'admin' && (
-              <div className="dashboard">
+              <div className="dashboard ">
                 <Link to="/admin/dashboard">
-                  <button>Dashboard <br /><DashboardCustomizeIcon /></button>
+                  <button className='item'>Dashboard <br /><DashboardCustomizeIcon /></button>
                 </Link>
               </div>
             )}
             
             <div className="materials">
               <Link to="/show-products">
-                <button>
+                <button className='item'>
                   قاءمة المعدات<br />
                   <HandymanIcon />
                 </button>
@@ -225,9 +278,17 @@ function handleReject() {
 
             <div className="materials">
               <Link to="/">
-                <button>
+                <button className='item'>
                   Home <br />
                   <HomeIcon />
+                </button>
+              </Link>
+            </div>
+            <div className="setting">
+              <Link to="/setting">
+                <button className='item'>
+                  Setting <br />
+                  <SettingsSuggestTwoToneIcon />
                 </button>
               </Link>
             </div>
@@ -304,7 +365,7 @@ function handleReject() {
       )}
   
      
-        <button className="fb-logout-button"
+        <button className="logout-btn"
           style={{ background: "gray", width: "20%", margin: "5% 0", fontWeight: "bold" }}
           onClick={LogoutButton}
         >
@@ -313,6 +374,7 @@ function handleReject() {
 
   
       {loading && <Loading />}
+    </div>
     </div>
   );
   

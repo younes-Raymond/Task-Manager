@@ -55,7 +55,7 @@ const LearnMoreBox = () => {
 const Optionbox = () => {
   const userRole = checkUserRole();
   return (
-    <div>
+    <div className='Container-box'>
       {userRole !== 'user' && <AddProductBox />}
       <ShowProductsBox />
       <Jobs />

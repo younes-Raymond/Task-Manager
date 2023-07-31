@@ -2,8 +2,8 @@
 main {
     display: flex;
     transition: 3s all;
-
 }
+
 .whole-container
 {
     transition: 3s all;
@@ -20,6 +20,10 @@ main {
     border-radius: 6px;
     color: #fff;
     transition: all 0.5 ease;
+  }
+  a 
+  {
+    color: gold;
   }
 
   .Avatar {

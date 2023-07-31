@@ -13,7 +13,8 @@ const {
   getAllMaterialRequester,
   deleteUser,
   deleteJob,
-  isHaveARequests
+  isHaveARequests,
+  updateProfileImg
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
@@ -34,4 +35,5 @@ router.get('/workers', getAllUsers)
 router.delete('/users/:id', deleteUser);
 router.delete('/job/:id', deleteJob);
 router.post('/getReguests', isHaveARequests);
+router.post('/updateprofileimg',updateProfileImg)
 module.exports = router;

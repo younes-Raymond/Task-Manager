@@ -35,7 +35,7 @@ const WorkersSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'admin','unknown '],
     default: 'user',
   },
   legalInfo: {

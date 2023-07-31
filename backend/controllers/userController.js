@@ -17,7 +17,6 @@ const { name, email, position, salary, gender, nationalId, phoneNumber, legalInf
       width: 150,
       crop: "scale"
     });
-    // const password = generatePassword(10);
     console.log(password);
     const user = await Workers.create({
       name,
@@ -443,4 +442,36 @@ exports.deleteJob = async (req, res) => {
   }
 };
 
- 
+
+
+exports.updateProfileImg = asyncErrorHandler(async (req, res) => { 
+
+  try {
+    const { userId, image } = req.body;
+   console.log('userId: > : ',userId)
+   console.log('image:  > : ',image)
+    // Upload the image to cloudinary
+    const result = await cloudinary.uploader.upload(image, {
+      folder: 'workers',
+      width: 150,
+      crop: 'scale',
+    });
+
+    // Find the worker by userId and update the avatar.url property
+    const worker = await Workers.findOneAndUpdate(
+      { _id: userId },
+      { 'avatar.url': result.secure_url },
+      { new: true }
+    );
+
+    if (!worker) {
+      return res.status(404).json({ message: 'Worker not found' });
+    }
+
+    return res.status(200).json({ message: 'Image uploaded successfully', worker });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Image upload failed', error });
+  }
+});
+

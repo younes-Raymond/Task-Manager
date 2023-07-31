@@ -7,7 +7,6 @@ export const loginUser = async (email, password) => {
       headers: { 'Content-Type': 'application/json' },
     };
     const { data } = await axios.post('/api/v1/login', { email, password }, config);
-    console.log(data)
     localStorage.setItem('token', data.token);
     localStorage.setItem('user', JSON.stringify(data.user));
     return data;

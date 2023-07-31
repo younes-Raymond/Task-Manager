@@ -82,11 +82,10 @@ const userId = req.query.userId;
   }
 });
 
-// update the worker taken the material when worker click to get and fill the inpust and info 
+// Get Button in UI update the worker taken the material when worker click to get 
 exports.updateUserTakenInfo = async (req, res) => {
-  console.log('....',req.body)
+  // console.log('materialId: ' , req.params, 'updateUserTakenInfo....',req.body)
   const { name, destination, email, userIdLS , longitude, latitude} = req.body;
-  console.log('userIdS:', userIdLS); // log the userIdLS value
   const { productId } = req.params;
   try {
     const material = await Material.findById(productId);
@@ -114,7 +113,7 @@ exports.updateUserTakenInfo = async (req, res) => {
 };
 
 exports.sendRequest = asyncErrorHandler(async (req, res, next) => {
-  console.log('sendRequest => ',req.body);
+  // console.log('sendRequest => ',req.body);
   // console.log(req.body.userId_of_Taken);
   const { materialId, name, destination, email, userIdLS, requesterDestination } = req.body;
   const userId_of_Taken = req.body.userId_of_Taken;
@@ -200,7 +199,7 @@ exports.searchProducts = asyncErrorHandler(async (req, res, next) => {
   resultPerPage,
   filteredProductsCount,
  };
- console.log(response);
+//  console.log(response);
  res.status(200).json(response)
 });
 
