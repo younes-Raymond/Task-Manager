@@ -8,6 +8,7 @@ import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ForwardToInboxTwoToneIcon from '@mui/icons-material/ForwardToInboxTwoTone';
+import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
 const ProductDetailPage = () => {
 
   // State variables
@@ -277,6 +278,7 @@ const handleSendRequest = async (event, userId, productId) => {
         <p>Taken at: {new Date(user.takenAt).toLocaleString()}</p> 
         <a href={`https://www.google.com/maps/search/?api=1&query=${user.latitude},${user.longitude}`} target="_blank" rel="noopener noreferrer">
   <img src={MARKER} class="Marker-G-Mps" alt="" />
+  {/* <PersonPinCircleIcon /> */}
 </a>
       </li>
     ))}

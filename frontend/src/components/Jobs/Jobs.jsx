@@ -123,7 +123,7 @@ const Jobs = () => {
             </p>
             <span className='counter'>Applied:{jobPost.counter}</span>
             {!jobPost.showApplyForm && (
-              <button className="apply-button" onClick={() => handleApplyClick(jobPost._id)}>
+              <button className="btn" onClick={() => handleApplyClick(jobPost._id)}>
                 Apply For this Job
               </button>
             )}
@@ -146,7 +146,7 @@ const Jobs = () => {
   <label htmlFor="message">Message:</label>
   <textarea id="message" name="message" placeholder="Your Message" required></textarea>
 
-  <button type="submit">Submit</button>
+  <button type="submit" className='btn'>Submit</button>
 </form>
               </div>
             )}

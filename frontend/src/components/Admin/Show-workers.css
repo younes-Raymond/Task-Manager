@@ -71,10 +71,13 @@ tbody td ul
 }
 .wrapper tbody .Edit-Delete-container button
 { 
-    width: 90%;
+    width: 70%;
     height: 50px;
     margin: 2% 5%;
     font-size: smaller;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer
 }
 .Delete 
 {

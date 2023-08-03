@@ -25,7 +25,7 @@ const Dashboard = ({ activeTab, children }) => {
             <div className={`menu-container ${toggleSideBar ? 'hide' : ''}`}>
               <button
                 onClick={() => setToggleSideBar(true)}
-                className="menu-button"
+                className="btn"
               >
                 <MenuIcon />
               </button>

@@ -2,7 +2,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { search } from '../../actions/userAction';
-
+import ManageSearchRoundedIcon from '@mui/icons-material/ManageSearchRounded';
 const Searchbar = () => {
   const [keyword, setKeyword] = useState("");
   const navigate = useNavigate();
@@ -33,7 +33,7 @@ const Searchbar = () => {
         placeholder="Search for Material, Workers & Jobs and more"
       />
       <button type="submit" className="btn">
-        <SearchIcon />
+        <ManageSearchRoundedIcon />
       </button>
     </form>
   );

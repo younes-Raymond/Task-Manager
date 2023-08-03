@@ -174,7 +174,7 @@ const AddWorkerForm = () => {
             placeholder="Enter legal information"
           ></textarea>
         </div>
-        <button type="submit" className="WRK-btn">Add Worker</button>
+        <button type="submit" className="btn">Add Worker</button>
       </form>
     </div>
     </div>

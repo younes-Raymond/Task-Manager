@@ -123,8 +123,8 @@ const AddJobForm = () => {
             required
           />
         </div>
-        <div className="btn">
-          <button type="submit">Add Job</button>
+        <div>
+          <button className="btn" type="submit">Add Job</button>
         </div>
       </form>
     </div>
