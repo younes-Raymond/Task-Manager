@@ -20,7 +20,8 @@ import ShowMaterials from './components/Admin/ShowMaterials';
 import ShowJobs from './components/Admin/Show-Jobs'
 import PrivateRoutes from './Routes/PrivateRoutes';
 import CheckUserRole  from './Routes/checkUserRole';
-
+import LearnBoxes  from './components/Home/article/learnMoreBox';
+import MarketingPlan  from './components/Home/article/Marketingblogs'
 
 const userRole = CheckUserRole()
 
@@ -63,7 +64,9 @@ const App = () => {
           </Route>
 
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<LoginPage />} />       
+          <Route path="/learn-more" element={<LearnBoxes />} />
+          <Route path='/Marketing-plan' element={<MarketingPlan />} />
           {/* <Route path="/" element={<Optionbox />} /> */}   
 
         </Routes>

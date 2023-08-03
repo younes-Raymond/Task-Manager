@@ -32,7 +32,7 @@ const Searchbar = () => {
         type="text"
         placeholder="Search for Material, Workers & Jobs and more"
       />
-      <button type="submit" className="">
+      <button type="submit" className="btn">
         <SearchIcon />
       </button>
     </form>

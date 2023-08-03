@@ -12,6 +12,8 @@ import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { formatDate } from '../../../utils/DateFormat';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SettingsSuggestTwoToneIcon from '@mui/icons-material/SettingsSuggestTwoTone';
+
+
 function ProfilePage() {
 
   const [user, setUser] = useState(null); 
@@ -36,9 +38,9 @@ const LogoutButton = () => {
         window.location.reload()
     };
     handleLogout()
-  }
-  
-  const checkLocalStorage = () => {
+}
+
+const checkLocalStorage = () => {
     const userData = localStorage.getItem('requestData');
     const User = localStorage.getItem('user');
     if (userData) {
@@ -47,7 +49,7 @@ const LogoutButton = () => {
     if(User){
       setUser(JSON.parse(User));
     }
-  };
+};
 
   const getMaterialRequests = async () => {
     try {
@@ -67,19 +69,9 @@ const LogoutButton = () => {
     }
   };
   
-
-const refreshData = () => {
+useEffect(() => {
   checkLocalStorage();
   getMaterialRequests();
-  if (localStorage.getItem('requestData')) {
-    clearInterval(intervalId);
-  }
-};
-
-useEffect(() => {
-  const interval = setInterval(refreshData, refreshInterval);
-  setIntervalId(interval);
-  return () => clearInterval(interval);
 }, []);
 
   useEffect(() => {
@@ -112,9 +104,7 @@ useEffect(() => {
     axios.post('/api/v1/approve', requestData)
       .then(response => {
         if (response.data.message === 'Request approved') {
-          setNewStatus('Request approved');
-          document.getElementById('req').remove()
-          localStorage.setItem('newStatus', 'Request approved');
+          document.getElementById('req').classList.add('hide')
           localStorage.removeItem('requestData');
 
         }
@@ -166,11 +156,11 @@ function handleReject() {
       const response = await axios.post('api/v1/confirm', reQSrV);
       console.log('Confirmation sent successfully:', response.data);
       if (response.data && response.data.message === 'Material request confirmed successfully') {
+        localStorage.removeItem('requestData');
         const confirmationElement = document.querySelector('.confirmation');
         if (confirmationElement) {
           confirmationElement.style.visibility = 'hidden';
         }
-        localStorage.removeItem('requestData');
       }
     } catch (error) {
       console.error('Error sending confirmation:', error);
@@ -186,7 +176,7 @@ const handleImageUpload = async (event) => {
   const reader = new FileReader();
   reader.onloadend = async () => {
     const base64String = reader.result;
-    
+
     // Include the base64 image data in the request
     const formData = new FormData();
     formData.append('image', base64String);
@@ -216,10 +206,6 @@ const handleImageUpload = async (event) => {
   reader.readAsDataURL(file);
 };
 
-  
-  
-  
-
   return (
     <div className="wrapperR">
     <div className="Profile-container">
@@ -240,9 +226,7 @@ const handleImageUpload = async (event) => {
         onChange={handleImageUpload}
       />
     </div>
-
       </div>
-  
       <div className="name">
         {name}
       </div>
@@ -320,7 +304,7 @@ const handleImageUpload = async (event) => {
                       <p>
                         <span>At: {formatDate(reQSrV.takenRequest?.requestDate)}</span>
                       </p>
-                      <img src={reQSrV.takenRequest?.materialPicture} alt="material picture" />
+                      <img src={reQSrV.takenRequest?.materialPicture} alt="Product" />
                     </div>
                   )}
                   {/* ... */}

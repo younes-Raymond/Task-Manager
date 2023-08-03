@@ -45,7 +45,7 @@ const LearnMoreBox = () => {
     <div className='box'>
       <h2>Who we Are</h2>
       <p>Click the button below to All Our Project</p>
-      <Link to="/About-us">
+      <Link to="/learn-more">
         <button>Learn More</button>
       </Link>
     </div>
