@@ -13,7 +13,6 @@ import { formatDate } from '../../../utils/DateFormat';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SettingsSuggestTwoToneIcon from '@mui/icons-material/SettingsSuggestTwoTone';
 
-
 function ProfilePage() {
 
   const [user, setUser] = useState(null); 
@@ -24,11 +23,8 @@ function ProfilePage() {
   const reqParentRef = useRef(null);
   const [requestProcessed, setRequestProcessed] = useState(false);
   const navigate = useNavigate();
-  const name = localStorage.getItem('name')
-  const profileImg = localStorage.getItem('avatar')
-  const [intervalId, setIntervalId] = useState(null);
+  const [profileImg, setProfileImg ]  = useState('')
   const [selectedFile, setSelectedFile] = useState(null);
-  const refreshInterval = 3000;
 
 const LogoutButton = () => {
     const handleLogout = () => {
@@ -41,15 +37,23 @@ const LogoutButton = () => {
 }
 
 const checkLocalStorage = () => {
-    const userData = localStorage.getItem('requestData');
-    const User = localStorage.getItem('user');
-    if (userData) {
-      setReQSrV(JSON.parse(userData));
+  const userData = localStorage.getItem('requestData');
+  const User = localStorage.getItem('user');
+
+  if (userData) {
+    setReQSrV(JSON.parse(userData));
+  }
+
+  if (User) {
+    const parsedUser = JSON.parse(User);
+    setUser(parsedUser);
+
+    if (parsedUser.avatar.url) {
+      setProfileImg(parsedUser.avatar.url);
     }
-    if(User){
-      setUser(JSON.parse(User));
-    }
+  }
 };
+
 
   const getMaterialRequests = async () => {
     try {
@@ -189,15 +193,21 @@ const handleImageUpload = async (event) => {
           'Content-Type': 'multipart/form-data',
         },
       });
-      let NewAvatar = res.data.worker.avatar.url
-       localStorage.setItem('avatar',NewAvatar)
-      console.log('Image upload successful:', res.data);
+
+      if(res.data.message.includes('Image uploaded successfully')){
+        localStorage.removeItem('user');
+        localStorage.setItem('user', JSON.stringify(res.data.worker) )
+        console.log('Image upload successful:', res.data);
+        setProfileImg(res.data.worker.avatar.url);
+
+      } else {
+        alert(res.data.message);
+      }
     } catch (error) {
       // Handle the error if the image upload fails
       console.error('Image upload failed:', error);
     }
   };
-
   reader.onerror = (error) => {
     // Handle any error that might occur during the conversion
     console.error('Image conversion failed:', error);
@@ -206,11 +216,16 @@ const handleImageUpload = async (event) => {
   reader.readAsDataURL(file);
 };
 
-  return (
-    <div className="wrapperR">
+
+
+return (
+
     <div className="Profile-container">
-      <div className="profile-cover">
+      {user && (
+        <div className="wrap-help">
+        <div className="profile-cover">
         <img src={profileImg} alt="" className='cover-img' />
+        {/* {console.log(user.avatar.url)} */}
         <div className="profile-circle">
           <img src={profileImg} alt="" /> 
         </div>
@@ -227,9 +242,13 @@ const handleImageUpload = async (event) => {
       />
     </div>
       </div>
-      <div className="name">
-        {name}
+            <div className="name">
+        {user.name}
       </div>
+      </div>
+
+      )}
+    
       <div className="User-container">
         {user && (
           <div className="chosse-container">
@@ -359,9 +378,10 @@ const handleImageUpload = async (event) => {
   
       {loading && <Loading />}
     </div>
-    </div>
+   
   );
   
+
 }
 
 export default ProfilePage;
