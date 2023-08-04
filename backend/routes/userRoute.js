@@ -14,7 +14,10 @@ const {
   deleteUser,
   deleteJob,
   isHaveARequests,
-  updateProfileImg
+  updateProfileImg,
+  createTasks,
+  TasksAvailable,
+  updatedTask
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
@@ -36,4 +39,7 @@ router.delete('/users/:id', deleteUser);
 router.delete('/job/:id', deleteJob);
 router.post('/getReguests', isHaveARequests);
 router.post('/updateprofileimg',updateProfileImg)
+router.post('/tasks', createTasks)
+router.post('/TasksAvailable', TasksAvailable)
+router.post('/updateTasks', updatedTask)
 module.exports = router;

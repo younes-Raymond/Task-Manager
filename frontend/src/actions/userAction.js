@@ -100,6 +100,16 @@ export const search = async (keyword) => {
       throw error;
     }
   }
+  export const getTasks = async (id) => {
+    try {
+      const res = await axios.post('/api/v1/TasksAvailable', { id });
+      console.log('Tasks response:', res.data);
+      return res.data;
+    } catch (error) {
+      console.error('Error fetching Tasks:', error);
+      throw error;
+    }
+  };
   
 
   

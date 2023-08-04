@@ -12,7 +12,8 @@ import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { formatDate } from '../../../utils/DateFormat';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SettingsSuggestTwoToneIcon from '@mui/icons-material/SettingsSuggestTwoTone';
-
+import { getTasks } from '../../../actions/userAction';
+import { Button, Typography, List, ListItem, ListItemText, ListItemSecondaryAction } from '@mui/material';
 function ProfilePage() {
 
   const [user, setUser] = useState(null); 
@@ -25,6 +26,7 @@ function ProfilePage() {
   const navigate = useNavigate();
   const [profileImg, setProfileImg ]  = useState('')
   const [selectedFile, setSelectedFile] = useState(null);
+  const [tasks , setTasks ] = useState([]);
 
 const LogoutButton = () => {
     const handleLogout = () => {
@@ -76,8 +78,18 @@ const checkLocalStorage = () => {
 useEffect(() => {
   checkLocalStorage();
   getMaterialRequests();
+  fetchTasks()
 }, []);
 
+const fetchTasks = async () => {
+  try {
+    const userData = JSON.parse(localStorage.getItem('user'));
+    const tasksData = await getTasks(userData._id);
+    setTasks(tasksData.tasks);
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+  }
+};
   useEffect(() => {
     const chooseContainer = document.querySelector('.chosse-container');
     if (chooseContainer) { 
@@ -108,9 +120,8 @@ useEffect(() => {
     axios.post('/api/v1/approve', requestData)
       .then(response => {
         if (response.data.message === 'Request approved') {
-          document.getElementById('req').classList.add('hide')
+          document.getElementById('req').remove()
           localStorage.removeItem('requestData');
-
         }
         console.log("user: ", response.data);
       })
@@ -215,6 +226,22 @@ const handleImageUpload = async (event) => {
 
   reader.readAsDataURL(file);
 };
+
+const handleStartTask = async (taskId) => {
+  try {
+    const data = { taskId }; 
+    const res = await axios.post(`/api/v1/updateTasks`, data); 
+    console.log('Task status updated:', res.data);
+    
+    const updatedTasks = tasks.map((task) =>
+      task._id === taskId ? { ...task, status: 'in progress' } : task
+    );
+    setTasks(updatedTasks);
+  } catch (error) {
+    console.error('Error updating task status:', error);
+  }
+};
+
 
 
 
@@ -342,7 +369,49 @@ return (
           </div>
         )}
   
-        {/* ... */}
+
+  <div className="tasks-container">
+  <Typography variant="h4" gutterBottom>
+    Your Tasks
+  </Typography>
+  {tasks.length > 0 ? (
+    <List>
+      {tasks.map((task) => (
+        <ListItem key={task._id} divider>
+          <ListItemText
+            primary={task.title}
+            secondary={
+              <>
+                <Typography variant="body2" color="textSecondary">
+                  {task.description}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Status: {task.status}
+                </Typography>
+              </>
+            }
+          />
+          {task.status === 'pending' && (
+            <ListItemSecondaryAction>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleStartTask(task._id)}
+              >
+                Start Task
+              </Button>
+            </ListItemSecondaryAction>
+          )}
+        </ListItem>
+      ))}
+    </List>
+  ) : (
+    <Typography variant="body2">No tasks available.</Typography>
+  )}
+</div>
+
+
+
       </div>
   
       {reQSrV?.message && reQSrV?.message.includes("approved") && (
@@ -374,9 +443,13 @@ return (
         >
           <LogoutOutlinedIcon /> Logout
         </button>
+ 
+
 
   
       {loading && <Loading />}
+
+      
     </div>
    
   );

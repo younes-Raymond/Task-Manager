@@ -1,6 +1,7 @@
 const Workers = require('../models/userModel');
 const Materials = require('../models/productModel');
 const Jobs = require('../models/jobsModel');
+const Tasks = require('../models/taskModel')
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
 const sendToken = require('../utils/sendToken');
@@ -472,6 +473,80 @@ exports.updateProfileImg = asyncErrorHandler(async (req, res) => {
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: 'Image upload failed', error });
+  }
+});
+
+exports.createTasks= asyncErrorHandler(async (req, res) => {
+  const { title, description, resultExpectation, status, workerId } = req.body;
+
+  try {
+    const newTask = new Tasks({
+      title,
+      description,
+      Expectation: resultExpectation,
+      status,
+      worker: workerId,
+    });
+
+    const savedTask = await newTask.save();
+
+    res.status(201).json({
+      success: true,
+      message: 'Task created successfully',
+      task: savedTask,
+    });
+  } catch (error) {
+    console.error('Error creating task:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating task',
+    });
+  }
+});
+
+
+
+exports.TasksAvailable = asyncErrorHandler(async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const tasks = await Tasks.find({ worker: id });
+
+    res.status(200).json({
+      success: true,
+      tasks,
+    });
+  } catch (error) {
+    console.error('Error fetching tasks:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching tasks',
+      error: error.message,
+    });
+  }
+});
+
+exports.updatedTask = asyncErrorHandler(async (req, res) => {
+
+  // const {  } = req.body;
+  console.log(req.body.taskId)
+
+
+  try {
+    const task = await Tasks.findByIdAndUpdate(
+      req.body.taskId,
+      { $set: { status: 'in progress' } },
+      { new: true }
+    );
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    return res.json({ message: 'Task status updated to "in progress"', task });
+  } catch (error) {
+    console.error('Error updating task status:', error);
+    return res.status(500).json({ message: 'Error updating task status' });
   }
 });
 

@@ -71,13 +71,20 @@ tbody td ul
 }
 .wrapper tbody .Edit-Delete-container button
 { 
-    width: 70%;
-    height: 50px;
+    width: 60%;
+    height: 40px;
     margin: 2% 5%;
     font-size: smaller;
     border-radius: 10px;
     color: #fff;
     cursor: pointer
+}
+#Task-btn
+{
+  color: green;
+  background: #ccc;
+}#Task-btn:hover{
+    background-color: #fff;
 }
 .Delete 
 {
