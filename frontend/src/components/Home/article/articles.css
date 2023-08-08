@@ -1,4 +1,3 @@
-/* Base styles for all screen sizes */
 .article {
     width: 100%;
     color: #fff;
@@ -14,8 +13,7 @@
 .image-container {
     width: 100%;
 }
-
-.article img {
+.image-container img {
     width: 90%;
     margin: 5% 5%;
     border: 1px solid #fff;
@@ -45,7 +43,7 @@
 
 /* Responsive styles for smaller screens */
 @media (max-width: 768px) {
-    .article img {
+    .image-container img {
         width: 100%;
         margin: 5% 0;
     }

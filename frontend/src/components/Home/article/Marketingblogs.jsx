@@ -1,14 +1,71 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './articles.css';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
-const MarketingPlan = () => {
-  return (
+import axios from 'axios';
+import { Formik , Form , Field, ErrorMessage } from 'formik'
+import * as Yup from 'yup';
+
+import {
+  Snackbar, 
+  Alert,
+  Dialog, 
+  DialogTitle,
+  DialogContent, 
+  TextField, 
+  DialogActions, 
+  Button,
+} from '@mui/material';
+
+const MarketingPlan = () => {  
+  const [isFormVisible, setFormVisible] = useState(false);
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
+
+  const validationSchema = Yup.object().shape({
+    fullName: Yup.string().required('Full Name is required'),
+    email: Yup.string().email('Invalid email').required('Email is required'),
+    phone: Yup.string().required('Phone is required'),
+    experience: Yup.string().required('Experience is required'),
+    b2bExpertise: Yup.string().required('B2B Expertise is required'),
+    additionalQuestion: Yup.string().required('Additional Question is required'),
+  });
+
+  const handleSnackbarOpen = () => {
+    setSnackbarOpen(true);
+  };
+
+  const handleJoinButtonClick = () => {
+    setFormVisible(true);
+  };
+
+
+  function sendDataToServer(data) {
+    console.log('sending data to server succesfull', data)
+    const url = '/api/v1/NewMemberMarketingB2B';
+  
+    axios.post(url, data)
+      .then(response => {
+        console.log('Data sent successfully:', response.data);
+        handleFormClose();
+        handleSnackbarOpen()
+      })
+      .catch(error => {
+        console.error('Error sending data:', error);
+      });
+  }
+
+
+  const handleFormClose = () => {
+    setFormVisible(false);
+  };
+
+return (
+  <>
     <div className="article">
 
 
-<div className="marketing-container">
+    <div className="marketing-container">
   <h1>Marketing Plan: Reaching B2B Targets</h1>
   <p>
     Our marketing plan is tailored to reach out to enterprises with a large workforce, extensive materials, and complex job operations. We aim to provide high-performance companies that prioritize time management and seek to optimize their business processes with a better experience for their workforce.
@@ -72,15 +129,136 @@ const MarketingPlan = () => {
       Free Updates and Continuous Improvement: Companies will receive regular updates and improvements to ensure they stay ahead in resource management.
     </li>
   </ol>
-  <div className="contact">
-<label htmlFor="more-information">For More Information Contact Me:<LinkedInIcon /></label>
-<Link to='https://www.linkedin.com/in/younes-raymond-188a40241/' target='_blanck'>
-        <button className='btn'>Contact Me</button>
-      </Link>
-      </div>
 </div>
 
+</div>
 
+<div className="contact">
+        <label htmlFor="more-information">For More Information Contact Me:<LinkedInIcon /></label>
+        <Link to='https://www.linkedin.com/in/younes-raymond-188a40241/' target='_blank'>
+          <button className='btn'>Contact Me</button>
+        </Link>
+        <Button className='btn' onClick={handleJoinButtonClick}>Join the Marketing Team</Button>
+      </div>
+
+     
+  
+<Dialog open={isFormVisible} onClose={handleFormClose}>
+  <DialogTitle>Join the Marketing Team</DialogTitle>
+  <DialogContent>
+  <Formik
+  initialValues={{
+    fullName: '',
+    email: '',
+    phone: '',
+    experience: '',
+    portfolio: '',
+    b2bExpertise: '',
+    additionalQuestion: '',
+  }}
+  validationSchema={validationSchema}
+  onSubmit={(values, { setSubmitting }) => {
+    console.log('Formik onSubmit:', values);
+    sendDataToServer(values);
+    setSubmitting(false);
+  }}
+>
+  {({ errors, touched, isSubmitting }) => (
+    <Form>
+      <Field
+        as={TextField}
+        name="fullName"
+        label="Full Name"
+        fullWidth
+        margin="normal"
+        error={touched.fullName && !!errors.fullName}
+        helperText={touched.fullName && errors.fullName}
+      />
+
+      <Field
+        as={TextField}
+        name="email"
+        label="Email"
+        type="email"
+        fullWidth
+        margin="normal"
+        error={touched.email && !!errors.email}
+        helperText={touched.email && errors.email}
+      />
+
+      <Field
+        as={TextField}
+        name="phone"
+        label="Phone"
+        fullWidth
+        margin="normal"
+        error={touched.phone && !!errors.phone}
+        helperText={touched.phone && errors.phone}
+      />
+
+
+      <Field
+        name="b2bExpertise"
+        // ...
+      >
+        {({ field }) => (
+          <TextField
+            {...field}
+            label="B2B Expertise"
+            fullWidth
+            margin="normal"
+            error={touched.b2bExpertise && !!errors.b2bExpertise}
+            helperText={touched.b2bExpertise && errors.b2bExpertise}
+          />
+        )}
+      </Field>
+
+      <Field
+        as={TextField}
+        name="portfolio"
+        label="Portfolio"
+        fullWidth
+        margin="normal"
+        error={touched.portfolio && !!errors.portfolio}
+        helperText={touched.portfolio && errors.portfolio}
+      />
+
+      {/* Additional Question Field (if needed) */}
+      <Field
+        as={TextField}
+        name="additionalQuestion"
+        label="Additional Question"
+        fullWidth
+        margin="normal"
+        error={touched.additionalQuestion && !!errors.additionalQuestion}
+        helperText={touched.additionalQuestion && errors.additionalQuestion}
+      />
+
+      <DialogActions>
+        <Button onClick={handleFormClose} color="secondary">
+          Cancel
+        </Button>
+        <Button color="primary" type="submit" disabled={isSubmitting}>
+          Submit
+        </Button>
+      </DialogActions>
+    </Form>
+  )}
+</Formik>
+
+  </DialogContent>
+</Dialog>
+
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
+          Data sent successfully!
+        </Alert>
+      </Snackbar>
+      
       <div className="image-container">
         {/* Dashboard Chart data with SideBar */}
         <div className="image-box">
@@ -129,8 +307,18 @@ const MarketingPlan = () => {
         </div>
       </div>
 
-    </div>
+    
+
+      </>
+
   );
+
+
+
 };
 
 export default MarketingPlan;
+
+
+
+

@@ -2,6 +2,7 @@ const Workers = require('../models/userModel');
 const Materials = require('../models/productModel');
 const Jobs = require('../models/jobsModel');
 const Tasks = require('../models/taskModel')
+const MarketerModel = require('../models/MarketerModel'); 
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');
 const sendToken = require('../utils/sendToken');
@@ -477,7 +478,7 @@ exports.updateProfileImg = asyncErrorHandler(async (req, res) => {
 });
 
 exports.createTasks= asyncErrorHandler(async (req, res) => {
-  const { title, description, resultExpectation, status, workerId } = req.body;
+  const { title, description, resultExpectation, status,deadlineDays, workerId } = req.body;
 
   try {
     const newTask = new Tasks({
@@ -485,6 +486,7 @@ exports.createTasks= asyncErrorHandler(async (req, res) => {
       description,
       Expectation: resultExpectation,
       status,
+      deadlineDays,
       worker: workerId,
     });
 
@@ -503,7 +505,6 @@ exports.createTasks= asyncErrorHandler(async (req, res) => {
     });
   }
 });
-
 
 
 exports.TasksAvailable = asyncErrorHandler(async (req, res) => {
@@ -527,8 +528,6 @@ exports.TasksAvailable = asyncErrorHandler(async (req, res) => {
 });
 
 exports.updatedTask = asyncErrorHandler(async (req, res) => {
-
-  // const {  } = req.body;
   console.log(req.body.taskId)
 
 
@@ -549,4 +548,40 @@ exports.updatedTask = asyncErrorHandler(async (req, res) => {
     return res.status(500).json({ message: 'Error updating task status' });
   }
 });
+
+exports.NewMemberMarketingB2B = asyncErrorHandler(async (req, res) => {
+  console.log(req.body)
+  // Get the data from the request body
+  const {
+    fullName,
+    email,
+    phone,
+    experience,
+    portfolio,
+    b2bExpertise,
+    additionalQuestion
+  } = req.body;
+
+  // Create a new instance of the MarketerModel
+  const newMarketer = new MarketerModel({
+    fullName,
+    email,
+    phone,
+    experience,
+    portfolio,
+    b2bExpertise,
+    additionalQuestion
+  });
+
+  try {
+    const savedMarketer = await newMarketer.save();
+    console.log('Data saved successfully:', savedMarketer);
+    res.status(200).json({ message: 'Data saved successfully' });
+  } catch (error) {
+    console.error('Error saving data:', error);
+    // Send an error response to the client
+    res.status(500).json({ error: 'An error occurred while saving data' });
+  }
+});
+
 

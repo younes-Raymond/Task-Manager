@@ -7,7 +7,15 @@ import Edit from '@mui/icons-material/Edit';
 import axios from 'axios';
 import Loading from '../Layouts/loading';
 import { formatDate } from '../../utils/DateFormat';
-import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import {   
+  Snackbar, 
+  Alert,
+  Dialog, 
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button, 
+  TextField } from '@mui/material';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 
 const ShowWorkers = () => {
@@ -18,7 +26,9 @@ const ShowWorkers = () => {
   const [taskTitle, setTaskTitle] = useState('');
   const [taskDescription, setTaskDescription] = useState('');
   const [taskResult, setTaskResult] = useState('');
-  
+  const [endDate , setEndDate ] = useState('');
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
+
   useEffect(() => {
     const fetchWorkers = async () => {
       const data = await getAllUsers();
@@ -29,9 +39,6 @@ const ShowWorkers = () => {
     fetchWorkers();
   }, []);
 
-  const handleEdit = async (id) => {
-
-  }
   const handleDelete = async (id) => {
     try {
       await axios.delete(`/api/v1/users/${id}`);
@@ -41,7 +48,9 @@ const ShowWorkers = () => {
     }
   };
 
-
+ const handleSnackbarOpen = () => {
+    setSnackbarOpen(true);
+  };
 
   const handleSelectWorker = (workerId) => {
     setSelectedWorkerId(workerId);
@@ -55,13 +64,13 @@ const ShowWorkers = () => {
         title: taskTitle,
         description: taskDescription,
         resultExpectation: taskResult,
+        endDate: endDate, // Added the endDate property
         status: 'pending',
         workerId: selectedWorkerId,
       };
 
       const res = await axios.post('/api/v1/tasks', taskData);
-      console.log(res);
-
+      handleSnackbarOpen()
       // Close the popup after successful task creation
       setTaskPopupOpen(false);
     } catch (error) {
@@ -125,11 +134,12 @@ const ShowWorkers = () => {
       
      
       <Dialog open={isTaskPopupOpen} onClose={() => setTaskPopupOpen(false)}>
-        <DialogTitle>Create Task</DialogTitle>
+        <DialogTitle> Create Task</DialogTitle>
         <DialogContent>
           <TextField
             label="Task Title"
             fullWidth
+            multiline
             value={taskTitle}
             onChange={(e) => setTaskTitle(e.target.value)}
             style={{ marginBottom: '16px' }}
@@ -148,7 +158,19 @@ const ShowWorkers = () => {
             multiline
             value={taskResult}
             onChange={(e) => setTaskResult(e.target.value)}
+            style={{ marginBottom: '16px' }}
+
           />
+          <TextField
+      label="End Date"
+      type="date"
+      fullWidth
+      value={endDate}
+      onChange={(e) => setEndDate(e.target.value)}
+      InputLabelProps={{
+        shrink: true,
+      }}
+    />
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setTaskPopupOpen(false)} color="secondary">
@@ -160,6 +182,15 @@ const ShowWorkers = () => {
         </DialogActions>
       </Dialog>
 
+      <Snackbar
+        open={isSnackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+      >
+        <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
+          Data sent successfully!
+        </Alert>
+      </Snackbar>
 
     </div>
   );

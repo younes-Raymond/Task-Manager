@@ -17,7 +17,8 @@ const {
   updateProfileImg,
   createTasks,
   TasksAvailable,
-  updatedTask
+  updatedTask,
+  NewMemberMarketingB2B
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
@@ -42,4 +43,5 @@ router.post('/updateprofileimg',updateProfileImg)
 router.post('/tasks', createTasks)
 router.post('/TasksAvailable', TasksAvailable)
 router.post('/updateTasks', updatedTask)
+router.post('/NewMemberMarketingB2B', NewMemberMarketingB2B);
 module.exports = router;

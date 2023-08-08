@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import './add-workers.css';
 import axios from 'axios';
 import SideBar from "./SideBar/SideBar";
+import {Snackbar, Alert , Dialog , DialogTitle, DialogContent, TextField, DialogActions, Button} from '@mui/material';
 
 const AddWorkerForm = () => {
   const [name, setName] = useState("");
@@ -14,7 +15,11 @@ const AddWorkerForm = () => {
   const [legalInfo, setLegalInfo] = useState("");
   const [phoneNumber , setPhoneNumber] = useState("");
   const defaultPassword = "example123"; // Default password for new workers
+  const [isSnackbarOpen, setSnackbarOpen] = useState(false);
 
+  const handleSnackbarOpen = () => {
+    setSnackbarOpen(true);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Create form data to send as multipart/form-data
@@ -41,7 +46,6 @@ const AddWorkerForm = () => {
           "Content-Type": "multipart/form-data",
         },
       });
-      // Reset form fields after successful submission
       setName("");
       setEmail("");
       setPosition("");
@@ -178,6 +182,11 @@ const AddWorkerForm = () => {
       </form>
     </div>
     </div>
+    <Snackbar open={isSnackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)}>
+  <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
+    Data sent successfully!
+  </Alert>
+</Snackbar>
     </>
   );
 };

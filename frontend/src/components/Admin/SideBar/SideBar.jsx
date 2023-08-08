@@ -92,7 +92,7 @@ return (
               return (
                 <>
                   {label === "Logout" ? (
-                    <button onClick={handleLogout} className="LogoutButton">
+                    <button onClick={handleLogout} className="btn">
                       <span>{icon}</span>
                       <span>{label}</span>
                     </button>
