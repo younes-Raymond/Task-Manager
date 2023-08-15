@@ -18,7 +18,8 @@ const {
   createTasks,
   TasksAvailable,
   updatedTask,
-  NewMemberMarketingB2B
+  NewMemberMarketingB2B,
+  fetchTasks
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
@@ -44,4 +45,5 @@ router.post('/tasks', createTasks)
 router.post('/TasksAvailable', TasksAvailable)
 router.post('/updateTasks', updatedTask)
 router.post('/NewMemberMarketingB2B', NewMemberMarketingB2B);
+router.get('/fetchTasks', fetchTasks); 
 module.exports = router;

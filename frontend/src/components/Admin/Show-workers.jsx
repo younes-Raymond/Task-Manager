@@ -162,7 +162,7 @@ const ShowWorkers = () => {
 
           />
           <TextField
-      label="End Date"
+      label="DeadLine"
       type="date"
       fullWidth
       value={endDate}

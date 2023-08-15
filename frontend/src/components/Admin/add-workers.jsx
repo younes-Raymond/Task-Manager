@@ -3,7 +3,7 @@ import './add-workers.css';
 import axios from 'axios';
 import SideBar from "./SideBar/SideBar";
 import {Snackbar, Alert , Dialog , DialogTitle, DialogContent, TextField, DialogActions, Button} from '@mui/material';
-
+import CustomSnackbar from "../Layouts/Snackbar";
 const AddWorkerForm = () => {
   const [name, setName] = useState("");
   const [position, setPosition] = useState("");
@@ -46,6 +46,7 @@ const AddWorkerForm = () => {
           "Content-Type": "multipart/form-data",
         },
       });
+      handleSnackbarOpen()
       setName("");
       setEmail("");
       setPosition("");
@@ -72,7 +73,6 @@ const AddWorkerForm = () => {
       }
     })
   };
-
 
   return (
     <>
@@ -182,11 +182,9 @@ const AddWorkerForm = () => {
       </form>
     </div>
     </div>
-    <Snackbar open={isSnackbarOpen} autoHideDuration={3000} onClose={() => setSnackbarOpen(false)}>
-  <Alert severity="success" onClose={() => setSnackbarOpen(false)}>
-    Data sent successfully!
-  </Alert>
-</Snackbar>
+    {isSnackbarOpen && (
+    <CustomSnackbar />
+    )}
     </>
   );
 };

@@ -268,10 +268,14 @@ return (
 
         {/* Show workers CRUD workers with SideBar */}
         <div className="image-box">
-          <img src={'https://res.cloudinary.com/dktkavyr3/image/upload/v1691006296/Web_capture_27-7-2023_162221_localhost_yi7qi6.jpg'} alt="Show workers CRUD workers with SideBar" />
+          <img src={'https://res.cloudinary.com/dktkavyr3/image/upload/v1691502347/Web_capture_8-8-2023_144341_localhost_vpe2qa.jpg'} alt="Show workers CRUD workers with SideBar" />
           <p className="image-description">Show workers CRUD workers with SideBar</p>
         </div>
-
+     
+        <div className="image-box">
+          <img src={'https://res.cloudinary.com/dktkavyr3/image/upload/v1691502462/Web_capture_8-8-2023_132229_localhost_t3j8ud.jpg'} alt="Show workers CRUD workers with SideBar" />
+          <p className="image-description">Adding Daily Task to Worker with Deadline </p>
+        </div>
         {/* Show materials CRUD with SideBar */}
         <div className="image-box">
           <img src={'https://res.cloudinary.com/dktkavyr3/image/upload/v1691006296/Web_capture_27-7-2023_162832_localhost_ckguzd.jpg'} alt="Show materials CRUD with SideBar" />
@@ -293,13 +297,17 @@ return (
   </p>
 </div>
 
-
+<div className="image-box">
+          <img src={'https://res.cloudinary.com/dktkavyr3/image/upload/v1691502356/Web_capture_8-8-2023_144522_localhost_wvdyjz.jpg'} alt="Show workers CRUD workers with SideBar" />
+          <p className="image-description">Profile for Each Worker</p>
+        </div>
         {/* Material in page of workers, show-products Route, show location of material and other workers */}
         <div className="image-box">
           <img src={'https://res.cloudinary.com/dktkavyr3/image/upload/v1691006295/Web_capture_27-7-2023_16319_localhost_rbrcra.jpg'} alt="Material in page of workers, show-products Route, show location of material and other workers" />
           <p className="image-description">Material in page of workers, show-products page, show location of material and other workers</p>
         </div>
 
+       
         {/* Show Jobs Available for workers and Unknown user role */}
         <div className="image-box">
           <img src={'https://res.cloudinary.com/dktkavyr3/image/upload/v1691006294/Web_capture_27-7-2023_163537_localhost_o01lwx.jpg'} alt="Show Jobs Available for workers and Unknown user role" />

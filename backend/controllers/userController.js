@@ -444,8 +444,6 @@ exports.deleteJob = async (req, res) => {
   }
 };
 
-
-
 exports.updateProfileImg = asyncErrorHandler(async (req, res) => { 
 
   try {
@@ -477,17 +475,22 @@ exports.updateProfileImg = asyncErrorHandler(async (req, res) => {
   }
 });
 
-exports.createTasks= asyncErrorHandler(async (req, res) => {
-  const { title, description, resultExpectation, status,deadlineDays, workerId } = req.body;
+
+exports.createTasks = asyncErrorHandler(async (req, res) => {
+  const { title, description, resultExpectation, status, deadlineDays, workerId } = req.body;
 
   try {
+    const worker = await Workers.findById(workerId);
+    const workerName = worker ? worker.name : '';
+
     const newTask = new Tasks({
       title,
       description,
-      Expectation: resultExpectation,
+      expectation: resultExpectation, 
       status,
       deadlineDays,
       worker: workerId,
+      workerName: workerName,
     });
 
     const savedTask = await newTask.save();
@@ -505,6 +508,7 @@ exports.createTasks= asyncErrorHandler(async (req, res) => {
     });
   }
 });
+
 
 
 exports.TasksAvailable = asyncErrorHandler(async (req, res) => {
@@ -529,8 +533,6 @@ exports.TasksAvailable = asyncErrorHandler(async (req, res) => {
 
 exports.updatedTask = asyncErrorHandler(async (req, res) => {
   console.log(req.body.taskId)
-
-
   try {
     const task = await Tasks.findByIdAndUpdate(
       req.body.taskId,
@@ -584,4 +586,15 @@ exports.NewMemberMarketingB2B = asyncErrorHandler(async (req, res) => {
   }
 });
 
+
+exports.fetchTasks = asyncErrorHandler(async (req, res) => {
+
+  try {
+    const tasks = await Tasks.find();
+    console.log(tasks)
+    res.status(200).json({ success: true, data: tasks });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Error fetching tasks' });
+  }
+});
 

@@ -110,7 +110,15 @@ export const search = async (keyword) => {
       throw error;
     }
   };
-  
 
+export const fetchTasks = async () => {
+  try {
+    const res = await axios.get('/api/v1/fetchTasks');
+    console.log('fetchTasks: ' , res.data.data);
+    return res.data
+  } catch (error) {
+   console.error('Error fetching Tasks to Chart, MainData component ')
+  }
+}
   
   

@@ -14,7 +14,7 @@ main {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    background: repeating-linear-gradient(99deg, black, transparent 380px);
+    background: repeating-linear-gradient(98deg, black, transparent 380px);
     width:20%;
     height: auto;
     border-radius: 6px;
