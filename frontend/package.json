@@ -15,6 +15,8 @@
     "axios": "^0.25.0",
     "bcrypt": "^5.1.0",
     "chart.js": "^3.5.1",
+    "flag-icon-css": "^4.1.7",
+    "flag-icons": "^6.10.0",
     "formik": "^2.4.3",
     "notistack": "^2.0.8",
     "react": "^17.0.2",

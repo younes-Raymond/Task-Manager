@@ -7,6 +7,8 @@ import { getAllUsers, getAllMaterialRequester, getAllJobs, fetchTasks } from '..
 import { getProducts } from '../../actions/productaction';
 import './MainData.css'
 import { formatDate } from '../../utils/DateFormat';
+
+
 const MainData = () => {
   const [Workers, setWorkers] = useState([]);
   const [MaterialRequester, setMaterialRequester] = useState([]);
@@ -216,7 +218,7 @@ const options = {
 
 };
 
+
 export default MainData;
 
 
-// there's i make plastre to him he come from italy to morocco now , 

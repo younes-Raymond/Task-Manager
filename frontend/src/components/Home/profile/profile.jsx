@@ -12,8 +12,10 @@ import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { formatDate } from '../../../utils/DateFormat';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SettingsSuggestTwoToneIcon from '@mui/icons-material/SettingsSuggestTwoTone';
+import CheckIcon from '@mui/icons-material/Check';
 import { getTasks } from '../../../actions/userAction';
 import { Button, Typography, List, ListItem, ListItemText, ListItemSecondaryAction } from '@mui/material';
+
 function ProfilePage() {
 
   const [user, setUser] = useState(null); 
@@ -27,7 +29,9 @@ function ProfilePage() {
   const [profileImg, setProfileImg ]  = useState('')
   const [selectedFile, setSelectedFile] = useState(null);
   const [tasks , setTasks ] = useState([]);
-
+  const [isStartTask, setIsStartTask ] = useState(false);
+  const [isTaskDone , setIsTaskDone ] = useState(false);
+  
 const LogoutButton = () => {
     const handleLogout = () => {
       // Clear the localStorage
@@ -90,6 +94,8 @@ const fetchTasks = async () => {
     console.error('Error fetching tasks:', error);
   }
 };
+
+
   useEffect(() => {
     const chooseContainer = document.querySelector('.chosse-container');
     if (chooseContainer) { 
@@ -229,6 +235,7 @@ const handleImageUpload = async (event) => {
 
 const handleStartTask = async (taskId) => {
   try {
+
     const data = { taskId }; 
     const res = await axios.post(`/api/v1/updateTasks`, data); 
     console.log('Task status updated:', res.data);
@@ -237,16 +244,37 @@ const handleStartTask = async (taskId) => {
       task._id === taskId ? { ...task, status: 'in progress' } : task
     );
     setTasks(updatedTasks);
+    setIsStartTask(true);
+  } catch (error) {
+    console.error('Error updating task status:', error);
+  }
+};
+
+const handleCompleteTask = async (taskId) => {
+
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const data = {
+      userId: user._id,
+      taskId,
+      status: 'completed'
+    };
+
+    const res = await axios.post(`/api/v1/updateTasksDone`, data);
+    console.log('Task status updated:', res.data);
+
+    const updatedTasks = tasks.map((task) =>
+      task._id === taskId ? { ...task, status: 'completed' } : task
+    );
+    setTasks(updatedTasks);
+    setIsTaskDone(true);
   } catch (error) {
     console.error('Error updating task status:', error);
   }
 };
 
 
-
-
 return (
-
     <div className="Profile-container">
       {user && (
         <div className="wrap-help">
@@ -315,7 +343,7 @@ return (
               </Link>
             </div>
             <div className="setting">
-              <Link to="/setting">
+              <Link to="/settings">
                 <button className='item'>
                   Setting <br />
                   <SettingsSuggestTwoToneIcon />
@@ -370,40 +398,59 @@ return (
         )}
   
 
+
+
+
+
+
   <div className="tasks-container">
   <Typography variant="h4" gutterBottom>
     Your Tasks
   </Typography>
   {tasks.length > 0 ? (
     <List>
-      {tasks.map((task) => (
-        <ListItem key={task._id} divider>
-          <ListItemText
-            primary={task.title}
-            secondary={
-              <>
-                <Typography variant="body2" color="textSecondary">
-                  {task.description}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Status: {task.status}
-                </Typography>
-              </>
-            }
-          />
-          {task.status === 'pending' && (
-            <ListItemSecondaryAction>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleStartTask(task._id)}
-              >
-                Start Task
-              </Button>
-            </ListItemSecondaryAction>
-          )}
-        </ListItem>
-      ))}
+      {tasks
+        .filter((task) => task.status !== 'completed') // Filter out completed tasks
+        .map((task) => (
+          <ListItem key={task._id} divider>
+            <ListItemText
+              primary={task.title}
+              secondary={
+                <>
+                  <Typography variant="body2" color="textSecondary">
+                    {task.description}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Status: {task.status}
+                  </Typography>
+                </>
+              }
+            />
+            {task.status === 'pending' && (
+              <ListItemSecondaryAction>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={() => handleStartTask(task._id)}
+                >
+                  Start Task
+                </Button>
+              </ListItemSecondaryAction>
+            )}
+            {task.status === 'in progress' && (
+              <ListItemSecondaryAction>
+                <Button
+                  variant="contained"
+                  style={{ backgroundColor: '#4caf50', color: 'white' }}
+                  onClick={() => handleCompleteTask(task._id)}
+                >
+                  Done
+                  <CheckIcon style={{ marginLeft: '8px' }} />
+                </Button>
+              </ListItemSecondaryAction>
+            )}
+          </ListItem>
+        ))}
     </List>
   ) : (
     <Typography variant="body2">No tasks available.</Typography>
@@ -412,7 +459,15 @@ return (
 
 
 
-      </div>
+
+
+
+
+
+
+
+
+</div>
   
       {reQSrV?.message && reQSrV?.message.includes("approved") && (
         <div className="confirmation">
@@ -443,10 +498,6 @@ return (
         >
           <LogoutOutlinedIcon /> Logout
         </button>
- 
-
-
-  
       {loading && <Loading />}
 
       

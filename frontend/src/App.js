@@ -22,6 +22,7 @@ import PrivateRoutes from './Routes/PrivateRoutes';
 import CheckUserRole  from './Routes/checkUserRole';
 import LearnBoxes  from './components/Home/article/learnMoreBox';
 import MarketingPlan  from './components/Home/article/Marketingblogs'
+import SettingsComponent from './components/Home/profile/settings';
 
 const userRole = CheckUserRole()
 
@@ -40,6 +41,8 @@ const App = () => {
           <Route path="/show-products" element={<ProductDetailPage />} />
           <Route path="/search" element={<Search />} />
           <Route path="/Jobs" element={<Jobs />} />
+          <Route path="/settings" element={<SettingsComponent />} />
+
           {/* start users section                        */}
       
             {userRole === 'admin' && (

@@ -475,7 +475,6 @@ exports.updateProfileImg = asyncErrorHandler(async (req, res) => {
   }
 });
 
-
 exports.createTasks = asyncErrorHandler(async (req, res) => {
   const { title, description, resultExpectation, status, deadlineDays, workerId } = req.body;
 
@@ -508,8 +507,6 @@ exports.createTasks = asyncErrorHandler(async (req, res) => {
     });
   }
 });
-
-
 
 exports.TasksAvailable = asyncErrorHandler(async (req, res) => {
   const { id } = req.body;
@@ -595,6 +592,31 @@ exports.fetchTasks = asyncErrorHandler(async (req, res) => {
     res.status(200).json({ success: true, data: tasks });
   } catch (error) {
     res.status(500).json({ success: false, error: 'Error fetching tasks' });
+  }
+});
+
+
+exports.updatedTaskDone = asyncErrorHandler(async (req, res) => {
+  console.log(req.body)
+  const { taskId, userId } = req.body;
+
+  try {
+    const task = await Tasks.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({ message: 'Task not found' });
+    }
+
+    if (task.worker.toString() !== userId) {
+      return res.status(403).json({ message: 'Unauthorized' });
+    }
+    task.status = 'completed';
+    
+    await task.save();
+    return res.status(200).json({ message: 'Task marked as completed' });
+  } catch (error) {
+    console.error('Error updating task status:', error);
+    return res.status(500).json({ message: 'Internal server error' });
   }
 });
 
