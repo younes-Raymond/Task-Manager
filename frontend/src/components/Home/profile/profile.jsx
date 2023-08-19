@@ -14,7 +14,16 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import SettingsSuggestTwoToneIcon from '@mui/icons-material/SettingsSuggestTwoTone';
 import CheckIcon from '@mui/icons-material/Check';
 import { getTasks } from '../../../actions/userAction';
-import { Button, Typography, List, ListItem, ListItemText, ListItemSecondaryAction } from '@mui/material';
+import { Button, Typography, List, ListItem, ListItemText, ListItemSecondaryAction,Paper, Card, CardHeader, CardMedia, CardContent, CardActions,ListItemAvatar, Avatar } from '@mui/material';
+import Dialog from '@mui/material/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import button from '@mui/material/Button';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
+import CloseIcon from '@mui/icons-material/Close';
 
 function ProfilePage() {
 
@@ -31,6 +40,9 @@ function ProfilePage() {
   const [tasks , setTasks ] = useState([]);
   const [isStartTask, setIsStartTask ] = useState(false);
   const [isTaskDone , setIsTaskDone ] = useState(false);
+  const [open, setOpen] = useState(false);
+const [selectedTask, setSelectedTask] = useState(null);
+
   
 const LogoutButton = () => {
     const handleLogout = () => {
@@ -59,6 +71,33 @@ const checkLocalStorage = () => {
     }
   }
 };
+
+const handleOpen = (task) => {
+  setSelectedTask(task);
+  setOpen(true);
+
+};
+
+const handleClose = () => {
+  setOpen(false);
+};
+
+function calculateRemainingTime(createdAt, deadlineDays) {
+  const createdAtDate = new Date(createdAt);
+  const currentDate = new Date();
+  const millisecondsPerDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
+
+  const timeDifference = createdAtDate.getTime() - currentDate.getTime();
+  const remainingDays = Math.ceil(timeDifference / millisecondsPerDay) + deadlineDays;
+
+  if (remainingDays > 0) {
+    return `${remainingDays} days remaining`;
+  } else if (remainingDays === 0) {
+    return `Today is the deadline`;
+  } else {
+    return `Deadline has passed`;
+  }
+}
 
 
   const getMaterialRequests = async () => {
@@ -245,6 +284,7 @@ const handleStartTask = async (taskId) => {
     );
     setTasks(updatedTasks);
     setIsStartTask(true);
+    handleOpen(taskId)
   } catch (error) {
     console.error('Error updating task status:', error);
   }
@@ -358,51 +398,43 @@ return (
                   {reQSrV.message}!
                 </p>
               )}
-  
-              {reQSrV && reQSrV.takenRequest && (
-                <div className="chosse-containerr" id='parent-info'>
-                  {/* ... */}
-                  {reQSrV.takenRequest && reQSrV.takenRequest.requesterAvatar && reQSrV.takenRequest.requesterName && (
-                    <div className="requester_info">
-                      <div className="info">
-                        <p> Name: {reQSrV.takenRequest.requesterName} <br />
-                        <span> Date : {formatDate(reQSrV.takenRequest?.requestDate) }</span>
-                        <br />
-                        </p>
-                      </div>
-                      <img src={reQSrV.takenRequest?.requesterAvatar} alt="Name of requester" className='requester-avatar' />
-                    </div>
-                  )}
-                  {reQSrV.takenRequest && reQSrV.takenRequest?.materialPicture && reQSrV.takenRequest?.requestDate && (
-                    <div className='material-infoo'>
-                      <p>
-                        <span>At: {formatDate(reQSrV.takenRequest?.requestDate)}</span>
-                      </p>
-                      <img src={reQSrV.takenRequest?.materialPicture} alt="Product" />
-                    </div>
-                  )}
-                  {/* ... */}
-                </div>
-              )}
-  
-              {reQSrV?.takenRequest && (
-                <div className="approval-buttons" id='approval-buttons-id'>
-                  <button onClick={handleApprove} className="approve-button">Approved</button>
-                  <button onClick={handleReject} className="reject-button">Rejected</button>
-                </div>
-              )}
+
+
+<div className="requests-container">
+    <Paper elevation={3} >
+      {reQSrV && reQSrV.takenRequest && (
+        <Card>
+          <div className="requester-info">
+           <ListItemAvatar>
+            <Avatar alt='Name of requester' src={reQSrV.takenRequest?.requesterAvatar} />
+          </ListItemAvatar>
+          {reQSrV.takenRequest.requesterAvatar && reQSrV.takenRequest.requesterName && (
+            <CardHeader title={`Name: ${reQSrV.takenRequest.requesterName}`} subheader={`Date: ${formatDate(reQSrV.takenRequest.requestDate)}`}  />
+          )}
+         </div>
+          
+          {reQSrV.takenRequest.materialPicture && reQSrV.takenRequest.requestDate && (
+            <CardMedia component="img" src={reQSrV.takenRequest.materialPicture} alt="Product" title={`At: ${formatDate(reQSrV.takenRequest.requestDate)}`} />
+          )}
+
+
+          {reQSrV.takenRequest && (
+            <CardActions>
+              <Button onClick={handleApprove} className="approve-button" variant="contained">Approved</Button>
+              <Button onClick={handleReject} className="reject-button" variant="outlined">Rejected</Button>
+            </CardActions>
+          )}
+        </Card>
+      )}
+    </Paper>
+    </div>
+
             </div>
   
             {/* ... */}
           </div>
         )}
   
-
-
-
-
-
-
   <div className="tasks-container">
   <Typography variant="h4" gutterBottom>
     Your Tasks
@@ -412,44 +444,53 @@ return (
       {tasks
         .filter((task) => task.status !== 'completed') // Filter out completed tasks
         .map((task) => (
+
+
           <ListItem key={task._id} divider>
-            <ListItemText
-              primary={task.title}
-              secondary={
-                <>
-                  <Typography variant="body2" color="textSecondary">
-                    {task.description}
-                  </Typography>
-                  <Typography variant="body2" color="textSecondary">
-                    Status: {task.status}
-                  </Typography>
-                </>
-              }
-            />
-            {task.status === 'pending' && (
-              <ListItemSecondaryAction>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={() => handleStartTask(task._id)}
+          <ListItemText
+            primary={task.title}
+            secondary={
+              <div>
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  style={{ maxHeight: '40px', overflow: 'hidden' }} 
                 >
-                  Start Task
-                </Button>
-              </ListItemSecondaryAction>
-            )}
-            {task.status === 'in progress' && (
-              <ListItemSecondaryAction>
-                <Button
-                  variant="contained"
-                  style={{ backgroundColor: '#4caf50', color: 'white' }}
-                  onClick={() => handleCompleteTask(task._id)}
-                >
-                  Done
-                  <CheckIcon style={{ marginLeft: '8px' }} />
-                </Button>
-              </ListItemSecondaryAction>
-            )}
-          </ListItem>
+                <strong>Description:</strong> {task.description}
+                </Typography>
+                <Typography variant="body2" color="textSecondary">
+                  Status: {task.status}
+                </Typography>
+              </div>
+            }
+            primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
+          />
+          {task.status === 'pending' && (
+            <ListItemSecondaryAction>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleOpen(task)}
+              >
+                Start Task
+              </Button>
+            </ListItemSecondaryAction>
+          )}
+          {task.status === 'in progress' && (
+            <ListItemSecondaryAction>
+              <Button
+                variant="contained"
+                style={{ backgroundColor: '#4caf50', color: 'white' }}
+                onClick={() => handleCompleteTask(task._id)}
+              >
+                Done
+                <CheckIcon style={{ marginLeft: '8px' }} />
+              </Button>
+            </ListItemSecondaryAction>
+          )}
+        </ListItem>
+
+
         ))}
     </List>
   ) : (
@@ -458,8 +499,38 @@ return (
 </div>
 
 
-
-
+<Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+      <DialogTitle>Task Details</DialogTitle>
+      <DialogContent>
+        {selectedTask && (
+          <DialogContentText>
+            <strong>Title:</strong> {selectedTask.title}
+            <br />
+            <strong>Description:</strong> {selectedTask.description}
+            <br />
+            <strong>Expectation:</strong> {selectedTask.expectation}
+            <br />
+            <strong>Created At:</strong> {selectedTask.createdAt && formatDate(selectedTask.createdAt)}
+            <br />
+            <strong>Deadline:</strong> {selectedTask.deadlineDays} days from now
+            <br />
+            <strong>
+              Time Remaining: {calculateRemainingTime(selectedTask.createdAt, selectedTask.deadlineDays)}
+              <AccessTimeIcon style={{ verticalAlign: 'middle', marginLeft: '4px' }} />
+            </strong>
+          </DialogContentText>
+        )}
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={() => handleStartTask(selectedTask?._id)} variant="contained" color="primary" startIcon={<PlayCircleFilledIcon />}>
+          Start Task
+        </Button>
+        <Button onClick={handleClose} variant="outlined" color="primary" startIcon={<CloseIcon />}>
+          Close
+        </Button>
+      </DialogActions>
+    </Dialog>
+ 
 
 
 

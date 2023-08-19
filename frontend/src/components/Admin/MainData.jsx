@@ -153,15 +153,14 @@ const options = {
       display: true,
       position: 'top',
     },
-    plugins: {
-      datalabels: {
-        align: 'bottom', // Align labels at the bottom of bars
-        anchor: 'end',   // Anchor labels at the end of bars
-        formatter: value => value, // Customize label content if needed
-        color: '#333',    // Label color
-        font: {
-          weight: 'normal',
-        },
+    datalabels: {
+      align: 'bottom',
+      anchor: 'end',
+      formatter: value => value,
+      color: '#333',
+      font: {
+        weight: 'normal',
+        size: 5, 
       },
     },
     tooltip: {
@@ -169,12 +168,13 @@ const options = {
       callbacks: {
         label: context => {
           const task = Tasks[context.dataIndex];
-          return  `Task:${task.title}   Status:${task.status}`;
+          return  `Task: ${task.title}   Status: ${task.status}`;
         },
       },
     },
   },
 };
+
 
   return (
     <>

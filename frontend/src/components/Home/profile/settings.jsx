@@ -173,6 +173,7 @@ function SettingsComponent() {
       </Paper>
     </Container>
   );
+  
 }
 
 export default SettingsComponent;

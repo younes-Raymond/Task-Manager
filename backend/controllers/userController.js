@@ -475,19 +475,19 @@ exports.updateProfileImg = asyncErrorHandler(async (req, res) => {
   }
 });
 
-exports.createTasks = asyncErrorHandler(async (req, res) => {
-  const { title, description, resultExpectation, status, deadlineDays, workerId } = req.body;
 
+exports.createTasks = asyncErrorHandler(async (req, res) => {
+  const { title, description, resultExpectation, deadline, status, workerId } = req.body;
   try {
-    const worker = await Workers.findById(workerId);
+    const worker = await Workers.findById(workerId); 
     const workerName = worker ? worker.name : '';
 
     const newTask = new Tasks({
       title,
       description,
-      expectation: resultExpectation, 
+      expectation: resultExpectation,
       status,
-      deadlineDays,
+      deadline: deadline, // Set deadline as endDate
       worker: workerId,
       workerName: workerName,
     });
@@ -507,6 +507,7 @@ exports.createTasks = asyncErrorHandler(async (req, res) => {
     });
   }
 });
+
 
 exports.TasksAvailable = asyncErrorHandler(async (req, res) => {
   const { id } = req.body;

@@ -63,14 +63,12 @@
     font-size: 30px;
     
 }
-  /* Welcome User */
   .welcome-user p {
     font-size: 18px;
     font-weight: bold;
     margin-bottom: 20px;
   }
   
-  /* Buttons */
   .button {
     margin-bottom: 10px;
     padding: 10px 20px;
@@ -93,84 +91,11 @@
     font-size: 16px;
     color: #555;
   }
+
+
   
   .hint span {
     font-weight: bold;
-  }
-  
-  /* Requester Info */
-  .requester_info {
-    display: flex;
-    align-items: center;
-    margin-top: 20px;
-  }
-  
-  .requester_info .info {
-    margin-right: 10px;
-  }
-  
-  .requester_info .info p {
-    margin: 0;
-    font-size: 16px;
-    color: #333;
-  }
-  
-  .requester-avatar {
-    border-radius: 50%;
-    object-fit: cover;
-    margin-left: 10px;
-  }
-  
-  /* Material Info */
-  .material-infoo {
-    margin-top: 20px;
-    text-align: center;
-  }
-  
-  .material-infoo p {
-    margin: 0;
-    font-size: 16px;
-    color: #333;
-  }
-  
-  .material-infoo span {
-    font-weight: bold;
-  }
-  
-  .material-infoo img {
-    max-width: 100%;
-    margin-top: 10px;
-  }
-  
-  /* Approval Buttons */
-  .approval-buttons {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-  }
-  
-  .approve-button {
-    background-color: #4caf50;
-  }
-  
-  .reject-button {
-    background-color: #f44336;
-  }
-  
-  .approval-buttons button {
-    margin-right: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 4px;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .approval-buttons button:hover {
-    opacity: 0.9;
   }
   
   /* Confirmation */
@@ -233,6 +158,8 @@
   width: 60%;
   margin: 3% 0;
 }
+
+
   @media (max-width: 768px) {
     .edit-btn{
       margin: 0% 57%;
