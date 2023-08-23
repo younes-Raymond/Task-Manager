@@ -108,7 +108,7 @@ return (
 
   <span>Earnings and Incentives:</span>
   <p>
-    Let's discuss the exciting part – your earnings and incentives for marketing AllMart. For every active user in the app, you will earn an impressive 20% commission of the total net fee paid by each user. This incentivizes you to drive engagement and attract more enterprises to benefit from AllMart's game-changing features. As a web developer, you'll receive recognition for your contributions to creating unique versions of the app for each company.
+    Let's discuss the exciting part – your earnings and incentives for marketing AllMart. For every active user in the app, you will earn an impressive 20% commission of the total net fee paid by each user and for agency 50% . This incentivizes you to drive engagement and attract more enterprises to benefit from AllMart's game-changing features. As a web developer, you'll receive recognition for your contributions to creating unique versions of the app for each company.
   </p>
 
   <span>Our Plan: $0.5 Monthly for Every Active User</span>

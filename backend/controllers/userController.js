@@ -85,7 +85,6 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
 });
 
 exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
-  // console.log('ishavingarequest', req.body);
   try {
     const user = req.body;
 
@@ -137,7 +136,6 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
             requesterAvatar: request.requesterAvatar,
             destination: request.requesterDestination,
             materialPicture: request.materialPicture,
-            userOfTaken: request.userId_of_Taken,
             requesterId: request.requesterId,
             requestId: request._id,
           };
@@ -151,12 +149,11 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
             destination: request.requesterDestination,
             materialPicture: request.materialPicture,
             requesterId: request.requesterId,
-            userOfTaken: request.userId_of_Taken,
             requestId: request._id,
           };
           rejectedRequests.push(rejectedRequest);
         }
-      } else if (request.userId_of_Taken._id.toString() === user._id.toString()) {
+      } else if (request.userId_of_Taken._id.toString() === user._id.toString() && request.status === 'pending') {
         taken = true;
         updatedRequestData.message = 'You have a material that a requester needs. Please approve or reject the request.';
         const takenRequest = {
@@ -204,6 +201,7 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
   }
 });
 
+
 exports.approveRequest = asyncErrorHandler(async (req, res) => {
     // console.log('approved', req.body)
     const { user, status } = req.body;
@@ -213,7 +211,7 @@ exports.approveRequest = asyncErrorHandler(async (req, res) => {
       { new: true }
     );  
     res.status(200).json({ message: 'Request approved' });
-  });
+});
 
 exports.rejectRequest = asyncErrorHandler(async (req, res) => {
     // console.log('rejected', req.body)

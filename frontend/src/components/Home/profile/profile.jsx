@@ -100,29 +100,28 @@ function calculateRemainingTime(createdAt, deadlineDays) {
 }
 
 
-  const getMaterialRequests = async () => {
-    try {
-      const user = JSON.parse(localStorage.getItem('user'));
-      const response = await axios.post('/api/v1/getReguests', user);
-      const requestData = response.data.requestData;
-      if(response.data.requestData){
-      localStorage.setItem('requestData', JSON.stringify(requestData));
-      localStorage.setItem('name', response.data.requestData.user.name);
-      localStorage.setItem('userIdLS', response.data.requestData.user._id); 
-      localStorage.setItem('avatar', response.data.requestData.user.avatar.url);
-    } else {
-      console.log('no data come from server ')
-    }
-    } catch (error) {
-      console.error('Error fetching material requests:', error);
-    }
-  };
+ 
   
+const fetchRequests = async () => {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const response = await axios.post('/api/v1/getReguests', user);
+    const requestData = response.data.requestData;
+    if (requestData) {
+      console.log(requestData)
+      setReQSrV(requestData);
+    }
+  } catch (error) {
+    console.error('Error fetching material requests:', error);
+  }
+};
+
 useEffect(() => {
   checkLocalStorage();
-  getMaterialRequests();
+  fetchRequests()
   fetchTasks()
 }, []);
+
 
 const fetchTasks = async () => {
   try {
@@ -153,6 +152,8 @@ const fetchTasks = async () => {
     }
   }, []);
 
+
+
   function handleApprove() {
     const user = JSON.parse(localStorage.getItem('user'));
     const requestDataLS = JSON.parse(localStorage.getItem('requestData'));
@@ -167,6 +168,7 @@ const fetchTasks = async () => {
         if (response.data.message === 'Request approved') {
           document.getElementById('req').remove()
           localStorage.removeItem('requestData');
+          setNewStatus('Request approved')
         }
         console.log("user: ", response.data);
       })
@@ -190,7 +192,6 @@ function handleReject() {
         if (response.data.message === 'Request rejected') {
           document.getElementById('req').remove()
           setNewStatus('Request rejected');
-          localStorage.setItem('newStatus', 'Request rejected');
           localStorage.removeItem('requestData');
 
         }
@@ -398,10 +399,9 @@ return (
                   {reQSrV.message}!
                 </p>
               )}
-
-
 <div className="requests-container">
     <Paper elevation={3} >
+
       {reQSrV && reQSrV.takenRequest && (
         <Card>
           <div className="requester-info">
@@ -429,9 +429,9 @@ return (
     </Paper>
     </div>
 
-            </div>
-  
-            {/* ... */}
+   </div>
+
+
           </div>
         )}
   
@@ -448,6 +448,7 @@ return (
 
           <ListItem key={task._id} divider>
           <ListItemText
+          id='Task-text'
             primary={task.title}
             secondary={
               <div>
@@ -531,15 +532,10 @@ return (
       </DialogActions>
     </Dialog>
  
-
-
-
-
-
-
-
 </div>
-  
+
+
+      <div className="confirm-container">
       {reQSrV?.message && reQSrV?.message.includes("approved") && (
         <div className="confirmation">
           <h4>
@@ -561,7 +557,7 @@ return (
           </button>
         </div>
       )}
-  
+  </div>
      
         <button className="logout-btn"
           style={{ background: "gray", width: "20%", margin: "5% 0", fontWeight: "bold" }}
@@ -570,8 +566,6 @@ return (
           <LogoutOutlinedIcon /> Logout
         </button>
       {loading && <Loading />}
-
-      
     </div>
    
   );

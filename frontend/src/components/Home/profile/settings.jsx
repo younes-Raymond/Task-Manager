@@ -14,6 +14,7 @@ function SettingsComponent() {
   const [countryCode, setCountryCode] = useState(null);
   const [countryInfo, setCountryInfo ] = useState(null);
 
+  
   const getInfoOfCountry = async (lat, lon) => {
     try {
       const res = await axios.get(`https://restcountries.com/v2/all?lat=${lat}&lng=${lon}`);

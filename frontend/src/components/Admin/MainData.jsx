@@ -151,8 +151,7 @@ const options = {
   plugins: {
     legend: {
       display: true,
-      position: 'top',
-    },
+      position: 'top',    },
     datalabels: {
       align: 'bottom',
       anchor: 'end',
