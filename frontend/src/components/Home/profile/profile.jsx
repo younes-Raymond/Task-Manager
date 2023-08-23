@@ -41,67 +41,11 @@ function ProfilePage() {
   const [isStartTask, setIsStartTask ] = useState(false);
   const [isTaskDone , setIsTaskDone ] = useState(false);
   const [open, setOpen] = useState(false);
-const [selectedTask, setSelectedTask] = useState(null);
+ const [selectedTask, setSelectedTask] = useState(null);
 
   
-const LogoutButton = () => {
-    const handleLogout = () => {
-      // Clear the localStorage
-      localStorage.clear();
-        navigate('/login')
-        window.location.reload()
-    };
-    handleLogout()
-}
-
-const checkLocalStorage = () => {
-  const userData = localStorage.getItem('requestData');
-  const User = localStorage.getItem('user');
-
-  if (userData) {
-    setReQSrV(JSON.parse(userData));
-  }
-
-  if (User) {
-    const parsedUser = JSON.parse(User);
-    setUser(parsedUser);
-
-    if (parsedUser.avatar.url) {
-      setProfileImg(parsedUser.avatar.url);
-    }
-  }
-};
-
-const handleOpen = (task) => {
-  setSelectedTask(task);
-  setOpen(true);
-
-};
-
-const handleClose = () => {
-  setOpen(false);
-};
-
-function calculateRemainingTime(createdAt, deadlineDays) {
-  const createdAtDate = new Date(createdAt);
-  const currentDate = new Date();
-  const millisecondsPerDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
-
-  const timeDifference = createdAtDate.getTime() - currentDate.getTime();
-  const remainingDays = Math.ceil(timeDifference / millisecondsPerDay) + deadlineDays;
-
-  if (remainingDays > 0) {
-    return `${remainingDays} days remaining`;
-  } else if (remainingDays === 0) {
-    return `Today is the deadline`;
-  } else {
-    return `Deadline has passed`;
-  }
-}
 
 
- 
-  
 const fetchRequests = async () => {
   try {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -151,6 +95,67 @@ const fetchTasks = async () => {
       setNewStatus(storedStatus);
     }
   }, []);
+
+
+
+const LogoutButton = () => {
+    const handleLogout = () => {
+      // Clear the localStorage
+      localStorage.clear();
+        navigate('/login')
+        window.location.reload()
+    };
+    handleLogout()
+}
+
+const checkLocalStorage = () => {
+  const userData = localStorage.getItem('requestData');
+  const User = localStorage.getItem('user');
+
+  if (userData) {
+    setReQSrV(JSON.parse(userData));
+  }
+
+  if (User) {
+    const parsedUser = JSON.parse(User);
+    setUser(parsedUser);
+
+    if (parsedUser.avatar.url) {
+      setProfileImg(parsedUser.avatar.url);
+    }
+  }
+};
+
+const handleOpen = (task) => {
+  setSelectedTask(task);
+  setOpen(true);
+
+};
+
+const handleClose = () => {
+  setOpen(false);
+};
+
+
+function calculateRemainingTime(createdAt, deadlineDays) {
+  const createdAtDate = new Date(createdAt);
+  const currentDate = new Date();
+  const millisecondsPerDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
+
+  const timeDifference = createdAtDate.getTime() - currentDate.getTime();
+  const remainingDays = Math.ceil(timeDifference / millisecondsPerDay) + deadlineDays;
+
+  if (remainingDays > 0) {
+    return `${remainingDays} days remaining`;
+  } else if (remainingDays === 0) {
+    return `Today is the deadline`;
+  } else {
+    return `Deadline has passed`;
+  }
+}
+
+
+
 
 
 
@@ -217,7 +222,6 @@ function handleReject() {
       const response = await axios.post('api/v1/confirm', reQSrV);
       console.log('Confirmation sent successfully:', response.data);
       if (response.data && response.data.message === 'Material request confirmed successfully') {
-        localStorage.removeItem('requestData');
         const confirmationElement = document.querySelector('.confirmation');
         if (confirmationElement) {
           confirmationElement.style.visibility = 'hidden';

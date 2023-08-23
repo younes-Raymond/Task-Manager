@@ -138,6 +138,7 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
             materialPicture: request.materialPicture,
             requesterId: request.requesterId,
             requestId: request._id,
+            userOfTaken: request.userId_of_Taken,
           };
           approvedRequests.push(approvedRequest);
         } else if (request.status === 'rejected') {
@@ -150,6 +151,7 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
             materialPicture: request.materialPicture,
             requesterId: request.requesterId,
             requestId: request._id,
+            userId_of_Taken:request.userId_of_Taken,
           };
           rejectedRequests.push(rejectedRequest);
         }
@@ -200,7 +202,6 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
-
 
 exports.approveRequest = asyncErrorHandler(async (req, res) => {
     // console.log('approved', req.body)
