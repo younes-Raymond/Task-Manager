@@ -4,7 +4,7 @@ const Jobs = require('../models/jobsModel');
 const Tasks = require('../models/taskModel')
 const MarketerModel = require('../models/MarketerModel'); 
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
-const cloudinary = require('cloudinary');
+const cloudinary = require('cloudinary').v2; 
 const sendToken = require('../utils/sendToken');
 const MaterialRequest = require('../models/MaterialRequestModel');
 const sgMail = require('@sendgrid/mail');
@@ -475,20 +475,96 @@ exports.updateProfileImg = asyncErrorHandler(async (req, res) => {
 });
 
 
+
+
+// exports.createTasks = asyncErrorHandler(async (req, res) => {
+//   console.log(req)
+//   // console.log('req.bodyData: ', req.body);
+
+//   try {
+//     // Upload the video to Cloudinary
+//     const videoUploadResult = await cloudinary.uploader.upload(req.body.taskVideo, {
+//       // folder: 'tasks',
+//     });
+
+//     console.log(videoUploadResult);
+
+//     const { title, description, resultExpectation, endDate, status, workerId } = req.body;
+
+//     // Fetch the worker's name based on the workerId
+//     const worker = await Workers.findById(workerId);
+//     const workerName = worker ? worker.name : '';
+
+//     const newTask = new Tasks({
+//       title,
+//       description,
+//       expectation: resultExpectation,
+//       status,
+//       deadline: endDate,
+//       worker: workerId,
+//       workerName: workerName,
+
+//       video: {
+//         public_id: videoUploadResult.public_id,
+//         url: videoUploadResult.secure_url,
+//       },
+
+//     });
+
+//     const savedTask = await newTask.save();
+
+//     res.status(201).json({
+//       success: true,
+//       message: 'Task created successfully',
+//       task: savedTask,
+//     });
+//   } catch (error) {
+//     console.error('Error creating task:', error);
+//     res.status(500).json({
+//       success: false,
+//       message: 'Error creating task',
+//       error: error.message
+//     });
+//   }
+// });
+
+
 exports.createTasks = asyncErrorHandler(async (req, res) => {
-  const { title, description, resultExpectation, deadline, status, workerId } = req.body;
+  console.log(req.body);
+  console.log(req.files);
+
   try {
-    const worker = await Workers.findById(workerId); 
+    // Convert the video file data to base64
+    const videoData = req.files.taskVideo.data;
+    const videoBase64 = videoData.toString('base64');
+
+    // Upload the base64-encoded video to Cloudinary
+    const uploadOptions = {
+      resource_type: 'video',
+    };
+
+    const videoUploadResult = await cloudinary.uploader.upload(`data:video/webm;base64,${videoBase64}`, uploadOptions);
+
+    const { title, description, resultExpectation, endDate, status, workerId } = req.body;
+
+    // Fetch the worker's name based on the workerId
+    const worker = await Workers.findById(workerId);
     const workerName = worker ? worker.name : '';
 
+    // Create a new task with the Cloudinary video URL
     const newTask = new Tasks({
       title,
       description,
       expectation: resultExpectation,
       status,
-      deadline: deadline, // Set deadline as endDate
+      deadline: endDate,
       worker: workerId,
       workerName: workerName,
+
+      video: {
+        public_id: videoUploadResult.public_id,
+        url: videoUploadResult.secure_url,
+      },
     });
 
     const savedTask = await newTask.save();
@@ -503,9 +579,11 @@ exports.createTasks = asyncErrorHandler(async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error creating task',
+      error: error.message,
     });
   }
 });
+
 
 
 exports.TasksAvailable = asyncErrorHandler(async (req, res) => {

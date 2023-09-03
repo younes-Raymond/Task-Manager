@@ -244,15 +244,34 @@ exports.updateGeolocation = asyncErrorHandler(async (req, res, next) => {
   }
 });
 
+
+
 exports.updateGeolocationByIp = async (req, res) => {
-  // console.log(req.body);
-  const { ipAddress, userIdLS, materialId } = req.body;
+  console.log(req.body);
   const myApiKey = '6c105f5d9e926dc7f86df2da63b2e5f3';
+
+  if (req.body.ipAddress) {
+    const { ipAddress } = req.body;
+    const url = `http://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
+    
+    try {
+      const response = await axios.get(url);
+      console.log("lat & lon response: ", response.data);
+      
+      return res.json(response.data);
+    } catch (error) {
+      console.error('Error getting IP geolocation:', error.message);
+      return res.status(500).json({ message: 'Error getting IP geolocation' });
+    }
+  }
+  
+
+  const { ipAddress, userIdLS, materialId } = req.body;
   const url = `http://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
   try {
     const response = await axios.get(url);
-    console.log("lat & lon response: ", response.data);
-    // console.log(response.data)
+    // console.log("lat & lon response: ", response.data);
+    
     const { latitude, longitude } = response.data;
     Material.findOneAndUpdate(
       { _id: materialId, 'users.userIdLS': userIdLS },
@@ -278,6 +297,9 @@ exports.updateGeolocationByIp = async (req, res) => {
     res.status(500).json({ message: 'Error getting IP geolocation' });
   }
 };
+
+
+
 
 
 exports.deleteMaterial =  asyncErrorHandler( async (req, res) => {

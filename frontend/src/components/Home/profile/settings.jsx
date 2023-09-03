@@ -11,52 +11,35 @@ function SettingsComponent() {
   const [userGeolocation, setUserGeolocation] = useState(null);  
   const [changePassword, setChangePassword ] = useState(false);
   const [helpAndSupport, setHelpAndSupport] = useState(false)
-  const [countryCode, setCountryCode] = useState(null);
+  const [regionName, setRegionName] = useState(null);
+  const [countryFlag , setCountryFlag ] = useState(null);
+  const [language_Native, setLanguage_Native ] = useState(null)
   const [countryInfo, setCountryInfo ] = useState(null);
 
-  
-  const getInfoOfCountry = async (lat, lon) => {
+  const getInfoOfCountry = async () => {
     try {
-      const res = await axios.get(`https://restcountries.com/v2/all?lat=${lat}&lng=${lon}`);
-      console.log(res.data)
-      return res.data;
+      const { data } = await axios.get('https://api.ipify.org?format=json');
+      const ipAddress = data.ip; // Extract the IP address from the response
+      const countryDataResponse = await axios.post('/api/v1/updateGeolocationByIp', { ipAddress });
+  
+      // Update relevant state variables with the fetched data
+      const geolocationData = countryDataResponse.data;
+      setCountryInfo(geolocationData)
+      setRegionName(geolocationData?.region_name);
+      setCountryFlag(geolocationData?.location.country_flag)
+      setLanguage_Native(geolocationData?.location.languages[0].native)
+      console.log('json object:', geolocationData);
     } catch (error) {
       console.error('Error fetching country data:', error);
-      return null;
     }
   };
+ 
+  
+  
   
 
-
-  const getUserGeolocation = async () => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        async position => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-          const language = latitude > 36 && latitude < 43 && longitude > -10 && longitude < 4 ? 'es' : 'en';
-          setSelectedLanguage(language);
-          setUserGeolocation(language === selectedLanguage ? null : language);
-
-          const countryData = await getInfoOfCountry(latitude, longitude);
-          if (countryData) {
-            const countryCode = countryData[0]?.alpha2Code.toLowerCase();
-            setCountryCode(countryCode);
-            setCountryInfo(countryData[0]); // Store country information
-          }
-        },
-        error => {
-          console.error('Error getting geolocation:', error);
-        }
-      );
-    } else {
-      console.log('Geolocation is not available in this browser.');
-    }
-  };
-
-
   useEffect(() => {
-    getUserGeolocation();
+    getInfoOfCountry()
   }, []);
 
   const handleNotificationToggle = () => {
@@ -65,8 +48,16 @@ function SettingsComponent() {
 
   const handleDarkModeToggle = () => {
     setDarkModeEnabled(!darkModeEnabled);
-
   };
+
+  useEffect(() => {
+    if (darkModeEnabled) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  }, [darkModeEnabled]);
+ 
   const handleLanguageChange = (event) => {
     setSelectedLanguage(event.target.value);
   };
@@ -151,24 +142,27 @@ function SettingsComponent() {
               label="Help and Support"
             />    
  <FormControlLabel
-        control={
-          <Switch
-            checked={userGeolocation !== null}
-            onChange={getUserGeolocation}
-            disabled={selectedLanguage !== 'en' && selectedLanguage !== 'es'}
-          />
-        }
-        label="Automatic Geolocation Language"
-      />
-            {countryInfo && (
-        <div>
-          <h2>Country Information</h2>
-          <img src={countryInfo.flags.svg} alt={`${countryInfo.name} Flag`} width="100" height="60" />
-          <p>Country: {countryInfo.name.common}</p>
-          <p>Capital: {countryInfo.capital}</p>
-          <p>Region: {countryInfo.region}</p>
-        </div>
-      )}   
+  control={
+    <Switch
+      checked={userGeolocation !== null}
+      // onChange={getInfoOfCountry}
+      disabled={selectedLanguage !== 'en' && selectedLanguage !== 'es'}
+    />
+  }
+  label="Automatic Geolocation Language"
+/>
+ 
+  
+  {countryInfo && (
+    <div>
+      <h2>Country Information</h2>
+      <img src={countryFlag} alt={`${countryInfo.country_name} Flag`} width="100" height="60" />
+      <p>Region Name: </p>
+      <p>Region: {regionName}</p>
+      <p>Language: {language_Native}</p>
+    </div>
+  )}
+   
           </Grid>
         </Grid>
       </Paper>

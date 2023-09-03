@@ -20,10 +20,11 @@ import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
-import button from '@mui/material/Button';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import CloseIcon from '@mui/icons-material/Close';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 
 function ProfilePage() {
 
@@ -35,16 +36,15 @@ function ProfilePage() {
   const reqParentRef = useRef(null);
   const [requestProcessed, setRequestProcessed] = useState(false);
   const navigate = useNavigate();
-  const [profileImg, setProfileImg ]  = useState('')
+  const [profileImg, setProfileImg ]  = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [tasks , setTasks ] = useState([]);
   const [isStartTask, setIsStartTask ] = useState(false);
   const [isTaskDone , setIsTaskDone ] = useState(false);
   const [open, setOpen] = useState(false);
  const [selectedTask, setSelectedTask] = useState(null);
-
-  
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
 const fetchRequests = async () => {
   try {
@@ -66,6 +66,20 @@ useEffect(() => {
   fetchTasks()
 }, []);
 
+ useEffect(() => {
+    if (reQSrV && reQSrV.message) {
+      setSnackbarMessage(reQSrV.message);
+      setSnackbarOpen(true);
+    }
+  }, [reQSrV]);
+
+  const handleSnackbarClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackbarOpen(false);
+  };
 
 const fetchTasks = async () => {
   try {
@@ -129,7 +143,6 @@ const checkLocalStorage = () => {
 const handleOpen = (task) => {
   setSelectedTask(task);
   setOpen(true);
-
 };
 
 const handleClose = () => {
@@ -140,22 +153,21 @@ const handleClose = () => {
 function calculateRemainingTime(createdAt, deadlineDays) {
   const createdAtDate = new Date(createdAt);
   const currentDate = new Date();
-  const millisecondsPerDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
+  const millisecondsPerDay = 24 * 60 * 60 * 1000; 
 
   const timeDifference = createdAtDate.getTime() - currentDate.getTime();
-  const remainingDays = Math.ceil(timeDifference / millisecondsPerDay) + deadlineDays;
+  const remainingDays = Math.ceil(timeDifference / millisecondsPerDay);
 
-  if (remainingDays > 0) {
-    return `${remainingDays} days remaining`;
-  } else if (remainingDays === 0) {
+  if (remainingDays > deadlineDays) {
+    return `${remainingDays - deadlineDays} days remaining`;
+  } else if (remainingDays === deadlineDays) {
     return `Today is the deadline`;
+  } else if (remainingDays > 0) {
+    return `Less than ${deadlineDays} days remaining`;
   } else {
     return `Deadline has passed`;
   }
 }
-
-
-
 
 
 
@@ -397,12 +409,21 @@ return (
             </div>
 
             <div ref={reqParentRef} id="req">
-              {reQSrV && (
-                <p className='hint'>
-                  <span>Hint:</span>
-                  {reQSrV.message}!
-                </p>
-              )}
+            <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000} // Adjust the duration as needed
+        onClose={handleSnackbarClose}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={handleSnackbarClose}
+          severity="info" // You can use 'error', 'warning', 'info', 'success'
+        >
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>
+  
 <div className="requests-container">
     <Paper elevation={3} >
 
@@ -434,8 +455,6 @@ return (
     </div>
 
    </div>
-
-
           </div>
         )}
   
@@ -503,41 +522,64 @@ return (
   )}
 </div>
 
-
 <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-      <DialogTitle>Task Details</DialogTitle>
-      <DialogContent>
-        {selectedTask && (
-          <DialogContentText>
-            <strong>Title:</strong> {selectedTask.title}
-            <br />
-            <strong>Description:</strong> {selectedTask.description}
-            <br />
-            <strong>Expectation:</strong> {selectedTask.expectation}
-            <br />
-            <strong>Created At:</strong> {selectedTask.createdAt && formatDate(selectedTask.createdAt)}
-            <br />
-            <strong>Deadline:</strong> {selectedTask.deadlineDays} days from now
-            <br />
-            <strong>
-              Time Remaining: {calculateRemainingTime(selectedTask.createdAt, selectedTask.deadlineDays)}
-              <AccessTimeIcon style={{ verticalAlign: 'middle', marginLeft: '4px' }} />
-            </strong>
-          </DialogContentText>
-        )}
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={() => handleStartTask(selectedTask?._id)} variant="contained" color="primary" startIcon={<PlayCircleFilledIcon />}>
-          Start Task
-        </Button>
-        <Button onClick={handleClose} variant="outlined" color="primary" startIcon={<CloseIcon />}>
-          Close
-        </Button>
-      </DialogActions>
-    </Dialog>
- 
-</div>
+  <DialogTitle>Task Details</DialogTitle>
+  <DialogContent>
+  {selectedTask && (
+    <div>
+      <Typography variant="h6" gutterBottom>
+        Task Details
+      </Typography>
 
+      <div>
+        <Typography variant="subtitle1">
+          <strong>Title:</strong> {selectedTask.title}
+        </Typography>
+        <Typography variant="subtitle1">
+          <strong>Description:</strong> {selectedTask.description}
+        </Typography>
+        <Typography variant="subtitle1">
+          <strong>Expectation:</strong> {selectedTask.expectation}
+        </Typography>
+        <Typography variant="subtitle1">
+          <strong>Created At:</strong> {selectedTask.createdAt && formatDate(selectedTask.createdAt)}
+        </Typography>
+        <Typography variant="subtitle1">
+          <strong>Deadline:</strong> {selectedTask.deadlineDays} days from now
+        </Typography>
+        <Typography variant="subtitle1">
+          <strong>
+            Time Remaining: {calculateRemainingTime(selectedTask.createdAt, selectedTask.deadlineDays)}{' '}
+            <AccessTimeIcon style={{ verticalAlign: 'middle', marginLeft: '4px' }} />
+          </strong>
+        </Typography>
+      </div>
+
+      {selectedTask.video && (
+        <div>
+          
+          <video controls width="100%">
+            <source src={selectedTask.video.url} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      )}
+    </div>
+  )}
+</DialogContent>
+
+  <DialogActions>
+    <Button onClick={() => handleStartTask(selectedTask?._id)} variant="contained" color="primary" startIcon={<PlayCircleFilledIcon />}>
+      Start Task
+    </Button>
+    <Button onClick={handleClose} variant="outlined" color="primary" startIcon={<CloseIcon />}>
+      Close
+    </Button>
+  </DialogActions>
+</Dialog>
+
+
+</div>
 
       <div className="confirm-container">
       {reQSrV?.message && reQSrV?.message.includes("approved") && (
@@ -571,10 +613,7 @@ return (
         </button>
       {loading && <Loading />}
     </div>
-   
   );
-  
-
 }
 
 export default ProfilePage;
