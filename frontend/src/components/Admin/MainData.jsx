@@ -100,7 +100,7 @@ const MainData = () => {
     labels: Jobs.map(job => job.title),
     datasets: [
       {
-        label: 'Counter',
+        label: 'Applied Job',
         backgroundColor: 'rgba(153, 102, 255, 0.6)',
         borderColor: 'rgba(153, 102, 255, 1)',
         borderWidth: 1,

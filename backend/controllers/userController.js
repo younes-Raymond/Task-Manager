@@ -545,7 +545,7 @@ exports.createTasks = asyncErrorHandler(async (req, res) => {
 
     const videoUploadResult = await cloudinary.uploader.upload(`data:video/webm;base64,${videoBase64}`, uploadOptions);
 
-    const { title, description, resultExpectation, endDate, status, workerId } = req.body;
+    const { title, description, resultExpectation, deadlineDays, status, workerId } = req.body;
 
     // Fetch the worker's name based on the workerId
     const worker = await Workers.findById(workerId);
@@ -557,7 +557,7 @@ exports.createTasks = asyncErrorHandler(async (req, res) => {
       description,
       expectation: resultExpectation,
       status,
-      deadline: endDate,
+      deadlineDays: deadlineDays,
       worker: workerId,
       workerName: workerName,
 

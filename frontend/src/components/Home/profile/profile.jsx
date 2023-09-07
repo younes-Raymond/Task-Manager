@@ -45,6 +45,7 @@ function ProfilePage() {
  const [selectedTask, setSelectedTask] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
+  const [timeRemaning, setTimeRemaining ] = useState('');
 
 const fetchRequests = async () => {
   try {
@@ -143,32 +144,37 @@ const checkLocalStorage = () => {
 const handleOpen = (task) => {
   setSelectedTask(task);
   setOpen(true);
+  const remainingTime =  calculateRemainingTime(task.createdAt, task.deadlineDays);
+  setTimeRemaining(remainingTime)
 };
 
 const handleClose = () => {
   setOpen(false);
 };
 
+// alert(timeRemaning)
 
 function calculateRemainingTime(createdAt, deadlineDays) {
-  const createdAtDate = new Date(createdAt);
-  const currentDate = new Date();
-  const millisecondsPerDay = 24 * 60 * 60 * 1000; 
+  // Parse createdAt as a Date object
+  const currentDate = new Date().formatDate();
+  const createdAtDate = new Date(createdAt).formatDate();
+  const millisecondsPerDay = 24 * 60 * 60 * 1000;
 
-  const timeDifference = createdAtDate.getTime() - currentDate.getTime();
+  const formattedCreatedAt = createdAtDate.toISOString().split('T')[0];
+
+  const timeDifference = new Date(formattedCreatedAt).getTime() - currentDate.getTime();
   const remainingDays = Math.ceil(timeDifference / millisecondsPerDay);
 
-  if (remainingDays > deadlineDays) {
-    return `${remainingDays - deadlineDays} days remaining`;
-  } else if (remainingDays === deadlineDays) {
-    return `Today is the deadline`;
-  } else if (remainingDays > 0) {
+  if (remainingDays > 0 && remainingDays <= deadlineDays) {
     return `Less than ${deadlineDays} days remaining`;
+  } else if (remainingDays === 0) {
+    return `Today is the deadline`;
+  } else if (remainingDays > deadlineDays) {
+    return `${remainingDays - deadlineDays} days remaining`;
   } else {
     return `Deadline has passed`;
   }
 }
-
 
 
   function handleApprove() {
@@ -527,10 +533,6 @@ return (
   <DialogContent>
   {selectedTask && (
     <div>
-      <Typography variant="h6" gutterBottom>
-        Task Details
-      </Typography>
-
       <div>
         <Typography variant="subtitle1">
           <strong>Title:</strong> {selectedTask.title}
@@ -545,11 +547,12 @@ return (
           <strong>Created At:</strong> {selectedTask.createdAt && formatDate(selectedTask.createdAt)}
         </Typography>
         <Typography variant="subtitle1">
-          <strong>Deadline:</strong> {selectedTask.deadlineDays} days from now
+          <strong>Deadline:</strong> {selectedTask.deadlineDays}
         </Typography>
         <Typography variant="subtitle1">
           <strong>
-            Time Remaining: {calculateRemainingTime(selectedTask.createdAt, selectedTask.deadlineDays)}{' '}
+            Time Remaining: {timeRemaning}
+            {console.log(timeRemaning)}
             <AccessTimeIcon style={{ verticalAlign: 'middle', marginLeft: '4px' }} />
           </strong>
         </Typography>
@@ -557,7 +560,7 @@ return (
 
       {selectedTask.video && (
         <div>
-          
+        
           <video controls width="100%">
             <source src={selectedTask.video.url} type="video/mp4" />
             Your browser does not support the video tag.

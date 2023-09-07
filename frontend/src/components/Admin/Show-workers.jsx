@@ -27,7 +27,7 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import SendIcon from '@mui/icons-material/Send';
 import StopIcon from '@mui/icons-material/Stop'
-
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 const ShowWorkers = () => {
   const [workers, setWorkers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,7 +42,19 @@ const ShowWorkers = () => {
   const [taskVideo, setTaskVideo] = useState(null); 
   const [stream, setStream] = useState(null)
   const canvasRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const [iconColor, setIconColor] = useState({ camera: 'default', upload: 'default' , video:'default'});
+  
 
+  const handleIconColor = (iconType) => {
+    const defaultColors = { camera: 'default', upload: 'default', video: 'default' };
+  
+    const newIconColor = { ...defaultColors };
+  
+    newIconColor[iconType] = 'primary';
+  
+    setIconColor(newIconColor);
+  };
 
   const handleCreateTask = async () => {
     console.log('start create Task function :');
@@ -51,10 +63,15 @@ const ShowWorkers = () => {
       formData.append('title', taskTitle);
       formData.append('description', taskDescription);
       formData.append('resultExpectation', taskResult);
-      formData.append('endDate', endDate);
+      formData.append('deadlineDays', endDate);
       formData.append('status', 'pending');
       formData.append('workerId', selectedWorkerId);
-  
+
+    
+
+      if (fileInputRef.current.files.length > 0) {
+        formData.append('file', fileInputRef.current.files[0]);
+      }
       for (let i = 0; i < taskImages.length; i++) {
         formData.append('taskImages', taskImages[i]);
       }
@@ -70,6 +87,7 @@ const ShowWorkers = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+
       console.log(res.data);
       handleSnackbarOpen();
       // Close the popup after successful task creation
@@ -79,6 +97,19 @@ const ShowWorkers = () => {
     }
   };
   
+  
+const handleFileInputChange = (e) => {
+  // Stop the camera before processing the file input
+  stopCamera();
+  
+  const selectedFile = e.target.files[0];
+  if (selectedFile) {
+    console.log(`Selected file: ${selectedFile.name}`);
+    // Change the icon color to blue sky for upload icon
+    handleIconColor('upload');
+  }
+};
+
   
   useEffect(() => {
     const fetchWorkers = async () => {
@@ -110,19 +141,23 @@ const ShowWorkers = () => {
     setTaskPopupOpen(true);
   };
 
-  const handleCaptureImage = async () => {
-    try {
-      const imageBlob = await captureImage(); 
-      setTaskImages([...taskImages, imageBlob]);
-    } catch (error) {
-      console.error('Error capturing image:', error);
-    }
-  };
+ const handleCaptureImage = async () => {
+  handleIconColor('camera');
+  try {
+    startCamera();
+    recordVideo(false);
+  } catch (error) {
+    console.error('Error capturing image:', error);
+  }
+};
 
+  
+  
 
   const handleRecordVideo = async () => {
+handleIconColor("video")
     try {
-      const videoBlob = await recordVideo();
+      const videoBlob = await recordVideo(true);
       console.log('Video Blob:', videoBlob);
   
       // Convert videoBlob to base64 string
@@ -133,123 +168,107 @@ const ShowWorkers = () => {
         setTaskVideo(videoBase64);
       };
       reader.readAsDataURL(videoBlob);
-  
+     
       stopCamera();
     } catch (error) {
       console.error('Error recording video:', error);
     }
   };
   
+
+
+  const recordVideo = async (includeAudio) => {
+    try {
+     
+      const constraints = {
+        video: true,
+        audio: includeAudio, // Set audio based on the parameter
+      };
   
-const captureImage = async () => {
-  try {
-    const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
-    const videoElement = document.createElement('video');
-    videoElement.srcObject = mediaStream;
-
-    return new Promise((resolve, reject) => {
-      videoElement.onloadedmetadata = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = videoElement.videoWidth;
-        canvas.height = videoElement.videoHeight;
-        const context = canvas.getContext('2d');
-        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-        const imageBlob = canvas.toDataURL('image/jpeg');
-        mediaStream.getTracks().forEach(track => track.stop());
-        resolve(imageBlob);
+      const mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+      setStream(mediaStream);
+  
+      const recordedChunks = []; // To store video chunks
+  
+      const mediaRecorder = new MediaRecorder(mediaStream);
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunks.push(event.data);
+        }
       };
-
-      videoElement.onerror = (error) => {
-        mediaStream.getTracks().forEach(track => track.stop());
-        reject(error);
-      };
-    });
-  } catch (error) {
-    throw error;
-  }
-};
-
-const recordVideo = async () => {
-  try {
-    const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    setStream(mediaStream);
-
-    const recordedChunks = []; // To store video chunks
-
-    const mediaRecorder = new MediaRecorder(mediaStream);
-    mediaRecorder.ondataavailable = event => {
-      if (event.data.size > 0) {
-        recordedChunks.push(event.data);
-      }
-    };
-
-    const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
-
-    if (canvas && context) {
-      canvas.style.display = 'block';
-
-      const videoElement = document.createElement('video');
-      videoElement.srcObject = mediaStream;
-
-      videoElement.onloadedmetadata = () => {
-        canvas.width = videoElement.videoWidth;
-        canvas.height = videoElement.videoHeight;
-
-        const drawFrame = () => {
-          context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-          requestAnimationFrame(drawFrame);
+  
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
+  
+      if (canvas && context) {
+        canvas.style.display = 'block';
+  
+        const videoElement = document.createElement('video');
+        videoElement.srcObject = mediaStream;
+  
+        videoElement.onloadedmetadata = () => {
+          canvas.width = videoElement.videoWidth;
+          canvas.height = videoElement.videoHeight;
+  
+          const drawFrame = () => {
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+            requestAnimationFrame(drawFrame);
+          };
+  
+          videoElement.play(); // Start playing the video
+          drawFrame(); // Start drawing frames
+  
+          // Start recording
+          mediaRecorder.start();
         };
+  
+        videoElement.onerror = (error) => {
+          mediaStream.getTracks().forEach((track) => track.stop());
+          console.error('Error loading video:', error);
+        };
+      }
 
-        videoElement.play(); // Start playing the video
-        drawFrame(); // Start drawing frames
-
-        // Start recording
-        mediaRecorder.start();
-      };
-
-      videoElement.onerror = (error) => {
-        mediaStream.getTracks().forEach(track => track.stop());
-        console.error('Error loading video:', error);
-      };
+  
+      return new Promise((resolve, reject) => {
+        mediaRecorder.onstop = () => {
+          const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
+          resolve(videoBlob);
+        };
+  
+        mediaRecorder.onerror = (error) => {
+          reject(error);
+        };
+  
+        setTimeout(() => {
+          mediaRecorder.stop();
+        }, 10000); // Stop recording after 10 seconds
+      });
+    } catch (error) {
+      console.error('Error starting camera:', error);
+      throw error;
     }
-
-    return new Promise((resolve, reject) => {
-      mediaRecorder.onstop = () => {
-        const videoBlob = new Blob(recordedChunks, { type: 'video/webm' });
-        resolve(videoBlob);
-      };
-
-      mediaRecorder.onerror = error => {
-        reject(error);
-      };
-
-      setTimeout(() => {
-        mediaRecorder.stop();
-      }, 10000); // Stop recording after 10 seconds
-    });
-  } catch (error) {
-    console.error('Error starting camera:', error);
-    throw error;
-  }
-};
-
-
-
+  };
+  
 const startCamera = async () => {
   try {
     const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true });
     setStream(mediaStream);
+
+    // Set the icon color to primary when the camera is open
+    setIconColor((prevState) => ({ ...prevState, camera: 'primary' }));
   } catch (error) {
     console.error('Error starting camera:', error);
   }
 };
+
 
 const stopCamera = () => {
   if (stream) {
     stream.getTracks().forEach(track => track.stop());
     setStream(null);
+
+    // Set the icon color back to default when the camera is stopped
+    setIconColor('default');
   }
 };
 
@@ -348,45 +367,53 @@ const stopCamera = () => {
     <Card>
       <CardContent>
         <Grid container spacing={2} justifyContent="center" alignItems="center">
+     
+<Grid item>
+  <IconButton onClick={handleCaptureImage} color={iconColor.camera}>
+    <PhotoCameraIcon />
+  </IconButton>
+</Grid>
+
+
+
           <Grid item>
-            <IconButton onClick={handleCaptureImage}>
-              <PhotoCameraIcon />
-            </IconButton>
-          </Grid>
-          <Grid item>
-            <IconButton onClick={handleRecordVideo}>
+            <IconButton onClick={handleRecordVideo} color={iconColor.video}>
               <VideocamIcon />
             </IconButton>
           </Grid>
+          <input
+  type="file"
+  ref={fileInputRef}
+  style={{ display: 'none' }}
+  onChange={handleFileInputChange}
+  accept=".jpg, .jpeg, .png, .gif, .mp4 , .pdf"  
+/>
+<Grid item>
+  <IconButton onClick={() => fileInputRef.current.click()} color={iconColor.upload}>
+    <CloudUploadIcon />
+  </IconButton>
+</Grid>
         </Grid>
       </CardContent>
     </Card>
 
     <Grid container spacing={2} justifyContent="center" alignItems="center">
-  <Grid item>
-    {stream ? (
-      <canvas
-        ref={canvasRef}
-        style={{
-          display: stream ? 'block' : 'none',
-          width: '100%',
-          maxWidth: '400px',
-          marginTop: '16px'
-        }}
-      />
-    ) : (
-      <Typography variant="body1">Camera is not started</Typography>
-    )}
-  </Grid>
+    <Grid item>
+  {stream ? (
+    <canvas
+      ref={canvasRef}
+      style={{
+        display: stream ? 'block' : 'none',
+        width: '100%',
+        maxWidth: '400px',
+        marginTop: '16px'
+      }}
+    />
+  ) : null}
+</Grid>
+
 
   <Grid item>
-    <Button
-      variant="contained"
-      color={stream ? 'error' : 'primary'}
-      onClick={stream ? stopCamera : startCamera}
-    >
-      <StopIcon />
-    </Button>
     {stream && (
     <Button
     variant="contained"

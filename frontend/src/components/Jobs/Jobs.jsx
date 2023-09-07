@@ -2,9 +2,10 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 import React from 'react'
 import './Jobs.css'
-import { format } from 'url'
 import Loading  from '../Layouts/loading'
 import { getAllJobs } from '../../actions/userAction'
+import { formatDate } from '../../utils/DateFormat'
+
 
 const Jobs = () => {
   const [jobPosts, setJobPosts] = useState([])
@@ -17,7 +18,7 @@ const Jobs = () => {
   const fetchJobPosts = async () => {
     try {
       const response = await getAllJobs()
-      console.log(response.data)
+      // console.log(response.data)
       setJobPosts(response.data)
       setLoading(false)
     } catch (error) {
@@ -121,7 +122,12 @@ const Jobs = () => {
             <p className="job-application-details">
               Phone: {jobPost.applicationDetails.phone}
             </p>
+            <p className='job-application-details'>
+  <span>Created At:</span> {`${formatDate(jobPost.createdAt)}`}
+</p>
+
             <span className='counter'>Applied:{jobPost.counter}</span>
+
             {!jobPost.showApplyForm && (
               <button className="btn" onClick={() => handleApplyClick(jobPost._id)}>
                 Apply For this Job

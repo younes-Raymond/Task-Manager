@@ -27,7 +27,7 @@ const taskSchema = new mongoose.Schema(
       type: String,
     },
     deadlineDays: {
-      type: Number, 
+      type: String, 
       required: true,
     },
     images: {

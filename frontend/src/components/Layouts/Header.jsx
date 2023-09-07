@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AccountCircle, NotificationsActiveTwoTone } from '@mui/icons-material'; // Import the NotificationsActiveTwoTone icon
+import { AccountCircle, NotificationsActiveTwoTone } from '@mui/icons-material'; 
 import Searchbar from './Searchbar';
 import logo from '../../assets/images/logo.png';
 import './Header.css';
@@ -9,16 +9,18 @@ const Header = () => {
   const [cloudinaryUrl, setCloudinaryUrl] = useState('');
   const [hideAccountIcon, setHideAccountIcon] = useState(false);
   const accountIconRef = React.useRef(null);
-  const [requestCounter, setRequestCounter] = useState(0); // Initialize the request counter state
+  const [requestCounter, setRequestCounter] = useState(0); 
 
   useEffect(() => {
     const checkLocalStorage = () => {
-      const avatarUrl = localStorage.getItem('avatar');
-      if (avatarUrl) {
-        accountIconRef.current.style.display = 'none';
+      const user  = JSON.parse(localStorage.getItem('user'));
+      const avatarUrl = user.avatar.url
+      if(user && user.avatar && user.avatar.url && avatarUrl){
+        console.log(user.avatar.url)
         setCloudinaryUrl(avatarUrl);
         setHideAccountIcon(true);
       }
+      checkLocalStorage()
     };
 
     let interval;
@@ -58,7 +60,7 @@ const Header = () => {
             </Link>
           )}
         </div>
-        {/* Display the notification icon only if requestCounter is greater than 0 */}
+      
         {requestCounter > 0 && (
           <Link to="/profile">
             <div className="notification">

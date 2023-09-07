@@ -45,7 +45,7 @@ const ShowMaterials = () => {
             <th>Title</th>
             <th>Description</th>
             <th>Requirements</th>
-            <th>Counter</th>
+            <th>Applied</th>
             <th>Workers who Applicant:</th>
             <th>Created At</th>
             <th>Modification</th>
