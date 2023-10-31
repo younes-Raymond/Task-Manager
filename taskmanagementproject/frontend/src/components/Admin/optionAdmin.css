@@ -1,0 +1,12 @@
+.DS-container .box
+{
+    opacity: 0.8;
+}
+
+
+
+.btn 
+{
+    background-color: aqua;
+    color: gray;
+}

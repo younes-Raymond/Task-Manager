@@ -1,0 +1,8 @@
+# dependencies
+
+
+# local env files
+/config.env
+node_modules
+.vscode
+

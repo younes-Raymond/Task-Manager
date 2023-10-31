@@ -1,0 +1,66 @@
+
+.wrapper
+{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+}
+  #add-workers  {
+    margin: 0% 10%;
+    padding: 20px;
+    border-radius: 4px;
+    background: repeating-linear-gradient(99deg, black, transparent 950px);
+    color: white;
+    width: 100%;
+  }
+  #add-workers h2 {
+    color: #fff;
+  }
+  #add-workers h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  #add-workers form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  #add-workers .form-field {
+    margin-bottom: 20px;
+  }
+  
+  #add-workers label {
+    font-weight: bold;
+  }
+  
+  #add-workers input,
+  textarea {
+    width: 88%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin: 2% 0%;
+  }
+  #add-workers select option {
+    background: #007bff;
+  } 
+  #add-workers textarea 
+  {
+    height: 60px;
+    width: 90%;
+  }
+  
+  .WRK-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .WRK-btn:hover {
+    background-color: #0056b3;
+  }
+  
