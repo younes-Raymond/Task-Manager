@@ -133,6 +133,7 @@ return (
 
 </div>
 
+
 <div className="contact">
         <label htmlFor="more-information">For More Information Contact Me:<LinkedInIcon /></label>
         <Link to='https://www.linkedin.com/in/younes-raymond-188a40241/' target='_blank'>
