@@ -7,17 +7,17 @@ const { Types } = require('mongoose');
 const axios = require('axios');
 
 
-
 // Create material ---ADMIN
 exports.createProduct = asyncErrorHandler(async (req, res, next) => {
   // console.log(req.body)
-const {name,description,stock,images, category} = req.body
+const { name, description, stock, images, category} = req.body
 try{
     const result = await cloudinary.uploader.upload(images, {
         folder:"Materials",
         width:300,
         crop:"scale"
     });
+
     const material = await Material.create({
         name:name,
         description,
@@ -28,6 +28,7 @@ try{
         },
         category
     });
+    
     res.status(201).json({
         success:true,
         material
@@ -311,5 +312,37 @@ exports.deleteMaterial =  asyncErrorHandler( async (req, res) => {
     res.status(500).json({ success: false, message: 'Unable to delete material' });
   }
 });
+
+exports.editMaterials = asyncErrorHandler(async (req, res) => {
+  console.log('i got it req', req.body);
+  const { id, field, value } = req.body;
+
+  try {
+    const material = await Material.findById(id);
+
+    if (!material) {
+      return res.status(404).json({ message: 'Material not found' });
+    }
+
+    if (!material[field]) {
+      return res
+        .status(400)
+        .json({ message: `Field ${field} does not exist in the material model` });
+    }
+
+    material[field] = value;
+
+    await material.save(); // Corrected, added ()
+
+    console.log('Material updated:', material);
+    return res.status(200).json({ message: 'Material updated successfully', material });
+  } catch (error) {
+    console.error('Error updating material:', error);
+
+    // Send an error response
+    return res.status(500).json({ message: 'Error updating material', error });
+  }
+});
+
 
 

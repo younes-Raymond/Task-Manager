@@ -3,9 +3,12 @@ import SideBar from './SideBar/SideBar';
 import MenuIcon from '@mui/icons-material/Menu';
 import MainData from './MainData';
 import './SideBar/SideBar.css';
-import AddWorker from './add-workers';
-import AddJobs from './add-Jobs'
-import AddMaterial from './ProductForm';
+import { 
+  IconButton,
+  AppBar,
+  Button
+
+} from '@mui/material/'
 
 const Dashboard = ({ activeTab, children }) => {
   const [onMobile, setOnMobile] = useState(false);
@@ -17,18 +20,19 @@ const Dashboard = ({ activeTab, children }) => {
     }
   }, []);
 
+  
   return (
     <>
       <div className="whole-container">
         <main className="">
           {!onMobile && (
             <div className={`menu-container ${toggleSideBar ? 'hide' : ''}`}>
-              <button
+              <Button
                 onClick={() => setToggleSideBar(true)}
-                className="btn"
               >
                 <MenuIcon />
-              </button>
+              </Button>
+
             </div>
           )}
 

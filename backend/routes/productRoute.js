@@ -8,6 +8,7 @@ const {
     updateGeolocation,
     updateGeolocationByIp,
     deleteMaterial,
+    editMaterials
 } = require('../controllers/productController');
 const router = express.Router();
 
@@ -19,5 +20,5 @@ router.route('/material/request').post(sendRequest);
 router.route('/updateLocation').post(updateGeolocation)
 router.post('/updateGeolocationByIp', updateGeolocationByIp)
 router.delete('/material/:id', deleteMaterial);
-
+router.post('/editMaterials', editMaterials)
 module.exports = router;

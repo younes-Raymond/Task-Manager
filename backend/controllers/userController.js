@@ -84,6 +84,8 @@ exports.loginUser = asyncErrorHandler(async (req, res) => {
   res.status(200).json(responseData);
 });
 
+
+
 exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
   try {
     const user = req.body;
@@ -113,6 +115,13 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
     let rejectedRequests = [];
     let taken = false;
 
+    //counter for diffents types of requests
+
+    let pendingCount = 0;
+    let approvedCount = 0;
+    let rejectedCount = 0;
+
+
     materialRequests.forEach((request) => {
       if (request.requesterId.toString() === user._id.toString()) {
         if (request.status === 'pending') {
@@ -128,6 +137,7 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
             requestId: request._id,
           };
           pendingRequests.push(pendingRequest);
+          pendingCount++;
         } else if (request.status === 'approved') {
           updatedRequestData.message = 'Your material request has been approved.';
           const approvedRequest = {
@@ -141,6 +151,7 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
             userOfTaken: request.userId_of_Taken,
           };
           approvedRequests.push(approvedRequest);
+          approvedCount++
         } else if (request.status === 'rejected') {
           updatedRequestData.message = 'Your request has been rejected. Please try again later.';
           const rejectedRequest = {
@@ -154,6 +165,7 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
             userId_of_Taken:request.userId_of_Taken,
           };
           rejectedRequests.push(rejectedRequest);
+          rejectedCount++
         }
       } else if (request.userId_of_Taken._id.toString() === user._id.toString() && request.status === 'pending') {
         taken = true;
@@ -180,6 +192,11 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
       }
     });
 
+    //include the counts in the response 
+    updatedRequestData.pendingCount = pendingCount;
+    updatedRequestData.approveCount = approvedCount;
+    updatedRequestData.rejectedCount = rejectedCount;
+
     if (pendingRequests.length > 0) {
       updatedRequestData.pendingRequests = pendingRequests;
     }
@@ -195,6 +212,7 @@ exports.isHaveARequests = asyncErrorHandler(async (req, res) => {
     if (taken) {
       updatedRequestData.taken = true;
     }
+    console.log(updatedRequestData)
 
     res.status(200).json({ requestData: updatedRequestData });
   } catch (error) {
@@ -477,73 +495,30 @@ exports.updateProfileImg = asyncErrorHandler(async (req, res) => {
 
 
 
-// exports.createTasks = asyncErrorHandler(async (req, res) => {
-//   console.log(req)
-//   // console.log('req.bodyData: ', req.body);
-
-//   try {
-//     // Upload the video to Cloudinary
-//     const videoUploadResult = await cloudinary.uploader.upload(req.body.taskVideo, {
-//       // folder: 'tasks',
-//     });
-
-//     console.log(videoUploadResult);
-
-//     const { title, description, resultExpectation, endDate, status, workerId } = req.body;
-
-//     // Fetch the worker's name based on the workerId
-//     const worker = await Workers.findById(workerId);
-//     const workerName = worker ? worker.name : '';
-
-//     const newTask = new Tasks({
-//       title,
-//       description,
-//       expectation: resultExpectation,
-//       status,
-//       deadline: endDate,
-//       worker: workerId,
-//       workerName: workerName,
-
-//       video: {
-//         public_id: videoUploadResult.public_id,
-//         url: videoUploadResult.secure_url,
-//       },
-
-//     });
-
-//     const savedTask = await newTask.save();
-
-//     res.status(201).json({
-//       success: true,
-//       message: 'Task created successfully',
-//       task: savedTask,
-//     });
-//   } catch (error) {
-//     console.error('Error creating task:', error);
-//     res.status(500).json({
-//       success: false,
-//       message: 'Error creating task',
-//       error: error.message
-//     });
-//   }
-// });
-
-
 exports.createTasks = asyncErrorHandler(async (req, res) => {
   console.log(req.body);
   console.log(req.files);
 
   try {
-    // Convert the video file data to base64
-    const videoData = req.files.taskVideo.data;
-    const videoBase64 = videoData.toString('base64');
+    let videoUploadResult = null;
 
-    // Upload the base64-encoded video to Cloudinary
-    const uploadOptions = {
-      resource_type: 'video',
-    };
+    if (req.files && req.files.taskVideo) {
+      // Convert the video file data to base64
+      const videoData = req.files.taskVideo.data;
+      const videoBase64 = videoData.toString('base64');
 
-    const videoUploadResult = await cloudinary.uploader.upload(`data:video/webm;base64,${videoBase64}`, uploadOptions);
+      // Upload the base64-encoded video to Cloudinary
+      const uploadOptions = {
+        resource_type: 'video',
+      };
+
+      videoUploadResult = await cloudinary.uploader.upload(
+        `data:video/webm;base64,${videoBase64}`,
+        uploadOptions
+      );
+    } else {
+      console.log('Video data not available in the request');
+    }
 
     const { title, description, resultExpectation, deadlineDays, status, workerId } = req.body;
 
@@ -551,7 +526,7 @@ exports.createTasks = asyncErrorHandler(async (req, res) => {
     const worker = await Workers.findById(workerId);
     const workerName = worker ? worker.name : '';
 
-    // Create a new task with the Cloudinary video URL
+    // Create a new task with or without the Cloudinary video URL
     const newTask = new Tasks({
       title,
       description,
@@ -560,11 +535,12 @@ exports.createTasks = asyncErrorHandler(async (req, res) => {
       deadlineDays: deadlineDays,
       worker: workerId,
       workerName: workerName,
-
-      video: {
-        public_id: videoUploadResult.public_id,
-        url: videoUploadResult.secure_url,
-      },
+      video: videoUploadResult
+        ? {
+            public_id: videoUploadResult.public_id,
+            url: videoUploadResult.secure_url,
+          }
+        : null, // Set video to null if not available
     });
 
     const savedTask = await newTask.save();
@@ -583,6 +559,7 @@ exports.createTasks = asyncErrorHandler(async (req, res) => {
     });
   }
 });
+
 
 
 
@@ -697,4 +674,80 @@ exports.updatedTaskDone = asyncErrorHandler(async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+
+exports.editWorker = asyncErrorHandler(async (req, res) => {
+  console.log(req.body)
+
+  // Destructure the request body
+  const { id, field, value } = req.body;
+
+
+  try {
+    // Find the worker by ID
+    const worker = await Workers.findById(id);
+
+    if (!worker) {
+      return res.status(404).json({ message: 'Worker not found' });
+    }
+
+    if (!worker[field]) {
+      return res.status(400).json({message: `Field ${field} does not exist in the workers model`})
+    }
+    // Update the specified field with the new value
+    worker[field] = value;
+
+    // Save the updated worker to the database
+    await worker.save();
+
+    console.log('Worker updated:', worker);
+
+    // Send a success response
+    return res.status(200).json({ message: 'Worker updated successfully', worker });
+  } catch (error) {
+    console.error('Error updating worker:', error);
+
+    // Send an error response
+    return res.status(500).json({ message: 'Error updating worker', error });
+  }
+})
+
+
+exports.editJobs = asyncErrorHandler(async (req, res) => {
+  console.log(req.body)
+
+  // Destructure the request body
+  const { id, field, value } = req.body;
+
+  try {
+    // Find the worker by ID
+    const jobs = await Jobs.findById(id);
+
+    if (!jobs) {
+      return res.status(404).json({ message: 'Worker not found' });
+    }
+
+
+    if (!jobs[field]) {
+      return res.status(400).json({message: `Field ${field} does not exist in the workers model`})
+    }
+    // Update the specified field with the new value
+    jobs[field] = value;
+
+    // Save the updated worker to the database
+    await jobs.save();
+
+    console.log('Worker updated:', jobs);
+
+    // Send a success response
+    return res.status(200).json({ message: 'Worker updated successfully', jobs });
+  } catch (error) {
+    console.error('Error updating worker:', error);
+
+    // Send an error response
+    return res.status(500).json({ message: 'Error updating worker', error });
+  }
+});;
+
+
 

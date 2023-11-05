@@ -9,9 +9,13 @@ import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import CloseIcon from '@mui/icons-material/Close';
-import Avatar from '@mui/material/Avatar';
-// import { useSnackbar } from 'notistack';
 import './SideBar.css';
+import {
+ Avatar,
+ Button,
+ Typography
+
+} from '@mui/material'
 
 const navMenu = [
     {
@@ -70,6 +74,7 @@ const SideBar = ({ activeTab, setToggleSideBar }) => {
   const handleLogout = () => {
       localStorage.clear()
         navigate("/login");
+        window.location.reload()
     }
     
     
@@ -78,24 +83,24 @@ return (
           <div className="Avatar">
             <Avatar alt="Avatar" src={user.avatar.url} />
             <div className="UserInfo">
-            {/* <span className="UserName">{user.role}</span> */}
-            <span className="UserName">{user.name}</span>
-              <span className="UserEmail">{user.email}</span>
+            <Typography >{user.name}</Typography>
             </div>
-            <button onClick={() => setToggleSideBar(false)} className="CloseButton">
+            <Button onClick={() => setToggleSideBar(false)}  variant='contained' color='primary'> 
               <CloseIcon />
-            </button>
+            </Button>
           </div>
+            <Typography>{user.email}</Typography>
+          
           <div className="NavMenu">
             {navMenu.map((item, index) => {
               const { icon, label, ref } = item;
               return (
                 <>
                   {label === "Logout" ? (
-                    <button onClick={handleLogout} className="btn">
+                    <Button onClick={handleLogout} color='primary' variant='contained'>
                       <span>{icon}</span>
                       <span>{label}</span>
-                    </button>
+                    </Button>
                   ) : (
                     <Link to={ref} className={`${activeTab === index ? "ActiveLink" : "HoverLink"} FlexLink`}>
                       <span>{icon}</span>
@@ -106,15 +111,15 @@ return (
               );
             })}
           </div>
-          <div className="Footer">
-            <h5>Developed with ❤️ by:</h5>
-            <div className="ContactInfo">
-              <a href="https://www.linkedin.com/in/younes-raymond-188a40241/" target="_blank" rel="noreferrer" className="DeveloperName">younes raymond</a>
-              <a href="raymondyounes2@gmail.com" className="DeveloperEmail">{user.email}</a>
-            </div>
-          </div>
+          <Typography>Developed with ❤️ by:</Typography>
+<Link href="https://www.linkedin.com/in/younes-raymond-188a40241/" target="_blank" rel="noreferrer">
+  <Typography color='primary'>Younes Raymond</Typography>
+</Link>
+<Link href="raymondyounes2@gmail.com">
+  <Typography sx={{fontSize:'12px'}}>raymondyounes2@gmail.com</Typography>
+</Link>
         </aside>
-      );
+);
 
 };
 

@@ -21,6 +21,8 @@ const {
   NewMemberMarketingB2B,
   fetchTasks,
   updatedTaskDone,
+  editWorker,
+  editJobs
 
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
@@ -48,6 +50,8 @@ router.post('/TasksAvailable', TasksAvailable)
 router.post('/updateTasks', updatedTask)
 router.post('/NewMemberMarketingB2B', NewMemberMarketingB2B);
 router.get('/fetchTasks', fetchTasks); 
-router.post('/updateTasksDone', updatedTaskDone)
+router.post('/updateTasksDone', updatedTaskDone);
+router.post('/editworker', editWorker)
+router.post('/editJobs', editJobs)
 
 module.exports = router;

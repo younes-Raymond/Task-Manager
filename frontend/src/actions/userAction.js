@@ -1,5 +1,6 @@
 import axios from "axios";
 
+
 // login user 
 export const loginUser = async (email, password) => {
   try {
@@ -71,6 +72,7 @@ export const search = async (keyword) => {
   export const getAllUsers = async () => {
     try {
       const { data } = await axios.get('/api/v1/workers');
+      // console.log(data)
       return data;
     } catch (error) {
       if (error.response && error.response.data.message) {
@@ -83,8 +85,10 @@ export const search = async (keyword) => {
 
   export const getAllMaterialRequester = async () => {
     try {
-      const response = await axios.get('/api/v1/materialrequesters');
-      return response.data;
+      const res = await axios.get('/api/v1/materialrequesters');
+      // console.log(res)
+      return res.data;
+
     } catch (error) {
       console.error('Error fetching material requesters:', error);
       throw error;
@@ -121,6 +125,22 @@ export const fetchTasks = async () => {
   }
 }
   
+
+
+export async function fetchRequests(user) {
+  try {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user) {
+      console.log('user:',user)
+      const res = await axios.post('/api/v1/getReguests', user);
+      // console.log(res.data)
+      return res.data;
+    }
+  } catch (error) {
+    console.error('Error fetching material requests:', error);
+    throw error;
+  }
+}
 
 
 

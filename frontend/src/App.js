@@ -1,4 +1,4 @@
-import React , {useEffect, useState }from 'react';
+import React , {useEffect, useState , }from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Optionbox from './components/Home/option';
 import ProductForm from './components/Admin/ProductForm.jsx';
@@ -27,12 +27,16 @@ import SettingsComponent from './components/Home/profile/settings';
 const userRole = CheckUserRole()
 
 
-const App = () => {
 
+
+
+const App = () => {
   return (
     <>
       <Router>
-        {userRole !== 'unknown' && <Header />}
+        {userRole !== 'unknown' && (
+          <Header />
+        )}
         <Routes>
           <Route element={<PrivateRoutes /> }>
            {/* start user section              */}

@@ -18,6 +18,9 @@ import {
   Button,
 } from '@mui/material';
 
+import { Paper, Typography, List, ListItem } from '@mui/material';
+
+
 const MarketingPlan = () => {  
   const [isFormVisible, setFormVisible] = useState(false);
   const [isSnackbarOpen, setSnackbarOpen] = useState(false);
@@ -62,84 +65,79 @@ const MarketingPlan = () => {
 
 return (
   <>
-    <div className="article">
 
+  
+<div className="article">
+      <Paper elevation={3} >
+        <h1>Marketing Plan: Reaching B2B Targets</h1>
+        <p>
+          Our marketing plan is tailored to reach out to enterprises with a large workforce, extensive materials, and complex job operations. We aim to provide high-performance companies that prioritize time management and seek to optimize their business processes with a better experience for their workforce.
+        </p>
 
-    <div className="marketing-container">
-  <h1>Marketing Plan: Reaching B2B Targets</h1>
-  <p>
-    Our marketing plan is tailored to reach out to enterprises with a large workforce, extensive materials, and complex job operations. We aim to provide high-performance companies that prioritize time management and seek to optimize their business processes with a better experience for their workforce.
-  </p>
-  <span>
-    First Step: Identify Potential Clients
-  </span>
-  <p>
-    Marketers should seek enterprises that fit our target criteria. Look for companies with a significant number of employees, a diverse range of materials, and a strong need for efficient talent management. If the company shows potential interest and meets the criteria, contact the SEO or the founder directly to pitch our solution.
-  </p>
-  <span>
-    Customization and Demo
-  </span>
-  <p>
-    Each marketer will be assigned a unique domain name, hosting, and an admin account to customize the web app according to the enterprise's specific needs. This customization will be showcased to the company's SEO or boss, demonstrating how our solution addresses their pain points and enhances their operations. The first month will be offered for testing and gathering feedback on desired features and changes.
-  </p>
-  <span>
-    Features and Benefits
-  </span>
-  <p>
-    The company's admin will have access to a dashboard, allowing them to view profiles of their employees, receive requests from workers for materials, and assign daily tasks. All job postings from the company will be consolidated in a single page, facilitating easy access for both companies and talented workers. Data will be charted to provide real-time insights, empowering companies with more control over their operations.
-  </p>
-  <span>
-    Supporting the Companies
-  </span>
-  <p>
-    Every company will receive 24/7 support, including domain hosting, local or cloud options, SEO improvement, and version updates. We will continuously develop new versions to cater to their evolving needs. Additionally, we offer a 30-day money-back guarantee for companies unsatisfied with the app's performance.
-  </p>
-  <span>
-    Join the Marketing Team
-  </span>
-  <p>
-    We are seeking expert marketing professionals and skilled web developers with B2B specialization to join our team. As part of the marketing team, you will play a key role in executing this plan and bringing in potential clients. As a web developer, you'll have the opportunity to contribute to the continuous development of our app and create customized versions for each company.
-  </p>
+        <Typography variant="h6">
+          First Step: Identify Potential Clients
+        </Typography>
+        <p>
+          Marketers should seek enterprises that fit our target criteria. Look for companies with a significant number of employees, a diverse range of materials, and a strong need for efficient talent management. If the company shows potential interest and meets the criteria, contact the SEO or the founder directly to pitch our solution.
+        </p>
 
-  <span>Email Campaign Support:</span>
-  <p>
-    As an additional value-added service, I want to highlight that I can personally assist you with any email campaigns you plan to run. Whether you need to send marketing emails, newsletters, or announcements, I can handle up to 1,000,000 email recipients without any issue. All you need to do is provide me with an array or list of the email addresses, the preferred sending time, and the content of the email. With this support, we can maximize the impact of your marketing efforts and ensure a successful outreach to potential clients.
-  </p>
+        <Typography variant="h6">
+          Customization and Demo
+        </Typography>
+        <p>
+          Each marketer will be assigned a unique domain name, hosting, and an admin account to customize the web app according to the enterprise's specific needs. This customization will be showcased to the company's SEO or boss, demonstrating how our solution addresses their pain points and enhances their operations. The first month will be offered for testing and gathering feedback on desired features and changes.
+        </p>
 
-  <span>Earnings and Incentives:</span>
-  <p>
-    Let's discuss the exciting part – your earnings and incentives for marketing AllMart. For every active user in the app, you will earn an impressive 20% commission of the total net fee paid by each user and for agency 50% . This incentivizes you to drive engagement and attract more enterprises to benefit from AllMart's game-changing features. As a web developer, you'll receive recognition for your contributions to creating unique versions of the app for each company.
-  </p>
+        <Typography variant="h6">
+          Features and Benefits
+        </Typography>
+        <p>
+          The company's admin will have access to a dashboard, allowing them to view profiles of their employees, receive requests from workers for materials, and assign daily tasks. All job postings from the company will be consolidated in a single page, facilitating easy access for both companies and talented workers. Data will be charted to provide real-time insights, empowering companies with more control over their operations.
+        </p>
 
-  <span>Our Plan: $0.5 Monthly for Every Active User</span>
-  <ol>
-    <li>
-      Domain Name: Each company will receive a unique domain name.
-    </li>
-    <li>
-      Hosting: We provide hosting services for a year.
-    </li>
-    <li>
-      SEO and Content Channels: We take care of SEO and create content channels like LinkedIn pages and other platforms to boost visibility.
-    </li>
-    <li>
-      Unique Version for Each Company: Every company will get a customized version of the app tailored to their specific needs and preferences.
-    </li>
-    <li>
-      Free Updates and Continuous Improvement: Companies will receive regular updates and improvements to ensure they stay ahead in resource management.
-    </li>
-  </ol>
-</div>
+        <Typography variant="h6">
+          Supporting the Companies
+        </Typography>
+        <p>
+          Every company will receive 24/7 support, including domain hosting, local or cloud options, SEO improvement, and version updates. We will continuously develop new versions to cater to their evolving needs. Additionally, we offer a 30-day money-back guarantee for companies unsatisfied with the app's performance.
+        </p>
 
-</div>
+        <Typography variant="h6">
+          Join the Marketing Team
+        </Typography>
+        <p>
+          We are seeking expert marketing professionals and skilled web developers with B2B specialization to join our team. As part of the marketing team, you will play a key role in executing this plan and bringing in potential clients. As a web developer, you'll have the opportunity to contribute to the continuous development of our app and create customized versions for each company.
+        </p>
 
-<div className="contact">
-        <label htmlFor="more-information">For More Information Contact Me:<LinkedInIcon /></label>
-        <Link to='https://www.linkedin.com/in/younes-raymond-188a40241/' target='_blank'>
-          <button className='btn'>Contact Me</button>
-        </Link>
-        <Button className='btn' onClick={handleJoinButtonClick}>Join the Marketing Team</Button>
-      </div>
+        <Typography variant="h6">
+          Email Campaign Support
+        </Typography>
+        <p>
+          As an additional value-added service, I want to highlight that I can personally assist you with any email campaigns you plan to run. Whether you need to send marketing emails, newsletters, or announcements, I can handle up to 1,000,000 email recipients without any issue. All you need to do is provide me with an array or list of the email addresses, the preferred sending time, and the content of the email. With this support, we can maximize the impact of your marketing efforts and ensure a successful outreach to potential clients.
+        </p>
+
+        <Typography variant="h6">
+          Earnings and Incentives
+        </Typography>
+        <p>
+          Let's discuss the exciting part – your earnings and incentives for marketing AllMart. For every active user in the app, you will earn an impressive 20% commission of the total net fee paid by each user and for agency 50%. This incentivizes you to drive engagement and attract more enterprises to benefit from AllMart's game-changing features. As a web developer, you'll receive recognition for your contributions to creating unique versions of the app for each company.
+        </p>
+
+        <Typography variant="h6">
+          Our Plan: $0.5 Monthly for Every Active User
+        </Typography>
+        <List>
+          <ListItem>Domain Name: Each company will receive a unique domain name.</ListItem>
+          <ListItem>Hosting: We provide hosting services for a year.</ListItem>
+          <ListItem>SEO and Content Channels: We take care of SEO and create content channels like LinkedIn pages and other platforms to boost visibility.</ListItem>
+          <ListItem>Unique Version for Each Company: Every company will get a customized version of the app tailored to their specific needs and preferences.</ListItem>
+          <ListItem>Free Updates and Continuous Improvement: Companies will receive regular updates and improvements to ensure they stay ahead in resource management.</ListItem>
+        </List>
+
+        <Button color='primary' variant='contained'  onClick={handleJoinButtonClick}>Join the Marketing Team</Button>
+      </Paper>
+    </div>
+
 
      
   
@@ -315,7 +313,12 @@ return (
         </div>
       </div>
 
-    
+      <div className="contact">
+        <label htmlFor="more-information">For More Information Contact Me:<LinkedInIcon /></label>
+        <Link to='https://www.linkedin.com/in/younes-raymond-188a40241/' target='_blank'>
+          <Button variant='contained' color='primary' >Contact Me</Button>
+        </Link>
+      </div>
 
       </>
 

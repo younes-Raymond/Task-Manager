@@ -1,6 +1,6 @@
 .Position-container {
   margin: 0 auto;
-  background: repeating-linear-gradient(99deg, black, transparent 950px);
+  background: repeating-linear-gradient(99deg,#1976d2, transparent 950px);
   border-radius: 2%;
   color: #fff;
   width: 60%;

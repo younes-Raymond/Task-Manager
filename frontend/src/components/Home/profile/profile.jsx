@@ -25,6 +25,11 @@ import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import CloseIcon from '@mui/icons-material/Close';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import Box from '@mui/material/Box';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+
+
 
 function ProfilePage() {
 
@@ -42,10 +47,11 @@ function ProfilePage() {
   const [isStartTask, setIsStartTask ] = useState(false);
   const [isTaskDone , setIsTaskDone ] = useState(false);
   const [open, setOpen] = useState(false);
- const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTask, setSelectedTask] = useState(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [timeRemaning, setTimeRemaining ] = useState('');
+ 
 
 const fetchRequests = async () => {
   try {
@@ -54,6 +60,8 @@ const fetchRequests = async () => {
     const requestData = response.data.requestData;
     if (requestData) {
       console.log(requestData)
+      // const { pendingCount , approvedCount, rejectedCount } = requestData;
+
       setReQSrV(requestData);
     }
   } catch (error) {
@@ -61,11 +69,13 @@ const fetchRequests = async () => {
   }
 };
 
+
 useEffect(() => {
   checkLocalStorage();
   fetchRequests()
   fetchTasks()
 }, []);
+
 
  useEffect(() => {
     if (reQSrV && reQSrV.message) {
@@ -73,6 +83,7 @@ useEffect(() => {
       setSnackbarOpen(true);
     }
   }, [reQSrV]);
+
 
   const handleSnackbarClose = (event, reason) => {
     if (reason === 'clickaway') {
@@ -103,6 +114,8 @@ const fetchTasks = async () => {
       }
     }
   }, [user]);
+
+
 
   useEffect(() => {
     const storedStatus = localStorage.getItem('newStatus');
@@ -155,27 +168,25 @@ const handleClose = () => {
 // alert(timeRemaning)
 
 function calculateRemainingTime(createdAt, deadlineDays) {
-  // Parse createdAt as a Date object
-  const currentDate = new Date().formatDate();
-  const createdAtDate = new Date(createdAt).formatDate();
-  const millisecondsPerDay = 24 * 60 * 60 * 1000;
+  // Parse createdAt and deadline as Date objects
+  const currentDate = new Date();
+  const createdAtDate = new Date(createdAt);
+  const deadlineDate = new Date(deadlineDays);
 
-  const formattedCreatedAt = createdAtDate.toISOString().split('T')[0];
+  // Extract the date parts without the time
+  const createdAtDay = new Date(createdAtDate.getFullYear(), createdAtDate.getMonth(), createdAtDate.getDate());
+  const deadlineDay = new Date(deadlineDate.getFullYear(), deadlineDate.getMonth(), deadlineDate.getDate());
 
-  const timeDifference = new Date(formattedCreatedAt).getTime() - currentDate.getTime();
-  const remainingDays = Math.ceil(timeDifference / millisecondsPerDay);
-
-  if (remainingDays > 0 && remainingDays <= deadlineDays) {
-    return `Less than ${deadlineDays} days remaining`;
-  } else if (remainingDays === 0) {
-    return `Today is the deadline`;
-  } else if (remainingDays > deadlineDays) {
-    return `${remainingDays - deadlineDays} days remaining`;
+  
+  // Compare the dates based on days
+  if (createdAtDay < deadlineDay) {
+    return `${createdAtDay.toISOString().split('T')[0]} is before ${deadlineDay.toISOString().split('T')[0]}`;
+  } else if (createdAtDay.getTime() === deadlineDay.getTime()) {
+    return `${createdAtDay.toISOString().split('T')[0]} is the same as ${deadlineDay.toISOString().split('T')[0]}`;
   } else {
-    return `Deadline has passed`;
+    return `${createdAtDay.toISOString().split('T')[0]} is after ${deadlineDay.toISOString().split('T')[0]}`;
   }
 }
-
 
   function handleApprove() {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -338,9 +349,12 @@ const handleCompleteTask = async (taskId) => {
 
 
 return (
+  
     <div className="Profile-container">
+      {/* <NavigationMenu />  */}
       {user && (
         <div className="wrap-help">
+
         <div className="profile-cover">
         <img src={profileImg} alt="" className='cover-img' />
         {/* {console.log(user.avatar.url)} */}
@@ -360,76 +374,39 @@ return (
       />
     </div>
       </div>
+
             <div className="name">
         {user.name}
       </div>
+
       </div>
 
       )}
     
       <div className="User-container">
+  
+
+
         {user && (
           <div className="chosse-container">
-            {user.gender && (
-              <div className="welcome-user">
-                <p>
-                  Welcome back,
-                  {user.gender === "female" && " Ms "}
-                  {user.gender === "male" && " Mc "}
-                  {user.name}! What would you like to visit first?
-                </p>
-              </div>
-            )}
-            {user.role === 'admin' && (
-              <div className="dashboard ">
-                <Link to="/admin/dashboard">
-                  <button className='item'>Dashboard <br /><DashboardCustomizeIcon /></button>
-                </Link>
-              </div>
-            )}
-            
-            <div className="materials">
-              <Link to="/show-products">
-                <button className='item'>
-                  قاءمة المعدات<br />
-                  <HandymanIcon />
-                </button>
-              </Link>
-            </div>
-
-            <div className="materials">
-              <Link to="/">
-                <button className='item'>
-                  Home <br />
-                  <HomeIcon />
-                </button>
-              </Link>
-            </div>
-            <div className="setting">
-              <Link to="/settings">
-                <button className='item'>
-                  Setting <br />
-                  <SettingsSuggestTwoToneIcon />
-                </button>
-              </Link>
-            </div>
-
-            <div ref={reqParentRef} id="req">
+ 
             <Snackbar
         open={snackbarOpen}
-        autoHideDuration={6000} // Adjust the duration as needed
+        autoHideDuration={6000} 
         onClose={handleSnackbarClose}
       >
         <MuiAlert
           elevation={6}
           variant="filled"
           onClose={handleSnackbarClose}
-          severity="info" // You can use 'error', 'warning', 'info', 'success'
+          severity="info"
         >
           {snackbarMessage}
         </MuiAlert>
       </Snackbar>
-  
+
+
+<div ref={reqParentRef} id="req">
 <div className="requests-container">
     <Paper elevation={3} >
 
@@ -443,6 +420,7 @@ return (
             <CardHeader title={`Name: ${reQSrV.takenRequest.requesterName}`} subheader={`Date: ${formatDate(reQSrV.takenRequest.requestDate)}`}  />
           )}
          </div>
+          
           
           {reQSrV.takenRequest.materialPicture && reQSrV.takenRequest.requestDate && (
             <CardMedia component="img" src={reQSrV.takenRequest.materialPicture} alt="Product" title={`At: ${formatDate(reQSrV.takenRequest.requestDate)}`} />
@@ -464,69 +442,73 @@ return (
           </div>
         )}
   
+
+
+
+
+
   <div className="tasks-container">
-  <Typography variant="h4" gutterBottom>
-    Your Tasks
-  </Typography>
-  {tasks.length > 0 ? (
-    <List>
-      {tasks
-        .filter((task) => task.status !== 'completed') // Filter out completed tasks
-        .map((task) => (
+      <Typography variant="h4" align="center">
+        Your Tasks
+      </Typography>
+      {tasks.length > 0 ? (
+        <List>
+          {tasks
+            .filter((task) => task.status !== 'completed')
+            .map((task) => (
+              <ListItem key={task._id} divider>
+                <ListItemText
+                  primary={task.title}
+                  secondary={
+                    <div>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        style={{ maxHeight: '40px', overflow: 'hidden' }}
+                      >
+                        <strong>Description:</strong> {task.description}
+                      </Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        Status: {task.status}
+                      </Typography>
+                    </div>
+                  }
+                  primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
+                />
+                {task.status === 'pending' && (
+                  <ListItemSecondaryAction>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => handleOpen(task)}
+                    >
+                      <AssignmentIcon />
+                      Start Task
+                    </Button>
+                  </ListItemSecondaryAction>
+                )}
+                {task.status === 'in progress' && (
+                  <ListItemSecondaryAction>
+                    <Button
+                      variant="contained"
+                      style={{ backgroundColor: '#4caf50', color: 'white' }}
+                      onClick={() => handleCompleteTask(task._id)}
+                    >
+                      Done
+                      <CheckIcon style={{ marginLeft: '8px' }} />
+                    </Button>
+                  </ListItemSecondaryAction>
+                )}
+              </ListItem>
+            ))}
+        </List>
+      ) : (
+        <Typography variant="body2" align="center">
+          No tasks available.
+        </Typography>
+      )}
+    </div>
 
-
-          <ListItem key={task._id} divider>
-          <ListItemText
-          id='Task-text'
-            primary={task.title}
-            secondary={
-              <div>
-                <Typography
-                  variant="body2"
-                  color="textSecondary"
-                  style={{ maxHeight: '40px', overflow: 'hidden' }} 
-                >
-                <strong>Description:</strong> {task.description}
-                </Typography>
-                <Typography variant="body2" color="textSecondary">
-                  Status: {task.status}
-                </Typography>
-              </div>
-            }
-            primaryTypographyProps={{ style: { fontWeight: 'bold' } }}
-          />
-          {task.status === 'pending' && (
-            <ListItemSecondaryAction>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleOpen(task)}
-              >
-                Start Task
-              </Button>
-            </ListItemSecondaryAction>
-          )}
-          {task.status === 'in progress' && (
-            <ListItemSecondaryAction>
-              <Button
-                variant="contained"
-                style={{ backgroundColor: '#4caf50', color: 'white' }}
-                onClick={() => handleCompleteTask(task._id)}
-              >
-                Done
-                <CheckIcon style={{ marginLeft: '8px' }} />
-              </Button>
-            </ListItemSecondaryAction>
-          )}
-        </ListItem>
-
-
-        ))}
-    </List>
-  ) : (
-    <Typography variant="body2">No tasks available.</Typography>
-  )}
-</div>
 
 <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
   <DialogTitle>Task Details</DialogTitle>
@@ -581,7 +563,6 @@ return (
   </DialogActions>
 </Dialog>
 
-
 </div>
 
       <div className="confirm-container">
@@ -608,15 +589,19 @@ return (
       )}
   </div>
      
-        <button className="logout-btn"
-          style={{ background: "gray", width: "20%", margin: "5% 0", fontWeight: "bold" }}
+        <Button
           onClick={LogoutButton}
         >
           <LogoutOutlinedIcon /> Logout
-        </button>
+        </Button>
       {loading && <Loading />}
+
     </div>
+
+
+
   );
+
 }
 
 export default ProfilePage;

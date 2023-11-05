@@ -36,7 +36,9 @@ import {
     SLIDER_PRODUCTS_FAIL,
     SLIDER_PRODUCTS_REQUEST,
     SLIDER_PRODUCTS_SUCCESS,
+    // SET_MENU_OPEN
 } from "../constants/productConstants";
+
 
 const initialState = {
   loading: true,
@@ -129,3 +131,8 @@ export const productDetailsReducer = (state = { material: {} }, { type, payload 
             return state;
     }
 }
+
+
+
+
+

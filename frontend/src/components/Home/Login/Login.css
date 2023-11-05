@@ -5,7 +5,7 @@
   align-items: center;
   height: 100vh;
   transition: 3s ease;
-  background-color: aqua;
+  /* background-color: aqua; */
   width: 100%;
 }
 
@@ -19,7 +19,7 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   color: #fff;
-  background: repeating-linear-gradient(99deg, black,transparent 500px);
+  background: repeating-linear-gradient(99deg, #1976d2,transparent 500px);
   margin: 10% 0 0 0;
 
 }

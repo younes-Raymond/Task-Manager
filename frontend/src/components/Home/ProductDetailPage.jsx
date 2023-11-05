@@ -9,6 +9,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ForwardToInboxTwoToneIcon from '@mui/icons-material/ForwardToInboxTwoTone';
 import PersonPinCircleIcon from '@mui/icons-material/PersonPinCircle';
+
+// hello world we will run out of this country and we will create a 
+
+
 const ProductDetailPage = () => {
 
   // State variables
@@ -69,7 +73,7 @@ const sendLocation = async (latitude, longitude, userIdLS, materialId) => {
     longitudeRef.current = longitude;
 };
 
-// Create , Read , update , Delete 
+
 const getLocationByIP = async (materialId) => {
     const userIdLS = localStorage.getItem('userIdLS');
     try {

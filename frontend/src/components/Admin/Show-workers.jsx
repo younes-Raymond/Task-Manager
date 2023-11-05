@@ -1,6 +1,6 @@
 import React, { useEffect, useState , useRef } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
 import { getAllUsers , uploadVideoToCloudinary} from '../../actions/userAction';
-import './Show-workers.css';
 import SideBar from './SideBar/SideBar';
 import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
@@ -8,19 +8,29 @@ import axios from 'axios';
 import Loading from '../Layouts/loading';
 import { formatDate } from '../../utils/DateFormat';
 import {   
-  Snackbar, 
+  Avatar,
   Alert,
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  Button, 
   Dialog, 
   DialogTitle,
   DialogContent,
   DialogActions,
-  Button, 
+  Typography,
+  Table,
+  TableContainer,
+  TableHead,
+  TableBody,
+  TableRow,
   TextField,
   IconButton,
-  Card,
-  CardContent,
-  Grid,
-  Typography,
+  TableCell,
+  Paper,
+  Snackbar, 
+
  } from '@mui/material';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
@@ -28,6 +38,22 @@ import VideocamIcon from '@mui/icons-material/Videocam';
 import SendIcon from '@mui/icons-material/Send';
 import StopIcon from '@mui/icons-material/Stop'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import SaveIcon from '@mui/icons-material/Save';
+
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+
+const validationSchema = Yup.object({
+  title: Yup.string().required('Title is required'),
+  description: Yup.string()
+    .required('Description is required')
+    .min(50, 'Description must be at least 50 characters'),
+  resultExpectation: Yup.string().required('Result Expectation is required'),
+  deadlineDays: Yup.date().required('Deadline is required'),
+});
+
+
+
 const ShowWorkers = () => {
   const [workers, setWorkers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,6 +70,59 @@ const ShowWorkers = () => {
   const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
   const [iconColor, setIconColor] = useState({ camera: 'default', upload: 'default' , video:'default'});
+  const [editedRows, setEditedRows] = useState([]);
+  const dataGridRef = useRef();
+
+
+  const formik = useFormik({
+    initialValues: {
+      title: '',
+      description: '',
+      resultExpectation: '',
+      deadlineDays: '',
+    },
+    validationSchema: validationSchema, // Add the validation schema here
+    onSubmit: async (values) => {
+      // This function will only be called if the form passes validation
+      console.log('Form submitted with values:', values);
+      // Call your form submission logic here (e.g., handleCreateTask)
+    },
+  });
+  
+
+  const handleRowEditCommit = React.useCallback(
+    async (params) => {
+      const id = params.id;
+      const key = params.field;
+      const value = params.value;
+  
+      // Create an object containing the edited data
+      const editedData = {
+        id: id,
+        field: key,
+        value: value,
+      };
+  
+      // Deep copy the editedData to remove any circular references
+      const copiedData = JSON.parse(JSON.stringify(editedData));
+  
+      handleSaveChanges(copiedData);
+  
+      // Return the edited data
+      return editedData;
+    },
+    []
+  );
+  
+  const handleSaveChanges = async (data) => {
+    try {
+      const response = await axios.post('/api/v1/editworker', data);
+      console.log('Data saved successfully:', response.data);
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
+  
   
 
   const handleIconColor = (iconType) => {
@@ -110,16 +189,42 @@ const handleFileInputChange = (e) => {
   }
 };
 
-  
-  useEffect(() => {
-    const fetchWorkers = async () => {
+
+
+useEffect(() => {
+  let isMounted = true;
+
+  const fetchWorkers = async () => {
+    try {
       const data = await getAllUsers();
-      console.log(data)
-      setWorkers(data.users);
-      setLoading(false);
-    };
-    fetchWorkers();
-  }, []);
+       console.log(data.users)// this is log undifined how to deal with this probleme right now 
+      const updatedRows = data.users.map((user, index) => ({
+        id: user._id, // Assign a unique ID based on the index
+        fullName: user.name,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
+        gender: user.gender,
+        role: user.role,
+        registerAt: formatDate(user.registerAt),
+        avatar: user.avatar.url,
+      }));
+
+      if (isMounted) {
+        setWorkers(updatedRows);
+        setLoading(false);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  fetchWorkers();
+
+  return () => {
+    isMounted = false;
+  };
+}, []);
+
 
 
   const handleDelete = async (id) => {
@@ -136,10 +241,11 @@ const handleFileInputChange = (e) => {
     setSnackbarOpen(true);
   };
 
-  const handleSelectWorker = (workerId) => {
+const handleSelectWorker = (workerId) => {
     setSelectedWorkerId(workerId);
     setTaskPopupOpen(true);
   };
+
 
  const handleCaptureImage = async () => {
   handleIconColor('camera');
@@ -154,7 +260,7 @@ const handleFileInputChange = (e) => {
   
   
 
-  const handleRecordVideo = async () => {
+  const handleRecordVideo = async () => { 
 handleIconColor("video")
     try {
       const videoBlob = await recordVideo(true);
@@ -274,177 +380,241 @@ const stopCamera = () => {
 
 
 
-  return (
-    <div className='wrapper'>
-  <SideBar />
-      {loading? (
-        <Loading />
-      ) : (
-        <table className="table-container">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Gender</th>
-              <th>Role</th>
-              <th>Image</th>
-              <th>Registered At</th>
-              <th>Modification</th>
-            </tr>
-          </thead>
-          <tbody>
-            {workers.map((worker) => (
-              <tr key={worker._id}>
-                <td>{worker.name}</td>
-                <td>{worker.email}</td>
-                <td>{worker.gender}</td>
-                <td>{worker.role}</td>
-                <td>
-                  <img src={worker.avatar.url} alt="" />
-                  </td>
-                <td>{formatDate(worker.registerAt)}</td>
+const columns = [
+  // { field: 'id', headerName: 'ID', width: 0 },
+  {
+    field: 'avatar',
+    headerName: 'Avatar',
+    width: 80,
+    height:80,
+    margin:5,
+    renderCell: (params) => (
+      <div style={{ width: '90%', height: '90%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Avatar
+          src={params.value} 
+          alt=""
+          style={{ width: '80px', height: '80px', maxWidth: '100%', maxHeight: '100%', borderRadius: '50%' }}
+        />
+      </div>
+    ),
+    
+  },
+  { field: 'fullName', headerName: 'Full name', width: 140} ,
+  { field: 'phoneNumber', headerName: 'phone', width: 150 , editable: true},
+  { field: 'email', headerName: 'Email', width: 200, editable: true  },
+  { field: 'gender', headerName: 'Gender', width: 100 },
+  { field: 'role', headerName: 'Role', width: 100, editable: true },
+  { field: 'registerAt', headerName: 'Registered At', width: 150 },
 
-                <td className='Edit-Delete-container'>
-                <button className='Edit'>
-                    Edit:
-                        <Edit /> 
-                    </button>
-                <button className='Delete' onClick={() => handleDelete(worker._id)}>
-                    Delete:
-                    <Delete />
-                </button>   
-                <button onClick={() => handleSelectWorker(worker._id)} id='Task-btn'>TasK:<br />
-  <AddTaskRoundedIcon /> 
-</button>
-
-                </td>
-
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-      
-      
-      <Dialog open={isTaskPopupOpen} onClose={() => setTaskPopupOpen(false)}>
-  <DialogTitle> Create Task</DialogTitle>
-  <DialogContent>
-    <TextField
-      label="Task Title"
-      fullWidth
-      multiline
-      value={taskTitle}
-      onChange={(e) => setTaskTitle(e.target.value)}
-      style={{ marginBottom: '16px' }}
-    />
-    <TextField
-      label="Task Description"
-      fullWidth
-      multiline
-      value={taskDescription}
-      onChange={(e) => setTaskDescription(e.target.value)}
-      style={{ marginBottom: '16px' }}
-    />
-    <TextField
-      label="Task Result Expectation"
-      fullWidth
-      multiline
-      value={taskResult}
-      onChange={(e) => setTaskResult(e.target.value)}
-      style={{ marginBottom: '16px' }}
-    />
-    <TextField
-      label="DeadLine"
-      type="date"
-      fullWidth
-      value={endDate}
-      onChange={(e) => setEndDate(e.target.value)}
-      InputLabelProps={{
-        shrink: true,
-      }}
-    />
-
-    <Card>
-      <CardContent>
-        <Grid container spacing={2} justifyContent="center" alignItems="center">
-     
-<Grid item>
-  <IconButton onClick={handleCaptureImage} color={iconColor.camera}>
-    <PhotoCameraIcon />
-  </IconButton>
-</Grid>
-
-
-
-          <Grid item>
-            <IconButton onClick={handleRecordVideo} color={iconColor.video}>
-              <VideocamIcon />
-            </IconButton>
-          </Grid>
-          <input
-  type="file"
-  ref={fileInputRef}
-  style={{ display: 'none' }}
-  onChange={handleFileInputChange}
-  accept=".jpg, .jpeg, .png, .gif, .mp4 , .pdf"  
-/>
-<Grid item>
-  <IconButton onClick={() => fileInputRef.current.click()} color={iconColor.upload}>
-    <CloudUploadIcon />
-  </IconButton>
-</Grid>
-        </Grid>
-      </CardContent>
-    </Card>
-
-    <Grid container spacing={2} justifyContent="center" alignItems="center">
-    <Grid item>
-  {stream ? (
-    <canvas
-      ref={canvasRef}
-      style={{
-        display: stream ? 'block' : 'none',
-        width: '100%',
-        maxWidth: '400px',
-        marginTop: '16px'
-      }}
-    />
-  ) : null}
-</Grid>
-
-
-  <Grid item>
-    {stream && (
-    <Button
-    variant="contained"
-    color="primary"
-    onClick={handleCreateTask}
-    style={{ marginLeft: '8px' }}
-  >
-    <SendIcon />
-  </Button>
   
-    )}
-  </Grid>
-</Grid>
+  {
+    field: 'actions',
+    headerName: 'Actions',
+    width: 100,
+    renderCell: (params) => (
+      <div>
+<IconButton onClick={() => handleDelete(params.id)} color="secondary">
+  <Delete />
+</IconButton>
+<IconButton onClick={() => handleSelectWorker(params.id)} color="primary">
+  <AddTaskRoundedIcon />
+</IconButton>
+
+
+      </div>
+    ),
+  },
+
+
+  
+];
 
 
 
+
+
+return (
+  <div className='wrapper'>
+
+  <SideBar />
+
+
+  <Box  style={{ height: '600px', width: '100%', padding: '20px' }}>
+
+  <DataGrid
+  onCellEditCommit={handleRowEditCommit}
+          rows={workers}
+          columns={columns}
+          loading={loading}
+          pageSizeOptions={[5, 10]}
+          ref={dataGridRef}
+          checkboxSelection
+          pagination
+        />
+<IconButton>
+<Button
+  variant='contained'
+  color='primary'
+  style={{marginTop:'16px'}}  
+  onClick={handleSaveChanges}
+  ><SaveIcon /> Save
+  </Button>
+</IconButton>
+     
+  </Box>
+      
+
+<Dialog open={isTaskPopupOpen} onClose={() => setTaskPopupOpen(false)}>
+  <DialogTitle> Create Task</DialogTitle>
+
+  <DialogContent>
+    <form onSubmit={formik.handleSubmit}>
+      <TextField
+        label="Task Title"
+        fullWidth
+        multiline
+        name="title"
+        value={formik.values.title}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.touched.title && Boolean(formik.errors.title)}
+        helperText={formik.touched.title && formik.errors.title}
+        style={{ marginBottom: '16px' }}
+      />
+      <TextField
+        label="Task Description"
+        fullWidth
+        multiline
+        name="description"
+        value={formik.values.description}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.touched.description && Boolean(formik.errors.description)}
+        helperText={formik.touched.description && formik.errors.description}
+        inputProps={{minLength: 50, maxLength: 200 }}
+        style={{ marginBottom: '16px' }}
+      />
+      <TextField
+        label="Task Result Expectation"
+        fullWidth
+        multiline
+        name="resultExpectation"
+        value={formik.values.resultExpectation}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        error={formik.touched.resultExpectation && Boolean(formik.errors.resultExpectation)}
+        helperText={formik.touched.resultExpectation && formik.errors.resultExpectation}
+        style={{ marginBottom: '16px' }}
+      />
+      <TextField
+        label="DeadLine"
+        type="date"
+        fullWidth
+        name="deadlineDays"
+        value={formik.values.deadlineDays}
+        onChange={formik.handleChange}
+        onBlur={formik.handleBlur}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        error={formik.touched.deadlineDays && Boolean(formik.errors.deadlineDays)}
+        helperText={formik.touched.deadlineDays && formik.errors.deadlineDays}
+      />
+
+
+
+      <Card>
+        <CardContent>
+          <Grid container spacing={2} justifyContent="center" alignItems="center">
+            <Grid item>
+              <IconButton onClick={handleCaptureImage} color={iconColor.camera}>
+                <PhotoCameraIcon />
+              </IconButton>
+            </Grid>
+            <Grid item>
+              <IconButton onClick={handleRecordVideo} color={iconColor.video}>
+                <VideocamIcon />
+              </IconButton>
+            </Grid>
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleFileInputChange}
+              accept=".jpg, .jpeg, .png, .gif, .mp4 , .pdf"
+            />
+            <Grid item>
+              <IconButton onClick={() => fileInputRef.current.click()} color={iconColor.upload}>
+                <CloudUploadIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+
+
+
+      <Grid container spacing={2} justifyContent="center" alignItems="center">
+        <Grid item>
+          {stream ? (
+            <canvas
+              ref={canvasRef}
+              style={{
+                display: stream ? 'block' : 'none',
+                width: '100%',
+                maxWidth: '400px',
+                marginTop: '16px',
+              }}
+            />
+          ) : null}
+        </Grid>
+
+        <Grid item>
+          {stream && (
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit" // Add type to trigger form submission
+              style={{ marginLeft: '8px' }}
+            >
+              <SendIcon />
+            </Button>
+          )}
+        </Grid>
+      </Grid>
+    </form>
   </DialogContent>
-  <DialogActions>
-  <Button onClick={() => { setTaskPopupOpen(false); stopCamera(); }} color="secondary">
-  Cancel
-</Button>
 
-    <Button onClick={handleCreateTask} color="primary">
+
+
+
+
+<DialogActions>
+  <Button onClick={() => { setTaskPopupOpen(false); stopCamera(); }} color="secondary">
+    Cancel
+  </Button>
+
+  {formik.values.title && formik.values.description && formik.values.resultExpectation && formik.values.deadlineDays ? (
+    <Button
+      onClick={handleCreateTask}
+      color="primary"
+      type="submit" // Add type to trigger form submission
+    >
       Create Task
     </Button>
-  </DialogActions>
+  ) : (
+    <Button
+      disabled // Disable the button if any of the required fields is empty
+      color="primary"
+    >
+      Create Task
+    </Button>
+  )}
+</DialogActions>
+
+
+
 </Dialog>
-
-
-
-
 
 
       <Snackbar
@@ -456,6 +626,10 @@ const stopCamera = () => {
           Data sent successfully!
         </Alert>
       </Snackbar>
+
+
+
+
 
     </div>
   );

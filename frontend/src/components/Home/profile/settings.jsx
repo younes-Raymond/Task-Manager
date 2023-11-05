@@ -2,6 +2,7 @@ import React, { useState ,useEffect } from 'react';
 import { Typography, Container, Paper, Grid, FormControlLabel, Switch, MenuItem, Select } from '@mui/material';
 import SettingsSuggestTwoToneIcon from '@mui/icons-material/SettingsSuggestTwoTone';
 import axios from 'axios';
+import { useMediaQuery } from '@mui/material';
 
 function SettingsComponent() {
 
@@ -15,6 +16,10 @@ function SettingsComponent() {
   const [countryFlag , setCountryFlag ] = useState(null);
   const [language_Native, setLanguage_Native ] = useState(null)
   const [countryInfo, setCountryInfo ] = useState(null);
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const [hideNavigationMenu,  setHideNavigationMenu ] = useState(false);
+  
+
 
   const getInfoOfCountry = async () => {
     try {
@@ -35,13 +40,19 @@ function SettingsComponent() {
   };
  
   
-  
-  
+  const paperStyle = {
+    padding:'20px',
+    width: isDesktop ? '100%' : '80%',
+    margin: isDesktop ? 'auto' : '10%',
+    
+  };
 
+  
   useEffect(() => {
     getInfoOfCountry()
   }, []);
 
+  
   const handleNotificationToggle = () => {
     setNotificationEnabled(!notificationEnabled);
   };
@@ -69,10 +80,28 @@ function SettingsComponent() {
   const handleHelpAndSupportToggle = () => {
     setHelpAndSupport(!helpAndSupport)
   }
+  
+
+  // Load the hideNav value from localStorage on component mount
+  useEffect(() => {
+    const hideNav = localStorage.getItem('hideNav');
+    if (hideNav) {
+      setHideNavigationMenu(true);
+    }
+  }, []);
+
+  const handleHideNavigationMenu = () => {
+    if (hideNavigationMenu) {
+      localStorage.setItem('hideNav', false);
+    } else {
+      localStorage.setItem('hideNav', true);
+    }
+    setHideNavigationMenu(!hideNavigationMenu);
+  };
 
   return (
     <Container maxWidth="md">
-      <Paper elevation={3} style={{ padding: '20px' }}>
+      <Paper elevation={3} style={paperStyle}>
         <Typography variant="h5" gutterBottom>
           Settings
         </Typography>
@@ -151,6 +180,19 @@ function SettingsComponent() {
   }
   label="Automatic Geolocation Language"
 />
+
+<FormControlLabel
+  control={
+    <Switch
+      checked={hideNavigationMenu}
+      onChange={handleHideNavigationMenu}
+      disabled={selectedLanguage !== 'en' && selectedLanguage !== 'es'}
+    />
+  }
+  label="Hide Helper Navigation"
+/>
+
+
  
   
   {countryInfo && (

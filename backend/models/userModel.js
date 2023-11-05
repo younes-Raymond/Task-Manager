@@ -30,7 +30,7 @@ const WorkersSchema = new mongoose.Schema({
     required: false,
    },
   phoneNumber: {
-    type: Number,
+    type: String,
     required: true,
   },
   role: {

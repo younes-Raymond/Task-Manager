@@ -1,34 +1,98 @@
 import React, { useEffect, useState } from 'react';
-import './Search.css'
 import NotFound from '../NotFound';
-import { getProducts, sendRequest, updateProduct } from '../../actions/productaction';
+import { Link } from 'react-router-dom';
+import { sendRequest } from '../../actions/productaction';
 import MARKER from '../../assets/images/G-M-Marker.png';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
-import '../Home/ProductDetailPage.css'; 
-import axios from 'axios'
+import { flexbox, styled } from "@mui/system";
+import Paper from "@mui/material/Paper";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import { formatDate } from '../../utils/DateFormat';
+import EmailIcon from "@mui/icons-material/Email";
+import GenderIcon from "@mui/icons-material/Wc";
+import WomanIcon from '@mui/icons-material/Woman';
+import ManIcon from '@mui/icons-material/Man';
+import RoleIcon from "@mui/icons-material/Work";
+import PhoneIcon from "@mui/icons-material/Phone";
+import DateRangeIcon from "@mui/icons-material/DateRange";
+import { useMediaQuery } from '@mui/material';
+
+const UserPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  border: "1px solid #ccc",
+  borderRadius: theme.spacing(1),
+  width: "40%",
+  margin: "30%",
+}));
+
+const AvatarContainer = styled(Avatar)(({ theme }) => ({
+  width: theme.spacing(10),
+  height: theme.spacing(10),
+  marginBottom: theme.spacing(2),
+  border: '3px solid #ccc',
+  borderRadius: "50%",
+  backgroundColor: 'lightgray'
+}));
+
+
+const TypographyStyle = {
+  display: "flex",
+  alignItems: 'center',
+  marginBottom: '2%'
+
+}
+
+const HrefStyle = {
+  display:'flex',
+  textDecoration:'none',
+  color:'black'
+} 
+
+
 
 const Search = () => {
-  const [filteredMaterials, setFilteredMaterials] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]);
-  const [detailsVisibility, setDetailsVisibility] = useState({});
-  const [ filteredJobs, setFilteredJobs ] = useState({});
+  const [filteredMaterials, setFilteredMaterials] = React.useState([]);
+  const [filteredUsers, setFilteredUsers] = React.useState([]);
+  const [detailsVisibility, setDetailsVisibility] = React.useState({});
+  const [ filteredJobs, setFilteredJobs ] = React.useState({});
+  const isDesktop = useMediaQuery('(min-width: 768px)');
+  const [loading, setLoading ] = React.useState(true);
 
-  
-  useEffect(() => {
-    const fetchData = () =>{
-      const storedData = localStorage.getItem('result');
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        setFilteredMaterials(parsedData.materials || []);
-        setFilteredUsers(parsedData.users || []);
-        setFilteredJobs(parsedData.Jobs || []);
+
+
+
+  const fetchData = () =>{
+      setLoading(true)
+
+      try {
+        const storedData = localStorage.getItem('result');
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+          setFilteredMaterials(parsedData.materials || []);
+          setFilteredUsers(parsedData.users || []);
+          console.log(parsedData.users)
+          setFilteredJobs(parsedData.Jobs || []);
+        }
+      } catch (error) {
+        console.log('there no resul in localStorage in Search Component', error)
+      } finally {
+        setLoading(false)
       }
-    }  
+    
+  }  
+
+
+  useEffect(() => {
     fetchData()
-  });
+  }, []);
 
 
   const handleOpenClose = async (materialId, userId) => {
@@ -57,9 +121,23 @@ const Search = () => {
     }));
   };
 
+
+
+
+
+
+  const containedStyle = {
+    width: isDesktop ? '50%' : '80%',
+    margin: isDesktop ? '5% 25%' : '5% 10%',
+
+  };
+
+
   return (
     <div>
-      <div className="materials-container">
+
+      
+    <div className="materials-container">
         {filteredMaterials.length > 0 ? (
           filteredMaterials.map((material) => (
             <div className="material" key={material._id}>
@@ -83,6 +161,7 @@ const Search = () => {
                   </span>
                 </label>
               <div className="users-container">
+
                 <h4>Workers who currently have this material</h4>
                 <ul>
                   {material.users.map((user, index) => (
@@ -117,30 +196,61 @@ const Search = () => {
           </div>
         )}
       </div>
-      <div className="user-container">
+
+
+      <div>
         {filteredUsers.length > 0 ? (
           filteredUsers.map((user) => (
-            <div className="user-item" key={user._id}>
-              <div className="avatar-container">
-                <img src={user.avatar.url} alt="User Avatar" />
-              </div>
-              <div className="user-details">
-                <strong>{user.name}</strong>
-                <p>Email: {user.email}</p>
-                <p>Gender: {user.gender}</p>
-                <p>Role: {user.role}</p>
-              </div>
-            </div>
+
+            <UserPaper elevation={3} sx={containedStyle}>
+            <AvatarContainer src={user.avatar.url} alt="User Avatar" />
+            <Typography variant="h5">{user.name}</Typography>
+            
+            <Typography variant="body1" sx={TypographyStyle}>
+              <a href={`tel:${user.phoneNumber}`} style={HrefStyle}>
+                <PhoneIcon color='primary' /> {user.phoneNumber}
+              </a>
+            </Typography>
+            
+            <Typography variant="body1" sx={TypographyStyle}>
+              <a href={`mailto:${user.email}`} style={HrefStyle}>
+                <EmailIcon color='primary' /> {user.email}
+              </a>
+            </Typography>
+            
+            <Typography variant="body1" sx={TypographyStyle}>
+          {user.gender === "female" ? (
+            <WomanIcon sx={{ marginRight: "4px" }} color="primary" />
+          ) : user.gender === "male" ? (
+            <ManIcon sx={{ marginRight: "4px" }} color="primary" />
+          ) : (
+            <GenderIcon sx={{ marginRight: "4px" }} color="primary" />
+          )}
+          {user.gender}
+        </Typography>
+            
+            <Typography variant="body1" sx={TypographyStyle}>
+              <RoleIcon color='primary' /> {user.role}
+            </Typography>
+            
+            <Typography variant="body1" sx={TypographyStyle}>
+              <DateRangeIcon color='primary' /> {formatDate(user.registerAt)}
+            </Typography>
+          </UserPaper>
+      
+      
+          
           ))
         ) : (
           <div>
-            {/* <NotFound />  */}
+            {/* No users found. */}
           </div>
         )}
       </div>
+
+
     </div>
   );
+};
 
-
-}
 export default Search;

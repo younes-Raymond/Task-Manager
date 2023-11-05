@@ -5,11 +5,76 @@ import './Jobs.css'
 import Loading  from '../Layouts/loading'
 import { getAllJobs } from '../../actions/userAction'
 import { formatDate } from '../../utils/DateFormat'
+import {   
+  Avatar,
+  Alert,
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  Button, 
+  Dialog, 
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Typography,
+  Table,
+  TableContainer,
+  TableHead,
+  TableBody,
+  TableRow,
+  TextField,
+  IconButton,
+  TableCell,
+  Paper,
+  Snackbar, 
+  Container,
+  List,
+  ListItem,
+  ListItemText,
+  Badge
+
+ } from '@mui/material';
+ import CountertopsIcon from '@mui/icons-material/Countertops';
+ import { useFormik } from 'formik'
+ import * as Yup from 'yup';
+
+ const validationSchema = Yup.object({
+  name: Yup.string().required('Name is required'),
+  email: Yup.string()
+    .email('Invalid email format')
+    .required('Email is required'),
+  message: Yup.string()
+    .required('Message is required')
+    .min(50, 'Message must be at least 50 characters'),
+});
+
+
 
 
 const Jobs = () => {
   const [jobPosts, setJobPosts] = useState([])
- const [loading, setLoading ] = useState(true)
+  const [loading, setLoading ] = useState(true)
+  const [isFormOpen , setIsFormOpen ] = useState(false);
+
+ 
+
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      email: '',
+      message: '',
+    },
+    validationSchema: validationSchema, // Add the validation schema here
+    onSubmit: async (values) => {
+      // This function will only be called if the form passes validation
+      console.log('Form submitted with values:', values);
+      // Call your form submission logic here (e.g., handleCreateTask)
+    },
+  });
+
+
+
 
   useEffect(() => {
     fetchJobPosts()
@@ -27,7 +92,8 @@ const Jobs = () => {
   }
 
 
-  const handleApplyClick = (jobId) => {
+  const handleOpenDialog = (jobId) => {
+    setIsFormOpen(true)
     setJobPosts((prevJobPosts) =>
       prevJobPosts.map((jobPost) => {
         if (jobPost._id === jobId) {
@@ -93,7 +159,6 @@ const Jobs = () => {
       });
   };
   
-
   const isFileValid = (file) => {
     const acceptedFileTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']
     return acceptedFileTypes.includes(file.type)
@@ -104,58 +169,112 @@ const Jobs = () => {
   }
 
   return (
-    <div className="jobs-container">
-      <h2 className="company-name">AllMart-Company...</h2>
+    <div style={{display: 'flex', justifyContent:'center', flexDirection:'column',alignItems: 'center', height:'60vh'}}>
       {jobPosts &&jobPosts.length > 0 ? (
         jobPosts.map((jobPost) => (
-          <div className="job-listing" key={jobPost._id}>
-            <h3 className="job-title">{jobPost.title}</h3>
-            <p className="job-description">{jobPost.description}</p>
-            <ul className="job-requirements">
-              {jobPost.requirements.map((requirement) => (
-                <li key={requirement}>{requirement}</li>
+         <div key={jobPost._id} style={{width:'60%', marginBottom:'20px'}}>
+          <Card key={jobPost._id}>
+            <CardContent>
+
+            <Typography variant='h5' component='div'>
+              {jobPost.title}
+            </Typography>
+            <Typography >{jobPost.description}</Typography>
+
+            <List>
+
+              {jobPost.requirements.map((requirement, index) => (
+                <ListItem key={index}>
+                <ListItemText key={requirement} /> 
+                </ListItem>
               ))}
-            </ul>
-            <p className="job-application-details">
+            </List>
+
+            <Typography>
               Email: {jobPost.applicationDetails.email}
-            </p>
-            <p className="job-application-details">
+            </Typography>
+            <Typography>
               Phone: {jobPost.applicationDetails.phone}
-            </p>
-            <p className='job-application-details'>
+            </Typography>
+            <Typography >
   <span>Created At:</span> {`${formatDate(jobPost.createdAt)}`}
-</p>
+</Typography>
 
-            <span className='counter'>Applied:{jobPost.counter}</span>
 
-            {!jobPost.showApplyForm && (
-              <button className="btn" onClick={() => handleApplyClick(jobPost._id)}>
+          <IconButton>
+            <CountertopsIcon color='primary'/>
+            Applied:<Typography variant='h5' color='primary' component='span' >{jobPost.counter}</Typography>
+          </IconButton>
+             <IconButton>
+              <Button  onClick={() => handleOpenDialog(jobPost._id)} color='primary' variant='contained'>
                 Apply For this Job
-              </button>
-            )}
-            {jobPost.showApplyForm && (
-              <div className="form-container">
-                <hr />
+              </Button>
+             </IconButton>
 
-                <form className="apply-form" onSubmit={(e) => handleSubmit(e, jobPost._id)} encType="multipart/form-data">
-  <label htmlFor="name">Name:</label>
-  <input type="text" id="name" name="name" placeholder="Enter Your Name" required minLength={4} maxLength={50} />
-
-  <label htmlFor="email">Email:</label>
-  <input type="email" id="email" name="email" placeholder="Enter Your Email" required />
-
+<Dialog open={isFormOpen} onClose={() => setIsFormOpen(false)} key={jobPost._id}>
+  <DialogTitle>Please Fill the Info Here</DialogTitle>
+  <DialogContent>
+    <form  onSubmit={(e) => handleSubmit(e, jobPost._id)} encType="multipart/form-data">
+      <TextField
+        label="Full Name"
+        fullWidth
+        name="name"
+        required
+        inputProps={{ minLength: 4, maxLength: 50 }}
+        placeholder="Enter Your Name"
+        sx={{
+          marginBottom:'4%'
+        }}
+      />
+      <TextField
+        label="Email"
+        fullWidth
+        type="email"
+        name="email"
+        required
+        placeholder="Enter Your Email"
+        sx={{
+          marginBottom:'4%'
+        }}
+      />
+      <Box sx={{ display: 'flex', alignItems: 'center' , flexDirection:'row', marginBottom:'4%'}}>
   <label htmlFor="file">
-    Resume CV*:
-    <input type="file" id="file" name="file" required accept=".pdf,.doc,.docx" />
+    <Avatar sx={{ marginRight: 1, backgroundColor: 'primary.main' }}>
+      <CountertopsIcon />
+    </Avatar>
   </label>
+  <input type="file" id="file" name="file" required accept=".pdf,.doc,.docx" style={{ display: 'none' }} />
+  <Button
+    variant="contained"
+    component="label"
+    color="primary"
+    htmlFor="file"
+    sx={{ marginLeft: 1 }}
+  >
+    Upload CV*
+  </Button>
+</Box>
 
-  <label htmlFor="message">Message:</label>
-  <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+      <TextField
+        label="Message"
+        fullWidth
+        multiline
+        name="message"
+        required
+        placeholder="Your Message"
+        sx={{
+          marginBottom:'4%'
+        }}
+      />
+      <Button type="submit" className="btn" variant="contained" color="primary">
+        Submit
+      </Button>
+    </form>
+  </DialogContent>
+</Dialog>
+</CardContent>
 
-  <button type="submit" className='btn'>Submit</button>
-</form>
-              </div>
-            )}
+          </Card>
           </div>
         ))
       ) : (

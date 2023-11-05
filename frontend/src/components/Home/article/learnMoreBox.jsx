@@ -1,38 +1,52 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../option.css';
+import { styled } from '@mui/system';
+import {
+  Paper,
+  Typography,
+  Button,
+} from '@mui/material';
+import DirectionsIcon from '@mui/icons-material/Directions';
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
-const ABOUT_US = () => {
+// Create a styled component
+const StyledBox = styled(Paper)`
+  padding: 20px;
+  text-align: center;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 90%;
+  max-width: 400px;
+`;
+
+const iconStyle = {
+  fontSize: '5rem', // Adjust the icon size as needed
+};
+
+const AboutUs = () => {
   return (
-    <div className='box'>
-      <h2>How To Use App</h2>
-      <p>Click the button below To learn How To Use App</p>
-      <Link to="/About-us">
-        <button className='btn'>Using App</button>
-      </Link>
+    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+      <StyledBox elevation={3}>
+        <DirectionsIcon color="primary" style={iconStyle} /> {/* Larger icon */}
+        <Typography variant="h4">How To Use App</Typography>
+        <Typography variant="body1">Click the button below to learn How To Use App</Typography>
+        <Button variant="contained" color="primary" component={Link} to="/About-us">
+          Using App
+        </Button>
+      </StyledBox>
+      
+      <StyledBox elevation={3} >
+        <MonetizationOnIcon color='primary' style={iconStyle} /> {/* Larger icon */}
+        <Typography variant="h4">Marketing plan</Typography>
+        <Typography variant="body1" >Click the button below to See your Marketing plan</Typography>
+        <Button variant="contained" color="primary" component={Link} to='/Marketing-plan'>
+          Become A Marketer
+        </Button>
+      </StyledBox>
     </div>
   );
 };
 
-const Marketing = () => {
-  return (
-    <div className='box' style={{ background: 'url(https://res.cloudinary.com/dktkavyr3/image/upload/v1691005956/omni-channel-technology-online-retail-business-approach-omni-channel-technology-online-retail-business-approach-multichannel-257954358_xnkkoa.webp)' }}>
-      <h2 style={{color:'white'}}>Marketing plan</h2>
-      <p style={{color:'white'}}>Click the button below to See your Marketing plan</p>
-      <Link to='/Marketing-plan'>
-        <button className='btn' >Become A Marketer</button>
-      </Link>
-    </div>
-  );
-};
-
-const LearnBoxes = () => {
-  return (
-    <div className='boxes-container' >
-      <ABOUT_US />
-      <Marketing />
-    </div>
-  );
-};
-
-export default LearnBoxes;
+export default AboutUs;
