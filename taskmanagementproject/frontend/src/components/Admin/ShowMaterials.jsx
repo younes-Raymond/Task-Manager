@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { getProducts } from '../../actions/productaction';
-import './Show-workers.css'
 import SideBar  from './SideBar/SideBar'
 import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';

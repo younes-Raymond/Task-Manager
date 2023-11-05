@@ -589,12 +589,11 @@ return (
       )}
   </div>
      
-        <button className="logout-btn"
-          style={{ background: "gray", width: "20%", margin: "5% 0", fontWeight: "bold" }}
+        <Button
           onClick={LogoutButton}
         >
           <LogoutOutlinedIcon /> Logout
-        </button>
+        </Button>
       {loading && <Loading />}
 
     </div>

@@ -9,7 +9,7 @@
     margin: 0% 10%;
     padding: 20px;
     border-radius: 4px;
-    background: repeating-linear-gradient(99deg, black, transparent 950px);
+    background: repeating-linear-gradient(99deg, #1976d2, transparent 950px);
     color: white;
     width: 100%;
   }

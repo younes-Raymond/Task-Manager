@@ -59,34 +59,42 @@ const HrefStyle = {
 
 
 const Search = () => {
-  const [filteredMaterials, setFilteredMaterials] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]);
-  const [detailsVisibility, setDetailsVisibility] = useState({});
-  const [ filteredJobs, setFilteredJobs ] = useState({});
+  const [filteredMaterials, setFilteredMaterials] = React.useState([]);
+  const [filteredUsers, setFilteredUsers] = React.useState([]);
+  const [detailsVisibility, setDetailsVisibility] = React.useState({});
+  const [ filteredJobs, setFilteredJobs ] = React.useState({});
   const isDesktop = useMediaQuery('(min-width: 768px)');
+  const [loading, setLoading ] = React.useState(true);
 
-  const containedStyle = {
-    width: isDesktop ? '50%' : '80%',
-    margin: isDesktop ? '5% 25%' : '5% 10%',
 
-  };
+
+
+  const fetchData = () =>{
+      setLoading(true)
+
+      try {
+        const storedData = localStorage.getItem('result');
+        if (storedData) {
+          const parsedData = JSON.parse(storedData);
+          setFilteredMaterials(parsedData.materials || []);
+          setFilteredUsers(parsedData.users || []);
+          console.log(parsedData.users)
+          setFilteredJobs(parsedData.Jobs || []);
+        }
+      } catch (error) {
+        console.log('there no resul in localStorage in Search Component', error)
+      } finally {
+        setLoading(false)
+      }
+    
+  }  
 
 
   useEffect(() => {
-    const fetchData = () =>{
-      const storedData = localStorage.getItem('result');
-      if (storedData) {
-        const parsedData = JSON.parse(storedData);
-        setFilteredMaterials(parsedData.materials || []);
-        setFilteredUsers(parsedData.users || []);
-        console.log(parsedData.users)
-        setFilteredJobs(parsedData.Jobs || []);
-      }
-    }  
     fetchData()
   }, []);
 
-  
+
   const handleOpenClose = async (materialId, userId) => {
     const user = JSON.parse(localStorage.getItem('user'));
     const userId_of_Taken = document.querySelector('.user-id').textContent;
@@ -111,6 +119,17 @@ const Search = () => {
       ...prevDetails,
       [materialId]: !prevDetails[materialId],
     }));
+  };
+
+
+
+
+
+
+  const containedStyle = {
+    width: isDesktop ? '50%' : '80%',
+    margin: isDesktop ? '5% 25%' : '5% 10%',
+
   };
 
 

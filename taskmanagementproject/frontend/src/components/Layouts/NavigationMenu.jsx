@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { List, ListItem, ListItemIcon, ListItemText, ListItemButton } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
@@ -13,17 +13,32 @@ import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import {
   Typography,
   Box
-
 } from '@mui/material'
+
 function NavigationMenu({ open }) {
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const userRole = checkUserRole(); // Get the user role using the imported function
   const location  = useLocation()
   const isMobile = !isDesktop;
   const isMenuOpen = useSelector((state) => state.header.isMenuOpen);
-  // console.log(isMenuOpen); // This should log the correct value
-    
-   
+  const [hideNavigationMenu, setHideNavigationMenu ] = useState(true);
+  
+
+
+
+
+
+useEffect(() => {
+const isHide = localStorage.getItem('hideNav');
+    if (isHide) {// if set to true 
+      console.log('yes');
+     let  ishide = false
+    setHideNavigationMenu(ishide);
+
+    } else {
+      console.log('else');
+    }
+}, [])
 
 
 const adminDesktop = [
@@ -34,6 +49,7 @@ const adminDesktop = [
   { text: "Dashb", icon: <DashboardIcon />, route: "/admin/showWorkers" },
   { text: "Charts", icon: <BarChartIcon />, route: "/admin/dashboard" },
 ];
+
 
 const adminMobile = [
   { text: "Home", icon: <HomeIcon />, route: "/" },
@@ -67,7 +83,9 @@ const getMenuItems = () => {
 
   const menuItems = getMenuItems();
 
-  if (location.pathname.includes('admin')) {
+
+
+  if (location.pathname.includes('admin') && !hideNavigationMenu) {
     const Home = menuItems
       .filter(item => item.text === "Home")
       .map((item) => (
@@ -101,7 +119,7 @@ const getMenuItems = () => {
 
 
   return (
-   
+
     <div className="navigation-menu" style={{ zIndex: 9999, position: 'fixed',}}>
       <List>
         {menuItems.map((item, index) => (

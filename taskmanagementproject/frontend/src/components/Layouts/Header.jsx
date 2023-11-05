@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { styled, alpha } from '@mui/material/styles';
-import Box from '@mui/material/Box';
 import { useDispatch , useSelector,  } from 'react-redux';
 import logo from '../../assets/images/svgLogo.svg'
 import {
@@ -9,12 +8,17 @@ import {
 import { 
     IconButton,
     AppBar,
-    Avatar
-
+    Avatar,
+    List,
+    ListItem,
+    Divider,
+    ListItemText,
+    ListItemAvatar,
+    Typography,
+    Box,
+    Dialog
 } from '@mui/material/'
 import Toolbar from '@mui/material/Toolbar';
-// import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import Badge from '@mui/material/Badge';
 import MenuItem from '@mui/material/MenuItem';
@@ -29,7 +33,9 @@ import { Link } from 'react-router-dom';
 import NavigationMenu from './NavigationMenu';
 import { useNavigate } from 'react-router-dom';
 import { search } from '../../actions/userAction';
-import axios from 'axios';
+
+
+
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -46,6 +52,7 @@ const Search = styled('div')(({ theme }) => ({
     width: 'auto',
   },
 }));
+
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
   padding: theme.spacing(0, 2),
@@ -71,6 +78,9 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 
+
+
+
 export default function Header() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
@@ -85,16 +95,15 @@ export default function Header() {
   const  [pendingCount, setPendingCount ] = React.useState(0);
   const [approvedCount, setApprovedCount ] = React.useState('')
   const [rejectedCount, setRejectedCount ] = React.useState('')
+ const [notificationDialogOpen, setNotificationDialogOpen ] = React.useState(false);
 
 
 
- 
+
 
  const fetchRequestsData = async () => {
   try {
     const res = await fetchRequests();
-    // console.log('res:', res);
-    // console.log('res:', res.requestData.pendingCount);
     // console.log('res:', res);
     if (res) {
       setRequestData(res.requestData);
@@ -113,16 +122,18 @@ React.useEffect(() => {
   if (user) {
     setAvatarUrl(user.avatar.url);
   }
-
+ 
   // Fetch requests when the component mounts
   fetchRequestsData();
 }, []);
 
 
-
-
-
-
+const handleNotificationsOpen = () => {
+  setNotificationDialogOpen(true);
+}
+const handleNotificationsClose = () => {
+  setNotificationDialogOpen(false);
+}
 
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -154,7 +165,7 @@ React.useEffect(() => {
     if (keyword.trim()) {
       try {
         await search(keyword); // Call the search function from userAction with the keyword
-        // navigate(`/search/${keyword}`);
+        navigate(`/search/${keyword}`);
         navigate('/search');
       } catch (error) {
         console.error(error);
@@ -206,7 +217,12 @@ React.useEffect(() => {
       onClose={handleMobileMenuClose}
     >
       <MenuItem>
-        <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+        <IconButton 
+        size="large" 
+        aria-label="show 4 new mails" 
+        color="inherit"
+        onClick={handleNotificationsOpen} 
+        >
           <Badge badgeContent={4} color="error">
             <MailIcon />
           </Badge>
@@ -218,11 +234,13 @@ React.useEffect(() => {
           size="large"
           aria-label="show 17 new notifications"
           color="inherit"
+          onClick={handleNotificationsOpen} 
         >
           <Badge badgeContent={pendingCount} color="error">
             <NotificationsIcon />
           </Badge>
         </IconButton>
+
         <p>Notifications</p>
       </MenuItem>
       <MenuItem onClick={handleProfileMenuOpen}>
@@ -241,98 +259,161 @@ React.useEffect(() => {
     </Menu>
   );
 
+
   return (
-    <div className="header-container" style={{marginBottom: '3%'}}>
-
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" open={open}>
-        <Toolbar>
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            sx={{ mr: 2 }}
-            onClick={toggleDrawer}
+    <div className="header-container" style={{ marginBottom: '3%', minHeight:'65px'}}>
+     
+      <Box sx={{ flexGrow: 1 }}>
+        <AppBar position="static" open={open}>
+          <Toolbar>
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="open drawer"
+              sx={{ mr: 2 }}
+              onClick={toggleDrawer}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Link to='/'>
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{ display: { xs: 'none', sm: 'block' } }}
+              >
+                <Avatar src={logo} sx={{ color: 'white', background: 'transparent', width: '100px' }}>
+                </Avatar>
+              </Typography>
+            </Link>
+            <form action="" onSubmit={handleSubmit}>
+              <Search>
+                <SearchIconWrapper>
+                  <SearchIcon />
+                </SearchIconWrapper>
+                <StyledInputBase
+                  placeholder="Search…"
+                  inputProps={{ 'aria-label': 'search' }}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  value={keyword}
+                />
+              </Search>
+            </form>
+            <Box sx={{ flexGrow: 1 }} />
+            <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+              <IconButton size="large" aria-label="show 4 new mails" color="inherit">
+                <Badge badgeContent={4} color="error">
+                  <MailIcon />
+                </Badge>
+              </IconButton>
+              <IconButton
+                size="large"
+                aria-label="show 17 new notifications"
+                color="inherit"
+                onClick={handleNotificationsOpen} 
+              >
+                <Badge badgeContent={pendingCount} color="error">
+                  <NotificationsIcon />
+                </Badge>
+              </IconButton>
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of the current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit"
+              >
+                <Avatar src={AvatarUrl}>
+                  <AccountCircle />
+                </Avatar>
+              </IconButton>
+            </Box>
+            <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+              <IconButton
+                size="large"
+                aria-label="show more"
+                aria-controls={mobileMenuId}
+                aria-haspopup="true"
+                onClick={handleMobileMenuOpen}
+                color="inherit"
+              >
+                <MoreIcon />
+              </IconButton>
+            </Box>
+          </Toolbar>
+        </AppBar>
+        <NavigationMenu />
+        {renderMobileMenu}
+        {renderMenu}
+  
+          <Dialog
+          open={notificationDialogOpen}
+          onClose={handleNotificationsClose}
+          className="notifications-container"
           >
-            <MenuIcon />
-          </IconButton>
-          <Link to='/'>
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
-            sx={{ display: { xs: 'none', sm: 'block' } }}
+
+
+<List
+      sx={{
+        width: '100%',
+        maxWidth: 360,
+        bgcolor: 'background.paper',
+        zIndex: '10000',
+        position: 'fixed',
+        right: '5px',
+        top: '65px',
+      }}
+    >
+      {requestData?.pendingRequests?.map((request, index) => (
+        <React.Fragment key={request?.requestId}>
+          <ListItem
+            alignItems="flex-start"
+            sx={{
+              '&:hover': {
+                boxShadow: '0 0 10px rgba(0, 0, 0, 0.2)',
+                cursor: 'pointer',
+              },
+            }}
           >
-
-            <Avatar src={logo}  sx={{color:'white', background:'transparent', width:'100px'}}>
-            </Avatar>
-          </Typography>
-          </Link>
-
-          <form action="" onSubmit={handleSubmit}>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search…"
-              inputProps={{ 'aria-label': 'search' }}
-              onChange={(e) => setKeyword(e.target.value)} 
-              value={keyword}
+            <ListItemAvatar>
+              <Avatar alt={request?.requesterName} src={request?.requesterAvatar} />
+            </ListItemAvatar>
+            <ListItemText
+              primary={request?.destination}
+              secondary={
+                <React.Fragment>
+                  <Typography
+                    sx={{ display: 'inline' }}
+                    component="span"
+                    variant="body2"
+                    color="text.primary"
+                  >
+                    {request?.requesterName}
+                  </Typography>
+                  {` — ${requestData?.message}`}
+                </React.Fragment>
+              }
             />
-          </Search>
-          </form>
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton size="large" aria-label="show 4 new mails" color="inherit">
-              <Badge badgeContent={4} color="error">
-                <MailIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              aria-label="show 17 new notifications"
-              color="inherit"
-            >
-              <Badge badgeContent={pendingCount} color="error">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <Avatar src={AvatarUrl}>
-              <AccountCircle />
-              </Avatar>
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              aria-label="show more"
-              aria-controls={mobileMenuId}
-              aria-haspopup="true"
-              onClick={handleMobileMenuOpen}
-              color="inherit"
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
-        </Toolbar>
-      </AppBar>
+          </ListItem>
+          {index < (requestData?.pendingRequests?.length - 1) && (
+            <Divider variant="inset" component="li" />
+          )}
+        </React.Fragment>
+      ))}
+    </List>
 
-<NavigationMenu /> 
-      {renderMobileMenu}
-      {renderMenu}
-    </Box>
+
+
+          </Dialog>
+      
+      </Box>
+   
     </div>
-
   );
+  
+
+
 }

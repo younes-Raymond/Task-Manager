@@ -29,8 +29,13 @@ import {
   Paper,
   Snackbar, 
   Container,
+  List,
+  ListItem,
+  ListItemText,
+  Badge
 
  } from '@mui/material';
+ import CountertopsIcon from '@mui/icons-material/Countertops';
  import { useFormik } from 'formik'
  import * as Yup from 'yup';
 
@@ -86,10 +91,6 @@ const Jobs = () => {
     }
   }
 
-  // const handleOpenDialog = () => {
-  //   setIsFormOpen(true);
-  // }
-  
 
   const handleOpenDialog = (jobId) => {
     setIsFormOpen(true)
@@ -168,37 +169,47 @@ const Jobs = () => {
   }
 
   return (
-    <div className="jobs-container">
-      <Typography variant='h4'>AllMart-Company...</Typography>
+    <div style={{display: 'flex', justifyContent:'center', flexDirection:'column',alignItems: 'center', height:'60vh'}}>
       {jobPosts &&jobPosts.length > 0 ? (
         jobPosts.map((jobPost) => (
-          <div className="job-listing" key={jobPost._id}>
-            <h3 className="job-title">{jobPost.title}</h3>
-            <p className="job-description">{jobPost.description}</p>
-            <ul className="job-requirements">
-              {jobPost.requirements.map((requirement) => (
-                <li key={requirement}>{requirement}</li>
+         <div key={jobPost._id} style={{width:'60%', marginBottom:'20px'}}>
+          <Card key={jobPost._id}>
+            <CardContent>
+
+            <Typography variant='h5' component='div'>
+              {jobPost.title}
+            </Typography>
+            <Typography >{jobPost.description}</Typography>
+
+            <List>
+
+              {jobPost.requirements.map((requirement, index) => (
+                <ListItem key={index}>
+                <ListItemText key={requirement} /> 
+                </ListItem>
               ))}
-            </ul>
-            <p className="job-application-details">
+            </List>
+
+            <Typography>
               Email: {jobPost.applicationDetails.email}
-            </p>
-            <p className="job-application-details">
+            </Typography>
+            <Typography>
               Phone: {jobPost.applicationDetails.phone}
-            </p>
-            <p className='job-application-details'>
+            </Typography>
+            <Typography >
   <span>Created At:</span> {`${formatDate(jobPost.createdAt)}`}
-</p>
+</Typography>
 
-            <span className='counter'>Applied:{jobPost.counter}</span>
 
-              <Button  onClick={() => handleOpenDialog(jobPost._id)}>
+          <IconButton>
+            <CountertopsIcon color='primary'/>
+            Applied:<Typography variant='h5' color='primary' component='span' >{jobPost.counter}</Typography>
+          </IconButton>
+             <IconButton>
+              <Button  onClick={() => handleOpenDialog(jobPost._id)} color='primary' variant='contained'>
                 Apply For this Job
               </Button>
-
-
-
-
+             </IconButton>
 
 <Dialog open={isFormOpen} onClose={() => setIsFormOpen(false)} key={jobPost._id}>
   <DialogTitle>Please Fill the Info Here</DialogTitle>
@@ -211,6 +222,9 @@ const Jobs = () => {
         required
         inputProps={{ minLength: 4, maxLength: 50 }}
         placeholder="Enter Your Name"
+        sx={{
+          marginBottom:'4%'
+        }}
       />
       <TextField
         label="Email"
@@ -219,11 +233,28 @@ const Jobs = () => {
         name="email"
         required
         placeholder="Enter Your Email"
+        sx={{
+          marginBottom:'4%'
+        }}
       />
-      <label htmlFor="file">
-        Resume CV*:
-        <input type="file" id="file" name="file" required accept=".pdf,.doc,.docx" />
-      </label>
+      <Box sx={{ display: 'flex', alignItems: 'center' , flexDirection:'row', marginBottom:'4%'}}>
+  <label htmlFor="file">
+    <Avatar sx={{ marginRight: 1, backgroundColor: 'primary.main' }}>
+      <CountertopsIcon />
+    </Avatar>
+  </label>
+  <input type="file" id="file" name="file" required accept=".pdf,.doc,.docx" style={{ display: 'none' }} />
+  <Button
+    variant="contained"
+    component="label"
+    color="primary"
+    htmlFor="file"
+    sx={{ marginLeft: 1 }}
+  >
+    Upload CV*
+  </Button>
+</Box>
+
       <TextField
         label="Message"
         fullWidth
@@ -231,6 +262,9 @@ const Jobs = () => {
         name="message"
         required
         placeholder="Your Message"
+        sx={{
+          marginBottom:'4%'
+        }}
       />
       <Button type="submit" className="btn" variant="contained" color="primary">
         Submit
@@ -238,6 +272,9 @@ const Jobs = () => {
     </form>
   </DialogContent>
 </Dialog>
+</CardContent>
+
+          </Card>
           </div>
         ))
       ) : (

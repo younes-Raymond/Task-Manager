@@ -13,7 +13,7 @@
 .custom-loader::after {    
   content:"";
   grid-area: 1/1;
-  --c: radial-gradient(farthest-side, var(--primary-color) 92%,#0000);
+  --c: radial-gradient(farthest-side, #1976d2 92%,#0000);
   background: 
     var(--c) 50%  0, 
     var(--c) 50%  100%, 

@@ -5,12 +5,21 @@ import { loginUser } from '../../../actions/userAction';
 import './Login.css';
 import Loading  from '../../Layouts/loading';
 
+
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [refreshed, setRefreshed ] = React.useState(false);
+
+
+ 
+
+
+ 
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -38,7 +47,6 @@ if(loading) {
   return (
     <div className="login-page">
      <div className="intro-welcome">
-        <h2>Welcome to your company Ajial </h2>
       </div>
       <form onSubmit={handleSubmit} className="login-form">
       

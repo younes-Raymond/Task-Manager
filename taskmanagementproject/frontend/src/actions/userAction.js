@@ -127,11 +127,13 @@ export const fetchTasks = async () => {
   
 
 
-export async function fetchRequests() {
+export async function fetchRequests(user) {
   try {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user) {
+      console.log('user:',user)
       const res = await axios.post('/api/v1/getReguests', user);
+      // console.log(res.data)
       return res.data;
     }
   } catch (error) {

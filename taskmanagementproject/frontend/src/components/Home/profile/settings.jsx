@@ -81,10 +81,22 @@ function SettingsComponent() {
     setHelpAndSupport(!helpAndSupport)
   }
   
+
+  // Load the hideNav value from localStorage on component mount
+  useEffect(() => {
+    const hideNav = localStorage.getItem('hideNav');
+    if (hideNav) {
+      setHideNavigationMenu(true);
+    }
+  }, []);
+
   const handleHideNavigationMenu = () => {
-    localStorage.setItem('hideNav', true)
+    if (hideNavigationMenu) {
+      localStorage.setItem('hideNav', false);
+    } else {
+      localStorage.setItem('hideNav', true);
+    }
     setHideNavigationMenu(!hideNavigationMenu);
-    
   };
 
   return (

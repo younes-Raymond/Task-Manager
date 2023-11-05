@@ -14,7 +14,6 @@ const AddJobForm = () => {
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
 
-
   const handleSubmit = (e) => {
     e.preventDefault();
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useState , useRef } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { getAllUsers , uploadVideoToCloudinary} from '../../actions/userAction';
-import './Show-workers.css';
 import SideBar from './SideBar/SideBar';
 import Delete from '@mui/icons-material/Delete';
 import Edit from '@mui/icons-material/Edit';
