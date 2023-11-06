@@ -9,7 +9,7 @@
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     height: 100%;
     box-sizing: border-box;
-    width: 88%;
+    width: 95%;
   }
   .Chart-container div:not(.Chart) 
   {
@@ -38,6 +38,9 @@
   }
   
   @media (max-width: 768px) {
+    .Chart-container {
+      width: 100%;
+    }
     .Chart-container .Chart {
       width: 90%;
     }

@@ -5,7 +5,6 @@
   --font-size: 16px;
 }
 
-
 .material-container {
     display: flex;
     flex-wrap: wrap;
@@ -88,11 +87,13 @@
   .light.green {
     background-color: var(--primary-color);
     opacity: 1;
+    color: white;
   }
   
   .light.red {
     background-color: red;
     opacity: 1;
+    color: white;
   }
   
   .show 
