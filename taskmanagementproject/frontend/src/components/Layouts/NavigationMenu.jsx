@@ -8,7 +8,7 @@ import { useMediaQuery } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import checkUserRole from "../../Routes/checkUserRole";
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import {
   Typography,
@@ -24,21 +24,15 @@ function NavigationMenu({ open }) {
   const [hideNavigationMenu, setHideNavigationMenu ] = useState(true);
   
 
+  useEffect(() => {
+    setHideNavigationMenu(location.pathname.includes('admin'));
+  }, [location.pathname]);
 
-
-
-
-useEffect(() => {
-const isHide = localStorage.getItem('hideNav');
-    if (isHide) {// if set to true 
-      console.log('yes');
-     let  ishide = false
-    setHideNavigationMenu(ishide);
-
-    } else {
-      console.log('else');
-    }
-}, [])
+  if (hideNavigationMenu){
+    return <Link to='/'>
+    <HomeIcon color="primary"  />
+    </Link> 
+  }
 
 
 const adminDesktop = [
@@ -85,37 +79,6 @@ const getMenuItems = () => {
 
 
 
-  if (location.pathname.includes('admin') && !hideNavigationMenu) {
-    const Home = menuItems
-      .filter(item => item.text === "Home")
-      .map((item) => (
-        <ListItem key={item.text} disablePadding sx={{ display: "block", width: isMenuOpen ? 80 : 60 }}>
-          <ListItemButton
-            sx={{
-              minHeight: 48,
-              justifyContent: open ? "initial" : "center",
-              px: 2.5,
-              width: isMenuOpen ? 150 : 60,
-            }}
-            component="a"
-            href={item.route}
-          >
-            <ListItemIcon
-              sx={{
-                minWidth: isMenuOpen ? 150 : 60,
-                mr: open ? 2 : 0,
-                justifyContent: "center",
-              }}
-            >
-              {item.icon}
-            </ListItemIcon>
-          </ListItemButton>
-        </ListItem>
-      ));
-  
-    return Home;
-  }
-  
 
 
   return (

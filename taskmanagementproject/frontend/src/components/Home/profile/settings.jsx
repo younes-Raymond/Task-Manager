@@ -1,8 +1,26 @@
 import React, { useState ,useEffect } from 'react';
-import { Typography, Container, Paper, Grid, FormControlLabel, Switch, MenuItem, Select } from '@mui/material';
+import { 
+  Typography,
+  Container,
+  Paper,
+  Grid, 
+  FormControlLabel, 
+  Switch, 
+  MenuItem, 
+  Select,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+
+
+} from '@mui/material';
 import SettingsSuggestTwoToneIcon from '@mui/icons-material/SettingsSuggestTwoTone';
 import axios from 'axios';
 import { useMediaQuery } from '@mui/material';
+import * as Yup from 'yup';
 
 function SettingsComponent() {
 
@@ -18,7 +36,81 @@ function SettingsComponent() {
   const [countryInfo, setCountryInfo ] = useState(null);
   const isDesktop = useMediaQuery('(min-width: 768px)');
   const [hideNavigationMenu,  setHideNavigationMenu ] = useState(false);
+  const [isChangePasswordDialogOpen, setChangePasswordDialogOpen ] = useState(false);
+  const [newPassword, setNewPassword ] = useState('')
+  const [confirmPassword, setConfirmPassword ] = useState('')
+ 
+
+
+
+ 
+ const passwordShema = Yup.object().shape({
+   newPassword: Yup.string()
+     .min(8, 'Password must be at least 8 characters')
+     .required('Password is required'),
+   confirmPassword: Yup.string()
+     .oneOf([Yup.ref('newPassword'), null], 'Passwords must match')
+     .required('Confirm Password is required'),
+ });
+ 
+
+   // Add a state to store validation errors
+   const [validationErrors, setValidationErrors] = useState({
+    newPassword: '',
+    confirmPassword: '',
+  });
+
+
+
+  const handleChangePasswordSubmit = async () => {
+
+    if ( newPassword === confirmPassword) {
+      const userId = JSON.parse(localStorage.getItem('user'))._id;
   
+      try {
+        await passwordShema.validate(
+          {newPassword, confirmPassword },
+          {abortEarly: false}
+        );
+        const res = await axios.post('/api/v1/changePassword', {
+          userId,
+          newPassword,
+        });
+  
+      } catch (error) {
+        console.error('error changing password' , error)
+        const errors = {};
+        error.inner.forEach((err) => {
+          errors[err.path] = err.message;
+        });
+
+        setValidationErrors(errors)
+
+        
+      }
+  
+    } else {
+  
+      alert('password not match')
+  
+    }
+    setChangePasswordDialogOpen(false);
+  }
+
+
+
+const handleOpenChangePasswordDialog = () => {
+  setChangePasswordDialogOpen(true);
+}
+
+const handleCloseChangePasswordDialog = () => {
+  setChangePasswordDialogOpen(false);
+}
+
+
+
+
+
 
 
   const getInfoOfCountry = async () => {
@@ -73,9 +165,7 @@ function SettingsComponent() {
     setSelectedLanguage(event.target.value);
   };
   
-  const handleChangePasswordToggle = (event) => {
-    setChangePassword(event.target.value)
-  }
+
 
   const handleHelpAndSupportToggle = () => {
     setHelpAndSupport(!helpAndSupport)
@@ -89,6 +179,8 @@ function SettingsComponent() {
       setHideNavigationMenu(true);
     }
   }, []);
+
+
 
   const handleHideNavigationMenu = () => {
     if (hideNavigationMenu) {
@@ -153,7 +245,7 @@ function SettingsComponent() {
               control={
                 <Switch
                   checked={changePassword}
-                  onChange={handleChangePasswordToggle}
+                  onChange={handleOpenChangePasswordDialog}
                   color="primary"
                 />
               }
@@ -207,7 +299,48 @@ function SettingsComponent() {
    
           </Grid>
         </Grid>
+
+
+        <Dialog open={isChangePasswordDialogOpen} onClose={handleCloseChangePasswordDialog}>
+    <DialogTitle>Change Password</DialogTitle>
+    <DialogContent>
+      <TextField
+        label="New Password"
+        type="password"
+        fullWidth
+        value={newPassword}
+        onChange={(e) => setNewPassword(e.target.value)}
+        error={!!validationErrors.newPassword}
+        helperText={validationErrors.newPassword}
+      />
+      <TextField
+        label="Confirm Password"
+        type="password"
+        fullWidth
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        error={!!validationErrors.confirmPassword}
+        helperText={validationErrors.confirmPassword}
+      />
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={handleCloseChangePasswordDialog} color="primary">
+        Cancel
+      </Button>
+      <Button onClick={handleChangePasswordSubmit} color="primary" variant="contained">
+        Save
+      </Button>
+    </DialogActions>
+  </Dialog>
+
+
       </Paper>
+
+
+      
+
+
+
     </Container>
   );
   

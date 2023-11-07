@@ -22,7 +22,8 @@ const {
   fetchTasks,
   updatedTaskDone,
   editWorker,
-  editJobs
+  editJobs,
+  changePassword,
 
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
@@ -53,5 +54,6 @@ router.get('/fetchTasks', fetchTasks);
 router.post('/updateTasksDone', updatedTaskDone);
 router.post('/editworker', editWorker)
 router.post('/editJobs', editJobs)
+router.post('/changePassword', changePassword)
 
 module.exports = router;
