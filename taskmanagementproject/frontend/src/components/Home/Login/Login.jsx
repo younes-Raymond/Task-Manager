@@ -4,20 +4,51 @@ import { Link, useNavigate } from 'react-router-dom';
 import { loginUser } from '../../../actions/userAction';
 import './Login.css';
 import Loading  from '../../Layouts/loading';
+import {
+ Dialog,
+ Typography,
+ TextField,
+ Button
+} from '@mui/material'
+import axios from 'axios';
 
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [resetEmail, setResetEmail ] = useState('');
+  const [resetCode, setResetCode ] = useState('');
+  const [refreshed, setRefreshed ] = React.useState(false);
+  const [confirmPassword, setConfirmPassword ] = React.useState('');
+  const [openDialog , setOpenDialog ] = React.useState(false);
+  const [resetPasswordDialog, setResetPasswordDialog ] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [refreshed, setRefreshed ] = React.useState(false);
 
 
+
+ const handleOpenDialog = () => {
+   setOpenDialog(true)
+ }
+
+
+ const  handleResetPasswordSubmit  = async () => {
+  try {
+    await axios.post('/api/v1/resetpassword',{ email: resetEmail });
+    setResetPasswordDialog(true);
+  } catch (error){
+   console.error('Error sending reset email:', error);
+  }
+
+ };
+ 
  
 
-
+const handleCloseDialogs = () => {
+  setOpenDialog(false);
+  setResetPasswordDialog(false);
+};
  
 
 
@@ -39,10 +70,14 @@ function LoginPage() {
     }
   };
 
+
+
 if(loading) {
    
   return  <Loading />
 }
+
+
 
   return (
     <div className="login-page">
@@ -81,9 +116,55 @@ if(loading) {
             New to Allamrt? <Link to="/register">Register here</Link>
           </p>
         </div>
+        <div className="register-link">
+          <p>
+            Forget Password? <span style={{cursor:'pointer'}} onClick={handleOpenDialog}>Click Here</span>           
+          </p>
+        </div>
       </form>
+      <Dialog open={openDialog || resetPasswordDialog} onClose={handleCloseDialogs}>
+        <div className="reset-dialog">
+          <Typography variant="h6" gutterBottom>
+            {resetPasswordDialog ? 'Enter Reset Code' : 'Forgot Your Password?'}
+          </Typography>
+          <Typography variant="body2" paragraph>
+            {resetPasswordDialog
+              ? 'Enter the code sent to your email to reset your password.'
+              : 'No worries! Enter your email below, and we\'ll send you a reset code.'}
+          </Typography>
+          {resetPasswordDialog ? (
+            <TextField
+              label="Reset Code"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={resetCode}
+              onChange={(e) => setResetCode(e.target.value)}
+            />
+          ) : (
+            <TextField
+              label="Your Email"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={resetEmail}
+              onChange={(e) => setResetEmail(e.target.value)}
+            />
+          )}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={resetPasswordDialog ? handleResetPasswordSubmit : handleSubmit}
+          >
+            {resetPasswordDialog ? 'Submit Code' : 'Submit'}
+          </Button>
+        </div>
+      </Dialog>
     </div>
   );
+
+  
+
 }
 
 export default LoginPage;

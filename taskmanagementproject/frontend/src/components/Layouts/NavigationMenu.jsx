@@ -28,11 +28,7 @@ function NavigationMenu({ open }) {
     setHideNavigationMenu(location.pathname.includes('admin'));
   }, [location.pathname]);
 
-  if (hideNavigationMenu){
-    return <Link to='/'>
-    <HomeIcon color="primary"  />
-    </Link> 
-  }
+
 
 
 const adminDesktop = [
@@ -52,6 +48,7 @@ const adminMobile = [
   { text: "Inbox", icon: <MailIcon />, route: "/inbox" },
   { text: "Charts", icon: <BarChartIcon />, route: "/admin/dashboard" },
 ];
+
 
 
 const getMenuItems = () => {
@@ -77,54 +74,61 @@ const getMenuItems = () => {
 
   const menuItems = getMenuItems();
 
-
-
-
-
   return (
-
-    <div className="navigation-menu" style={{ zIndex: 9999, position: 'fixed',}}>
-      <List>
-        {menuItems.map((item, index) => (
-          <Box>
-            
-          <ListItem key={item.text} disablePadding sx={{ display: "block", width: isMenuOpen ? 120 : 50 , boxShadow: '3px 0 10px rgba(0, 0, 0, 0.2)'}}>
-            <ListItemButton
-              sx={{
-                minHeight: 48,
-                justifyContent: open ? "initial" : "center",
-                px: 2.5,
-                width: isMenuOpen ? 140 : 50, 
-                boxShadow: isMenuOpen ? '3px 0 10px rgba(0, 0, 0, 0.2)' : 'none',
-                transition: '0.3s ease-in-out',
-              }}
-              component="a"
-              href={item.route}
-            >
-               {isMenuOpen && (  
-                <ListItemText
-                  primary={item.text}
+    <div
+      className="navigation-menu"
+      style={{
+        zIndex: 9999,
+        position: 'fixed',
+       
+        transform: isMenuOpen ? 'translateX(0)' : 'translateX(-100%)', // Slide in from the left when open
+        transition: 'transform 0.5s ease-in-out', // Add transition properties
+      }}
+    >
+      {isMenuOpen && (
+        <List>
+          {menuItems.map((item, index) => (
+            <Box key={item.text}>
+              <ListItem disablePadding sx={{ display: "block", width: 140, boxShadow: '3px 0 10px rgba(0, 0, 0, 0.2)' }}>
+                <ListItemButton
                   sx={{
-                    opacity: 1,   
-                    marginLeft: 2,
+                    minHeight: 48,
+                    justifyContent: open ? "initial" : "center",
+                    px: 2.5,
+                    width: 140,
+                    boxShadow: '3px 0 10px rgba(0, 0, 0, 0.2)',
                   }}
-                /> 
-              )}
-              <ListItemIcon
-                sx={{
-                  minWidth: isMenuOpen ? 140 : 50, 
-                  justifyContent: "center",
-                }}
-              >
-                {item.icon}
-              </ListItemIcon>
-            </ListItemButton>
-          </ListItem>
-          </Box>
-        ))}
-      </List>
+                  component="a"
+                  href={item.route}
+                >
+                  <ListItemText
+                    primary={item.text}
+                    sx={{
+                      opacity: 1,
+                      marginLeft: 2,
+                    }}
+                  />
+                  <ListItemIcon
+                    sx={{
+                      minWidth: 140,
+                      justifyContent: "center",
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
+                </ListItemButton>
+              </ListItem>
+            </Box>
+          ))}
+        </List>
+      )}
     </div>
   );
+
+
+
+
+
   
 }
 

@@ -39,6 +39,7 @@ try{
     next(error)
 }
 });
+
 // get all materials from db and send it to the client side  
 exports.getProducts = asyncErrorHandler(async (req, res, next) => {
   try {
@@ -105,7 +106,7 @@ exports.updateUserTakenInfo = async (req, res) => {
     material.users.push(user);
     material.stock -= 1;
     await material.save();
-    console.log('material:', material); // log the material object
+    // console.log('material:', material); // log the material object
     res.status(200).json(material);
   } catch (error) {
     console.log(error);
@@ -246,7 +247,6 @@ exports.updateGeolocation = asyncErrorHandler(async (req, res, next) => {
 });
 
 
-
 exports.updateGeolocationByIp = async (req, res) => {
   console.log(req.body);
   const myApiKey = '6c105f5d9e926dc7f86df2da63b2e5f3';
@@ -266,7 +266,6 @@ exports.updateGeolocationByIp = async (req, res) => {
     }
   }
   
-
   const { ipAddress, userIdLS, materialId } = req.body;
   const url = `http://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
   try {
@@ -314,7 +313,7 @@ exports.deleteMaterial =  asyncErrorHandler( async (req, res) => {
 });
 
 exports.editMaterials = asyncErrorHandler(async (req, res) => {
-  console.log('i got it req', req.body);
+  console.log('i got it req', req.body); 
   const { id, field, value } = req.body;
 
   try {
@@ -334,7 +333,7 @@ exports.editMaterials = asyncErrorHandler(async (req, res) => {
 
     await material.save(); // Corrected, added ()
 
-    console.log('Material updated:', material);
+    // console.log('Material updated:', material);
     return res.status(200).json({ message: 'Material updated successfully', material });
   } catch (error) {
     console.error('Error updating material:', error);

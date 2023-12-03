@@ -23,6 +23,8 @@ import CheckUserRole  from './Routes/checkUserRole';
 import LearnBoxes  from './components/Home/article/learnMoreBox';
 import MarketingPlan  from './components/Home/article/Marketingblogs'
 import SettingsComponent from './components/Home/profile/settings';
+import HomeTest from './components/test/HomeTest.jsx'
+
 
 const userRole = CheckUserRole()
 
@@ -69,7 +71,7 @@ const App = () => {
         <Route path="/profile" element={<Profile />} />
         {/* end  profile section  */}
           </Route>
-
+          <Route path='/Support' element={<HomeTest />}/>
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/login" element={<LoginPage />} />       
           <Route path="/learn-more" element={<LearnBoxes />} />

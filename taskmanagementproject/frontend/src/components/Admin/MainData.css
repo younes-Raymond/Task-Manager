@@ -9,7 +9,7 @@
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     height: 100%;
     box-sizing: border-box;
-    width: 95%;
+    width: 85%;
   }
   .Chart-container div:not(.Chart) 
   {
@@ -30,8 +30,7 @@
     width: 100%;
     height: 300px;
   }
- 
-  
+
   .CloseButton {
     position: relative;
     z-index: 10;
@@ -41,6 +40,7 @@
     .Chart-container {
       width: 100%;
     }
+
     .Chart-container .Chart {
       width: 90%;
     }

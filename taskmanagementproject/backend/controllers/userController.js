@@ -245,8 +245,8 @@ exports.rejectRequest = asyncErrorHandler(async (req, res) => {
 });
 
 exports.confirmTaken = asyncErrorHandler(async (req, res) => {
-  console.log(req.body);
-  console.log(req.body.approvedRequests[0].userOfTaken);
+  // console.log(req.body);
+  // console.log(req.body.approvedRequests[0].userOfTaken);
   const requestId = req.body.approvedRequests[0].requestId;
   const requesterId = req.body.approvedRequests[0].requesterId;
 
@@ -270,7 +270,7 @@ exports.confirmTaken = asyncErrorHandler(async (req, res) => {
   // Update the user in the material's users array
   for (const user of material.users) {
     if (user.userIdLS.toString() === userOfTakenId.toString()) { // Compare the user's userIdLS with the userOfTakenId
-      console.log('User IDLS matched:', user._id);
+      // console.log('User IDLS matched:', user._id);
       user.userIdLS = requesterId;
       // Find the worker by the requesterId
       try {
@@ -280,7 +280,7 @@ exports.confirmTaken = asyncErrorHandler(async (req, res) => {
           user.name = worker.name;         // Update name from worker
           user.takenAt = Date.now();       // Update takenAt with the current date
         } else {
-          console.log(`Worker with ID ${requesterId} not found.`);
+          // console.log(`Worker with ID ${requesterId} not found.`);
           // Handle the case when worker is not found, e.g., show an error message or take appropriate action.
         }
       } catch (error) {
@@ -431,11 +431,19 @@ exports.applyJob = asyncErrorHandler(async (req, res, next) => {
 // Get All Users --ADMIN
 exports.getAllUsers = asyncErrorHandler(async (req, res, next) => {
   const users = await Workers.find();
+
+  // Create a new array without the 'nationalId' field
+  const usersWithoutNationalId = users.map(user => {
+    const { nationalId, ...userWithoutNationalId } = user.toObject(); // Remove 'nationalId' from the user object
+    return userWithoutNationalId;
+  });
+
   res.status(200).json({
-      success: true,
-      users,
+    success: true,
+    users: usersWithoutNationalId,
   });
 });
+
 
 exports.getAllMaterialRequester = asyncErrorHandler(async (req, res) => {
   const materialRequesters = await MaterialRequest.find();
@@ -466,8 +474,8 @@ exports.updateProfileImg = asyncErrorHandler(async (req, res) => {
 
   try {
     const { userId, image } = req.body;
-   console.log('userId: > : ',userId)
-   console.log('image:  > : ',image)
+  //  console.log('userId: > : ',userId)
+  //  console.log('image:  > : ',image)
     // Upload the image to cloudinary
     const result = await cloudinary.uploader.upload(image, {
       folder: 'workers',
@@ -498,7 +506,7 @@ exports.updateProfileImg = asyncErrorHandler(async (req, res) => {
 
 exports.createTasks = asyncErrorHandler(async (req, res) => {
   console.log(req.body);
-  console.log(req.files);
+  // console.log(req.files);
 
   try {
     let videoUploadResult = null;
@@ -630,7 +638,7 @@ exports.NewMemberMarketingB2B = asyncErrorHandler(async (req, res) => {
 
   try {
     const savedMarketer = await newMarketer.save();
-    console.log('Data saved successfully:', savedMarketer);
+    // console.log('Data saved successfully:', savedMarketer);
     res.status(200).json({ message: 'Data saved successfully' });
   } catch (error) {
     console.error('Error saving data:', error);
@@ -701,7 +709,7 @@ exports.editWorker = asyncErrorHandler(async (req, res) => {
     // Save the updated worker to the database
     await worker.save();
 
-    console.log('Worker updated:', worker);
+    // console.log('Worker updated:', worker);
 
     // Send a success response
     return res.status(200).json({ message: 'Worker updated successfully', worker });

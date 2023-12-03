@@ -16,7 +16,8 @@ import {
     ListItemAvatar,
     Typography,
     Box,
-    Dialog
+    Dialog,
+    Button,
 } from '@mui/material/'
 import Toolbar from '@mui/material/Toolbar';
 import InputBase from '@mui/material/InputBase';
@@ -79,9 +80,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 
-
-
 export default function Header() {
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
@@ -95,8 +95,7 @@ export default function Header() {
   const  [pendingCount, setPendingCount ] = React.useState(0);
   const [approvedCount, setApprovedCount ] = React.useState('')
   const [rejectedCount, setRejectedCount ] = React.useState('')
- const [notificationDialogOpen, setNotificationDialogOpen ] = React.useState(false);
-
+  const [notificationDialogOpen, setNotificationDialogOpen ] = React.useState(false);
 
 
 
@@ -127,7 +126,9 @@ React.useEffect(() => {
   fetchRequestsData();
 }, []);
 
-
+const handleLogOut = () => {
+  localStorage.clear()
+} 
 const handleNotificationsOpen = () => {
   setNotificationDialogOpen(true);
 }
@@ -196,6 +197,7 @@ const handleNotificationsClose = () => {
     >
     <Link to= '/profile' style={{textDecoration:'none', color:'black'}} >  <MenuItem onClick={handleMenuClose}>Profile</MenuItem></Link>
     <Link to='/settings' style={{textDecoration:'none', color:'black'}}><MenuItem onClick={handleMenuClose}>My account</MenuItem></Link>
+    <MenuItem onClick={handleLogOut}> <Button>Log Out</Button></MenuItem>
     </Menu>
   );
 

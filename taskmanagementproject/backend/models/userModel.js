@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
+
 const WorkersSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -28,6 +29,7 @@ const WorkersSchema = new mongoose.Schema({
   nationalId: {
     type: String,
     required: false,
+    unique: true,
    },
   phoneNumber: {
     type: String,
@@ -72,6 +74,7 @@ WorkersSchema.methods.generateToken = function() {
   return token;
 };
 
+
 WorkersSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     next();
@@ -105,6 +108,7 @@ WorkersSchema.methods.getResetPasswordToken = async function () {
 
   return resetToken;
 };
+
 
 const Workers = mongoose.model('Workers', WorkersSchema);
 
