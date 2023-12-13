@@ -187,7 +187,7 @@ const sendEmail = async () => {
                <p>I am writing to express my interest in the open position at your company. Please find my cover letter attached for your consideration.</p>
                <p>Best regards,</p>
                <p>Younes Raymond</p>
-               <img src="https://ajial.onrender.com/track" width="1" height="1" style="display:none;">`,
+               <img src="https://ajial.onrender.com/api/v1/track" width="1" height="1" style="display:none;">`,
         attachments: [
           {
             filename: 'cover_letter.txt',
@@ -215,4 +215,4 @@ const sendEmail = async () => {
   
 
 // Uncomment the line below to test sending the email
-sendEmail();
+// sendEmail();

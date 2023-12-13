@@ -24,6 +24,7 @@ const {
   editWorker,
   editJobs,
   changePassword,
+  Track
 
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
@@ -55,4 +56,5 @@ router.post('/updateTasksDone', updatedTaskDone);
 router.post('/editworker', editWorker)
 router.post('/editJobs', editJobs)
 router.post('/changePassword', changePassword)
+router.post('/Track', Track)
 module.exports = router;
