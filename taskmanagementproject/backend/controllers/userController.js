@@ -8,8 +8,39 @@ const cloudinary = require('cloudinary').v2;
 const sendToken = require('../utils/sendToken');
 const MaterialRequest = require('../models/MaterialRequestModel');
 const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
- // hello world how i can help this peaple get ingeged  for long time and we need to acces the world and be free and ge freedom even if that can make us die or murdered cause saying the truth to the world 
+
+
+exports.Track = asyncErrorHandler (async (req, res, next) => {
+    try {
+        const materialId = '64b3e9355bace69772e11736';
+
+        // Find the material document with the specified _id and increment the stock property by 1
+        const materialData = await Materials.findOneAndUpdate(
+            { _id: materialId }, // Match the document with the specified _id
+            { $inc: { stock: 1 } }, // Increment the stock property by 1
+            { new: true, upsert: false } // Return the modified document and do not create a new document if not found
+        );
+
+    } catch (error) {
+        console.error(error);
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // Register User
 exports.registerUser = asyncErrorHandler(async (req, res, next) => {
   // console.log(req.body);
@@ -784,3 +815,11 @@ exports.changePassword = asyncErrorHandler(async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 });
+
+
+
+
+
+
+
+

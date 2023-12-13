@@ -55,5 +55,4 @@ router.post('/updateTasksDone', updatedTaskDone);
 router.post('/editworker', editWorker)
 router.post('/editJobs', editJobs)
 router.post('/changePassword', changePassword)
-
 module.exports = router;
