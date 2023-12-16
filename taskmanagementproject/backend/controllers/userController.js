@@ -9,24 +9,46 @@ const sendToken = require('../utils/sendToken');
 const MaterialRequest = require('../models/MaterialRequestModel');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const path = require('path');
+const fs = require('fs');
 
 
 
-exports.Track = asyncErrorHandler (async (req, res, next) => {
+
+exports.Track = asyncErrorHandler(async (req, res, next) => {
     try {
         const materialId = '64b3e9355bace69772e11736';
 
         // Find the material document with the specified _id and increment the stock property by 1
         const materialData = await Materials.findOneAndUpdate(
-            { _id: materialId }, // Match the document with the specified _id
-            { $inc: { stock: 1 } }, // Increment the stock property by 1
-            { new: true, upsert: false } // Return the modified document and do not create a new document if not found
+            { _id: materialId },
+            { $inc: { stock: 1 } },
+            { new: true, upsert: false }
         );
 
+        // Assume you have a PDF file path or content, replace 'path/to/your/file.pdf' accordingly
+        const pdfPath = path.join(__dirname, '../web developer -resume.pdf');
+
+        // Check if the file exists
+        if (fs.existsSync(pdfPath)) {
+            // Set the appropriate headers for a PDF file
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'attachment; filename=your_file.pdf');
+
+            // Read the file and stream it to the response
+            const pdfStream = fs.createReadStream(pdfPath);
+            pdfStream.pipe(res);
+        } else {
+            // If the file doesn't exist, handle it accordingly
+            res.status(404).json({ error: 'PDF file not found' });
+        }
     } catch (error) {
         console.error(error);
+        // Handle other errors and send an appropriate response
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 
 
