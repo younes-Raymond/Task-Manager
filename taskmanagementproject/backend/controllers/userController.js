@@ -47,9 +47,7 @@ exports.Track = asyncErrorHandler(async (req, res, next) => {
         // Handle other errors and send an appropriate response
         res.status(500).json({ error: 'Internal Server Error' });
     }
-});
-
-
+  })
 
 
 

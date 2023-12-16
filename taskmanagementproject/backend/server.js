@@ -50,6 +50,10 @@ app.listen(3000, () => {
 
 
 
+
+
+
+
 const sendEmail = async () => {
   
   // create reusable transporter object using the default SMTP transport
@@ -214,4 +218,5 @@ const listtest = [
 };
 
 // Uncomment the line below to test sending the email
-sendEmail();
+// sendEmail();
+

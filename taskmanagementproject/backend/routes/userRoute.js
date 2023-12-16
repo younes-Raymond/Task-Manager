@@ -25,7 +25,6 @@ const {
   editJobs,
   changePassword,
   Track
-
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
