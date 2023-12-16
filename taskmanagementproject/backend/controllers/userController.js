@@ -7,26 +7,34 @@ const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary').v2; 
 const sendToken = require('../utils/sendToken');
 const MaterialRequest = require('../models/MaterialRequestModel');
-const sgMail = require('@sendgrid/mail');
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+const  { expressApp  } = require('nodemailer-mail-tracking');
 
 
 
-exports.Track = asyncErrorHandler (async (req, res, next) => {
-    try {
-        const materialId = '64b3e9355bace69772e11736';
 
-        // Find the material document with the specified _id and increment the stock property by 1
-        const materialData = await Materials.findOneAndUpdate(
-            { _id: materialId }, // Match the document with the specified _id
-            { $inc: { stock: 1 } }, // Increment the stock property by 1
-            { new: true, upsert: false } // Return the modified document and do not create a new document if not found
-        );
 
-    } catch (error) {
-        console.error(error);
-    }
+exports.Track = asyncErrorHandler(async (req, res, next) => {
+  try {
+    const materialId = '64b3e9355bace69772e11736';
+
+    // Find the material document with the specified _id and increment the stock property by 1
+    const materialData = await Materials.findOneAndUpdate(
+      { _id: materialId }, // Match the document with the specified _id
+      { $inc: { stock: 1 } }, // Increment the stock property by 1
+      { new: true, upsert: false } // Return the modified document and do not create a new document if not found
+    );
+
+    // Do not send any response back to the client (no res.send, res.sendFile, etc.)
+
+  } catch (error) {
+    console.error(error);
+    // If there's an error, you may want to log it or handle it accordingly
+    // You can also choose to send a response if needed
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 });
+
+
 
 
 
