@@ -6,17 +6,24 @@ const cloudinary = require('cloudinary');
 const PORT = process.env.PORT || 4000;
 const nodemailer = require('nodemailer');
 const fs =  require('fs');
-
 const {
+  AU,
+  MATANGER,
+  INTERNATIONLEMAILS,
+  GEBERLINE,
+  GEFrankfurt,
+  SPMADRID,
   UKLONDONEMAILS,
-    FRPARIS,
-    UKMANCHESTER,
-    emailArray,
-    ListOfCompaniesOfCanada,
-    ListOfMoroccoRecruiter,
-    ListOfNewYorkRecruiter,
-    NewListOfCanada
+  FRPARIS,
+  UKMANCHESTER,
+  emailArray,
+  ListOfCompaniesOfCanada,
+  ListOfMoroccoRecruiter,
+  ListOfNewYorkRecruiter,
+  NewListOfCanada
  } = require('./Data.js');
+
+
 // UncaughtException Error
 process.on('uncaughtException', (err) => {
     console.log(`Error: ${err.message}`);
@@ -54,10 +61,13 @@ app.listen(3000, () => {
 
 
 
+
 const sendEmail = async () => {
-  
+
+
+
   // create reusable transporter object using the default SMTP transport
-   let gmailtransporter = nodemailer.createTransport({
+  let gmailtransporter = nodemailer.createTransport({
     service: 'gmail',
     tls: {
       rejectUnauthorized: false,
@@ -96,38 +106,55 @@ const sendEmail = async () => {
 
   });
 
-const listtest = [
-  'raymondyounes2@gmail.com',
-  'youneshero436@gmail.com'
-]
 
+
+  const emailArrays = [
+  UKLONDONEMAILS,
+  NewListOfCanada,
+  ListOfCompaniesOfCanada,
+  ListOfMoroccoRecruiter,
+  ListOfNewYorkRecruiter,
+  GEBERLINE,
+  SPMADRID,
+  emailArray,
+  AU,
+  GEFrankfurt,
+  UKMANCHESTER,
+  MATANGER,
+  INTERNATIONLEMAILS,
+  GEFrankfurt,
+  FRPARIS,
+  emailArray,
+  ];
+
+  const batchSize = 50; //400
+  const pauseDuration =   30 * 60 * 1000;  // 25 * 60 * 60 * 1000
   const emailLog = [];
 
-  // Loop through each company in testList
-  for (let i = 0; i < listtest.length; i++) {
-    const companyEmail = listtest[i];
+  for (const emailArray of emailArrays) {
+    for (let i = 0; i < emailArray.length; i++) {
+      const batch = emailArray.slice(i, i + batchSize);
 
+      for (const companyEmail of batch) {
+        let transporter;
+        if (companyEmail.endsWith('@gmail.com')||companyEmail.endsWith('.com') ) {
+          transporter = gmailtransporter;
+        } else if (companyEmail.endsWith('@hotmail.com') || companyEmail.endsWith('@outlook.com')) {
+          transporter = hotmailTransporter;
+        } else if (companyEmail.endsWith('.fr')) {
+          transporter = frTransporter;
+        } else {
+          // Handle other email providers if needed
+          console.error(`Unsupported email provider for ${companyEmail}`);
+          continue; // Skip to the next iteration
+        }
 
-    let transporter;
-    if (companyEmail.endsWith('@gmail.com')) {
-      transporter = gmailtransporter;
-    } else if (companyEmail.endsWith('@hotmail.com') || companyEmail.endsWith('@outlook.com')) {
-      transporter = hotmailTransporter;
-    } else if (companyEmail.endsWith('.fr')) {
-      transporter = frTransporter;
-    } else {
-      // Handle other email providers if needed
-      console.error(`Unsupported email provider for ${companyEmail}`);
-      continue; // Skip to the next iteration
-    }
-
-
-    // setup email data
-    let mailOptions = {
-      from: 'raymondyounes2@gmail.com',
-      to: listtest,
-      subject: 'Job Application',
-      html: `
+        // setup email data
+        let mailOptions = {
+          from: 'raymondyounes2@gmail.com',
+          to: companyEmail,
+          subject: 'Job Application',
+          html: `
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -180,43 +207,50 @@ const listtest = [
             <img src="https://ajial.onrender.com/api/v1/track" width="1" height="1" style="display:none;">
         </body>
         </html>
-      `,
-      attachments: [
-        {
-          filename: 'cover_letter.txt',
-          content: 'Dear Hiring Manager, I am writing to express my interest in the open web developer position at your company. Please find my cover letter below for your consideration. My name is Younes Raymond, and I am a professional web developer with five years of experience in database administration and website design. I possess strong creative and analytical skills, making me a valuable asset to any development team. Skills: Front End Coding (React.js, Redux, Material-UI), Back End Development (Node.js, MongoDB), Computer Literacy (Bash scripting, Project Management Tools), Languages (French - Fluent, English - Proficient). Education: freeCodeCamp (2016 - 2017) - Front-End Engineering Certificate, codeCademy (2017 - 2019) - Full Stack Web Developer Certificate. Experience: Ajial-Amanegment Company (2018 - Present) - Applications Developer, pieceX Company (2018 - 2020) - Web Content Manager, Ajial-Amanagment Company (2019 - Current) - Analysis Content. I am confident in my ability to contribute effectively to your team and bring my technical expertise to your projects. I look forward to the opportunity to discuss how my skills align with the needs of your company. Thank you for considering my application. Best regards, Younes Raymond',
-        },
-        {
-          filename: 'resume.pdf',
-          path: './web developer -resume.pdf', // Replace with the actual path to your PDF file
-        },
-      ],
-    };
+          `,
+          attachments: [
+            {
+              filename: 'cover_letter.txt',
+              content: 'Dear Hiring Manager, I am writing to express my interest in the open web developer position at your company. Please find my cover letter below for your consideration. My name is Younes Raymond, and I am a professional web developer with five years of experience in database administration and website design. I possess strong creative and analytical skills, making me a valuable asset to any development team. Skills: Front End Coding (React.js, Redux, Material-UI), Back End Development (Node.js, MongoDB), Computer Literacy (Bash scripting, Project Management Tools), Languages (French - Fluent, English - Proficient). Education: freeCodeCamp (2016 - 2017) - Front-End Engineering Certificate, codeCademy (2017 - 2019) - Full Stack Web Developer Certificate. Experience: Ajial-Amanegment Company (2018 - Present) - Applications Developer, pieceX Company (2018 - 2020) - Web Content Manager, Ajial-Amanagment Company (2019 - Current) - Analysis Content. I am confident in my ability to contribute effectively to your team and bring my technical expertise to your projects. I look forward to the opportunity to discuss how my skills align with the needs of your company. Thank you for considering my application. Best regards, Younes Raymond',
+            },
+            {
+              filename: 'resume.pdf',
+              path: './web developer -resume.pdf', // Replace with the actual path to your PDF file
+            },
+          ],
+        };
 
+        try {
+          const info = await transporter.sendMail(mailOptions);
+          console.log(`Message sent to ${companyEmail}: ${info.messageId}`);
+          emailLog.push({ company: companyEmail, success: true, messageId: info.messageId });
 
-    try {
-      // send mail with defined transport object
-      const info = await transporter.sendMail(mailOptions);
-      console.log(`Message sent to ${companyEmail}: ${info.messageId}`);
-      emailLog.push({ company: companyEmail, success: true, messageId: info.messageId });
-    } catch (error) {
-      console.error(`Error sending email to ${companyEmail}:`, error);
-      let errorMessage;
-      if (error.code === 'EENVELOPE') {
-        errorMessage = 'Invalid recipient address';
-      } else {
-        errorMessage = error.message;
+          if (emailLog.length % 50 === 0) {
+            console.log('Pausing for 25 hours...');
+            await new Promise((resolve) => setTimeout(resolve, pauseDuration));
+          }
+        } catch (error) {
+          console.error(`Error sending email to ${companyEmail}:`, error);
+          let errorMessage;
+          if (error.code === 'EENVELOPE') {
+            errorMessage = 'Invalid recipient address';
+          } else {
+            errorMessage = error.message;
+          }
+          emailLog.push({ company: companyEmail, success: false, error: errorMessage });
+        }
       }
-    
-      // Log error to array
-      emailLog.push({ company: companyEmail, success: false, error: errorMessage });    }
+    }
   }
 
-  const logFileName = './emailLog-1.json';
+  const now = new Date();
+  const formattedDate = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
+  const formattedTime = `${now.getHours()}:${now.getMinutes()}`;
+  const logFileName = `./emailLog_${formattedDate}_${formattedTime}.json`;
   fs.writeFileSync(logFileName, JSON.stringify(emailLog, null, 2));
   console.log(`Email log saved to ${logFileName}`);
 };
+// sendEmail()
 
-// Uncomment the line below to test sending the email
-// sendEmail();
+
 

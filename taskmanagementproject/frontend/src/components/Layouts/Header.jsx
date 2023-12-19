@@ -34,6 +34,7 @@ import { Link } from 'react-router-dom';
 import NavigationMenu from './NavigationMenu';
 import { useNavigate } from 'react-router-dom';
 import { search } from '../../actions/userAction';
+import { width } from '@mui/system';
 
 
 
@@ -263,7 +264,7 @@ const handleNotificationsClose = () => {
 
 
   return (
-    <div className="header-container" style={{ marginBottom: '3%', minHeight:'65px'}}>
+    <div style={{ marginBottom: '3%', minHeight:'65px', }}>
      
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="static" open={open}>
@@ -306,7 +307,11 @@ const handleNotificationsClose = () => {
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               <IconButton size="large" aria-label="show 4 new mails" color="inherit">
                 <Badge badgeContent={4} color="error">
+                <Link to='/inbox'>
+
                   <MailIcon />
+                  </Link>
+
                 </Badge>
               </IconButton>
               <IconButton
