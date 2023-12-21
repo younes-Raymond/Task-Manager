@@ -1,6 +1,7 @@
 const Workers = require('../models/userModel');
 const Materials = require('../models/productModel');
 const Jobs = require('../models/jobsModel');
+const EmailLog = require('../models/emailModel')
 const Tasks = require('../models/taskModel')
 const MarketerModel = require('../models/MarketerModel'); 
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
@@ -12,42 +13,30 @@ sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const path = require('path');
 const fs = require('fs');
 
+// Your route handler
+exports.Track = async (req, res) => {
+  console.log('req Query: ', req.query);
 
+  try {
+    const { id } = req.query;
 
+    // Create a new instance of the EmailLog model
+    const emailLogEntry = new EmailLog({
+      id,
+    });
 
-exports.Track = asyncErrorHandler(async (req, res, next) => {
-    try {
-        const materialId = '64b3e9355bace69772e11736';
+    // Save the entry to the database
+    await emailLogEntry.save();
 
-        // Find the material document with the specified _id and increment the stock property by 1
-        const materialData = await Materials.findOneAndUpdate(
-            { _id: materialId },
-            { $inc: { stock: 1 } },
-            { new: true, upsert: false }
-        );
+    // Respond with a success message
+    res.status(200).json({ success: true, message: 'ID logged successfully' });
+  } catch (error) {
+    console.error(error);
+    // Handle other errors and send an appropriate response
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
-        // Assume you have a PDF file path or content, replace 'path/to/your/file.pdf' accordingly
-        const pdfPath = path.join(__dirname, '../web developer -resume.pdf');
-
-        // Check if the file exists
-        if (fs.existsSync(pdfPath)) {
-            // Set the appropriate headers for a PDF file
-            res.setHeader('Content-Type', 'application/pdf');
-            res.setHeader('Content-Disposition', 'attachment; filename=your_file.pdf');
-
-            // Read the file and stream it to the response
-            const pdfStream = fs.createReadStream(pdfPath);
-            pdfStream.pipe(res);
-        } else {
-            // If the file doesn't exist, handle it accordingly
-            res.status(404).json({ error: 'PDF file not found' });
-        }
-    } catch (error) {
-        console.error(error);
-        // Handle other errors and send an appropriate response
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-  })
 
 
 

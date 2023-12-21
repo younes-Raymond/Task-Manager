@@ -1,6 +1,79 @@
+
+const BestWebAgencyInRabat = [
+  {
+    companyName: 'Pixels Trade',
+    link: 'https://www.pixelstrade.com/?utm_source=sortlist&utm_medium=profile&utm_campaign=https%3A%2F%2Fwww.sortlist.com%2Fweb-design%2Frabat-rabat-sale-zemmour-zaer-ma',
+    email:'info@pixelstrade.com',
+
+  },
+  {
+    companyName: 'E-Novation',
+    link: 'https://www.e-novation.ma/',
+    email:'contact@e-novation.ma',
+
+  },
+  {
+    companyName: 'DigiTransform',
+    link: 'https://digitransform.co/',
+    email:'contact@digitransform.co',
+
+  },
+  {
+    companyName: 'ThinkWeb',
+    link: 'https://thinkweb.ma/',
+    email:'contact@thinkweb.ma',
+  },
+  {
+    companyName: 'Majjane',
+    link: 'https://majjane.ma',
+    email:'contact@majjane.ma',
+  },
+  {
+    companyName:'Central Web',
+    link:'https://www.centralweb.ma/',
+    email:'contact@centralweb.ma'
+  },
+  {
+    companyName:'EmaVeo',
+    link: '  https://emaveo.com/',
+    email:'contact@emaveo.com'
+  },
+  {
+    companyName:'Digency',
+    link:'https://www.digency.ma/',
+    email:'info@digency.ma',
+  },
+  {
+    companyName:'ReWeb',
+    link:'https://www.reweb.ma/',
+    email: 'contact@reweb.ma',
+  },
+  {
+    companyName:'NTV',
+    link:'https://ntv.ma/',
+    email:'contact@ntv.ma',
+  },
+  {
+    companyName:'NieMe',
+    link:'https://www.niemeconseil.ma/',
+    email:'info@niemeconseil.ma'
+  },
+  {
+    companyName:'fornetmaroc',
+    link:'https://www.fornetmaroc.com/',
+    email:'recrutement@fornetmaroc.com'
+  },
+  {
+    companyName:'Inovat',
+    link:'https://inovat.ma/',
+    email:'contact@inovat.ma'
+  }
+];
+
 const AU = [
     'filler@godaddy.com',
     'montreal@bab-canada.com',
+    'contact@fornetmaroc.com'
 ];
 
 
@@ -1229,6 +1302,7 @@ const   GEFrankfurt
 
 
 module.exports = {
+  BestWebAgencyInRabat,
     AU,
     MATANGER,
     GEBERLINE,

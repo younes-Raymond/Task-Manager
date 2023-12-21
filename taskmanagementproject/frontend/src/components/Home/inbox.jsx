@@ -57,12 +57,28 @@ const OnlineIndicator = ({user}) => (
   
 
 
+const calculateBoxHeight = (itemCount) => {
+  const maxHeight = 370; // Adjust the maximum height as needed
+  const listItemHeight = 56; // Assuming the height of each list item is 56px, you can adjust this
+  const calculatedHeight = listItemHeight * itemCount;
+  return Math.min(calculatedHeight, maxHeight);
+};
+
+
+
 const fakeCompaniesData = [
   { id: 1, name: 'Company A', avatar: 'companyA.jpg' },
   { id: 2, name: 'Company B', avatar: 'companyB.jpg' },
-  { id: 2, name: 'Company B', avatar: 'companyB.jpg' },
-  { id: 2, name: 'Company B', avatar: 'companyB.jpg' },
-  { id: 2, name: 'Company B', avatar: 'companyB.jpg' },
+  { id: 3, name: 'Company C', avatar: 'companyB.jpg' },
+  { id: 4, name: 'Company D', avatar: 'companyB.jpg' },
+  { id: 5, name: 'Company G', avatar: 'companyB.jpg' },
+  { id: 6, name: 'Company J', avatar: 'companyB.jpg' },
+  { id: 7, name: 'Company K', avatar: 'companyB.jpg' },
+  { id: 8, name: 'Company L', avatar: 'companyB.jpg' },
+  { id: 9, name: 'Company B', avatar: 'companyB.jpg' },
+  { id: 10, name: 'Company I', avatar: 'companyB.jpg' },
+  { id: 11, name: 'Company Y', avatar: 'companyB.jpg' },
+  { id: 12, name: 'Company Z', avatar: 'companyB.jpg' },
 ];
 
 // Sample data representing different types of messages
@@ -145,6 +161,20 @@ const ChatLayout = () => {
     const [me, setMe ] = React.useState([]);
     const containerRef = useRef(null);
     const [isEmojiPickerVisible, setEmojiPickerVisible ] = React.useState(false);
+    const [inputValue, setInputValue] = React.useState('');
+
+      const handleHover = (event) => {
+        event.currentTarget.style.backgroundColor = '#f0f0f0'
+        event.currentTarget.style.cursor = 'pointer'
+        event.currentTarget.style.borderRadius = '5px'
+      };
+    const handleHoverOut = (event) => {
+      event.currentTarget.style.backgroundColor = 'inherit';
+    }
+
+const handleBoxClick = () => {
+  setEmojiPickerVisible(false);
+};
 
 const toggleEmojiPicker = () => {
   setEmojiPickerVisible((prev) => !prev);
@@ -220,52 +250,101 @@ React.useEffect(() => {
       </IconButton>
     </Paper>
 
+
     <Divider />
 
-    <Typography variant='h6' color='primary'>CHANNELS</Typography>
+    <Typography variant='h6' color='primary' sx={{m:'10px'}}>CHANNELS</Typography>
     <Divider />
 
-<List>
-                  <ListItem>
-                <div>
 
-                  {fakeCompaniesData.map((company) => (
-                    <div key={company.id}>
-                      <ListItemAvatar>
-                        <Avatar alt={company.name} src={company.avatar} />
-                      </ListItemAvatar>
-                      <React.Fragment>
-                        <Typography
-                          sx={{ display: 'inline' }}
-                          component="span"
-                          variant="body2"
-                          color="text.primary"
-                        >
-                          {company.name}
-                        </Typography>
-                        {/* {" — I'll be in your neighborhood doing errands this…"} */}
-                      </React.Fragment>
-                    </div>
-                  ))}
-                </div>
-              </ListItem>
-              </List>
+
+    <List
+  ref={containerRef}
+  sx={{
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'column',
+    overflowY: 'scroll',
+    borderRadius: '10px',
+    scrollbarWidth: 'none',
+    height: calculateBoxHeight(50,  fakeCompaniesData.length),
+    '&::-webkit-scrollbar': {
+      width: '0 !important',
+    },
+  }}
+>
+  <ListItem sx={{ marginTop: 2 }}>
+    <Box
+      ref={containerRef}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        overflowY: 'scroll',
+        padding: '10px',
+        borderRadius: '10px',
+        scrollbarWidth: 'none',
+        height: calculateBoxHeight(fakeCompaniesData.length),
+        '&::-webkit-scrollbar': {
+          width: '0 !important',
+        },
+      }}
+    >
+     {fakeCompaniesData.map((company, index) => (
+    <ListItem key={company.id} sx={{ marginTop: index === 0 ? '75vh' : '0' , cursor:'pointer'}} onMouseOver={handleHover} onMouseOut={handleHoverOut}>
+    <ListItemAvatar>
+      <Avatar alt={company.name} src={company.avatar} />
+    </ListItemAvatar>
+    <ListItemText
+      primary={company.name}
+      secondary={
+        <React.Fragment>
+          <Typography
+            sx={{ display: 'inline' }}
+            component="span"
+            variant="body2"
+            color="text.primary"
+          >
+            {company.name}
+          </Typography>
+        </React.Fragment>
+      }
+    />
+  </ListItem>
+))}
+
+    </Box>
+  </ListItem>
+</List>
+
+
 
 
           </Grid>
     
 
 
+
+
+
+
           {/* Middle Grid (Conversation) */}
           <Grid item xs={12} md={6} sx={{
                   background: '',
-                  position:'relative'
-          }} >
+                  position:'relative',
+                  flexGrow:1
+          }}
+
+          >
+
 
 
             
           <Box
         ref={containerRef}
+        onClick={handleBoxClick}
     sx={{
       display: 'flex',
       alignItems: 'center',
@@ -273,7 +352,6 @@ React.useEffect(() => {
       flexDirection: 'column',
       height: '490px',
       overflowY: 'scroll',
-      // background: '#f3f3f8',
       padding: '10px',
       borderRadius:'10px',
       scrollbarWidth: 'none', // Hide scrollbar for Firefox
@@ -284,6 +362,7 @@ React.useEffect(() => {
   >
    
    {messages.map((message, index) => (
+
         <React.Fragment key={index}>
           {index !== 0 && <Divider />}
           {message.type === 'text' && <TextMessage content={message.content} sender={message.sender} />}
@@ -292,7 +371,7 @@ React.useEffect(() => {
       ))}
 
   </Box>
-  
+
             <Paper
   component="form"
   sx={{
@@ -319,8 +398,10 @@ React.useEffect(() => {
   <Divider orientation='vertical' flexItem sx={{ margin: '1 10px', height: '80%' }}/>
   <InputBase
     sx={{ ml: 1, flex: 1 }}
-    placeholder="Send a message"
-    inputProps={{ 'aria-label': 'search google maps' }}
+    placeholder="Send a message..."
+    inputProps={{ 'aria-label': 'Send Message..' }}
+    value={inputValue}
+    onChange={(e) => setInputValue(e.target.value)}
   />
   <IconButton>
     <SendIcon color='primary' />
@@ -328,11 +409,14 @@ React.useEffect(() => {
  
 </Paper>
 
+
+<div style={{ position: 'absolute', zIndex: '1000', bottom:'60px'}}>
 {isEmojiPickerVisible && (
   <EmojiPicker
     onEmojiClick={(emojiData, event) => {
       // Handle the selected emoji
       console.log('Emoji clicked:', emojiData);
+      setInputValue((prevValue) => prevValue + emojiData.emoji)
       // You can insert the selected emoji into the message input
     }}
     autoFocusSearch={true}
@@ -340,17 +424,20 @@ React.useEffect(() => {
     emojiStyle="apple"
     sx={{
       position: 'absolute',
-      zIndex: '1001', 
-      
+      bottom: '100%', // Adjust this value as needed
+      zIndex: '1000',
     }}
     // ... other props
   />
 )}
-
-
-          
+</div>
     </Grid>
     
+ 
+
+
+
+
    
 
           {/* Right Grid (Members) */}
@@ -377,11 +464,10 @@ React.useEffect(() => {
 </ListItem>
 <Divider />
     
-
               {/* Right Grid Content (Members) */}
             
       {users.map((member) => (
-        <ListItem key={member.id} alignItems="flex-start">
+        <ListItem key={member.id}  alignItems="flex-start" onMouseOver={handleHover} onMouseOut={handleHoverOut} >
           <ListItemAvatar>
             <Stack direction="row" spacing={2}>
               <OnlineIndicator user={member} />
@@ -409,6 +495,10 @@ React.useEffect(() => {
   
             </List>
           </Grid>
+
+
+
+
 
 
 

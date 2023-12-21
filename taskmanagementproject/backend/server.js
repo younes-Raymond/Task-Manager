@@ -6,7 +6,10 @@ const cloudinary = require('cloudinary');
 const PORT = process.env.PORT || 4000;
 const nodemailer = require('nodemailer');
 const fs =  require('fs');
+const { v4: uuidv4 } = require('uuid');
+
 const {
+  BestWebAgencyInRabat,
   AU,
   MATANGER,
   INTERNATIONLEMAILS,
@@ -58,13 +61,14 @@ app.listen(3000, () => {
 
 
 
-
+const generateUniqueId = () => {
+  // console.log(uuidv4)
+  return uuidv4();
+};
 
 
 
 const sendEmail = async () => {
-
-
 
   // create reusable transporter object using the default SMTP transport
   let gmailtransporter = nodemailer.createTransport({
@@ -106,36 +110,42 @@ const sendEmail = async () => {
 
   });
 
+//const how to creat more and ore shecduke a meettinf 
+// i want the same id who stored in emailLog.json file to send via the api in the img src arttbute 
 
-
+const testEmailList =  [
+ 'youneshero436@gmail.com'
+]
   const emailArrays = [
-  UKLONDONEMAILS,
-  NewListOfCanada,
-  ListOfCompaniesOfCanada,
-  ListOfMoroccoRecruiter,
-  ListOfNewYorkRecruiter,
-  GEBERLINE,
-  SPMADRID,
-  emailArray,
-  AU,
-  GEFrankfurt,
-  UKMANCHESTER,
-  MATANGER,
-  INTERNATIONLEMAILS,
-  GEFrankfurt,
-  FRPARIS,
-  emailArray,
+    testEmailList
+  // BestWebAgencyInRabat,
+  // UKLONDONEMAILS,
+  // NewListOfCanada,
+  // ListOfCompaniesOfCanada,
+  // ListOfMoroccoRecruiter,
+  // ListOfNewYorkRecruiter,
+  // GEBERLINE,
+  // SPMADRID,
+  // emailArray,
+  // AU,
+  // GEFrankfurt,
+  // UKMANCHESTER,
+  // MATANGER,
+  // INTERNATIONLEMAILS,
+  // GEFrankfurt,
+  // FRPARIS,
+  // emailArray,
   ];
 
   const batchSize = 50; //400
   const pauseDuration =   30 * 60 * 1000;  // 25 * 60 * 60 * 1000
   const emailLog = [];
-
   for (const emailArray of emailArrays) {
     for (let i = 0; i < emailArray.length; i++) {
       const batch = emailArray.slice(i, i + batchSize);
 
       for (const companyEmail of batch) {
+        const messageId = generateUniqueId();
         let transporter;
         if (companyEmail.endsWith('@gmail.com')||companyEmail.endsWith('.com') ) {
           transporter = gmailtransporter;
@@ -152,7 +162,7 @@ const sendEmail = async () => {
         // setup email data
         let mailOptions = {
           from: 'raymondyounes2@gmail.com',
-          to: companyEmail,
+          to: 'youneshero436@gmail.com',
           subject: 'Job Application',
           html: `
         <!DOCTYPE html>
@@ -204,7 +214,8 @@ const sendEmail = async () => {
                     <button class="button">Linkedin</button>
                 </a>
             </div>
-            <img src="https://ajial.onrender.com/api/v1/track" width="1" height="1" style="display:none;">
+            <p>message sent to ${companyEmail}: ${messageId}</p>
+            <img src="https://ajial.onrender.com/api/v1/track?id=${messageId}" width="1" height="1" style="display:none;">
         </body>
         </html>
           `,
@@ -222,8 +233,8 @@ const sendEmail = async () => {
 
         try {
           const info = await transporter.sendMail(mailOptions);
-          console.log(`Message sent to ${companyEmail}: ${info.messageId}`);
-          emailLog.push({ company: companyEmail, success: true, messageId: info.messageId });
+          console.log(`Message sent to ${companyEmail}: ${messageId}`);
+          emailLog.push({ company: companyEmail, success: true, messageId: messageId });
 
           if (emailLog.length % 50 === 0) {
             console.log('Pausing for 25 hours...');
@@ -244,9 +255,9 @@ const sendEmail = async () => {
   }
 
   const now = new Date();
-  const formattedDate = `${now.getMonth() + 1}/${now.getDate()}/${now.getFullYear()}`;
-  const formattedTime = `${now.getHours()}:${now.getMinutes()}`;
-  const logFileName = `./emailLog_${formattedDate}_${formattedTime}.json`;
+  const formattedDate = `${now.getMonth() + 1}-${now.getDate()}-${now.getFullYear()}`;
+const formattedTime = `${now.getHours()}_${now.getMinutes()}`;
+const logFileName = `./emailLog_${formattedDate}_${formattedTime}.json`;
   fs.writeFileSync(logFileName, JSON.stringify(emailLog, null, 2));
   console.log(`Email log saved to ${logFileName}`);
 };
@@ -254,3 +265,5 @@ const sendEmail = async () => {
 
 
 
+// const messageId = generateUniqueId()
+// console.log(messageId)

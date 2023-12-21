@@ -307,11 +307,9 @@ const handleNotificationsClose = () => {
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               <IconButton size="large" aria-label="show 4 new mails" color="inherit">
                 <Badge badgeContent={4} color="error">
-                <Link to='/inbox'>
-
-                  <MailIcon />
-                  </Link>
-
+                <Link to="/inbox" style={{ textDecoration: 'none', color: 'inherit' }}>
+  <MailIcon />
+</Link>
                 </Badge>
               </IconButton>
               <IconButton
