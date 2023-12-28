@@ -41,16 +41,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// Start the server
-httpServer.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
-
-
-
-
- 
-
 
 
 
@@ -81,6 +71,16 @@ process.on('unhandledRejection', (err) => {
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 // Start the server
+
+setTimeout(() => {
+  // Start the server
+httpServer.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+}, 10000)
+
+
+
 app.listen(3000, () => {
   console.log('Server started on port 3000');
 });
