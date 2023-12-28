@@ -56,6 +56,9 @@
     "eject": "react-scripts eject",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
+  "devServer": {
+    "disableHostCheck": true
+  },
   "eslintConfig": {
     "extends": [
       "react-app",

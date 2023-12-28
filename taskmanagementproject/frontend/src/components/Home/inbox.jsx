@@ -202,7 +202,6 @@ const ChatLayout = () => {
     };
     // 
     
-
     const handleHover = (event) => {
       event.currentTarget.style.backgroundColor = '#f0f0f0';
       event.currentTarget.style.cursor = 'pointer';
