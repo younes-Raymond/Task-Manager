@@ -12,6 +12,14 @@ const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 const path = require('path');
 const fs = require('fs');
+const Chats = require('../models/chatModel');
+// Create an HTTP server
+const { Server } = require('socket.io');
+const http = require('http');
+const app = require('../app.js');
+const { timeStamp } = require('console');
+const server = http.createServer(app);
+const io = new Server(server);
 
 // Your route handler
 exports.Track = async (req, res) => {
@@ -36,6 +44,155 @@ exports.Track = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
+
+
+
+exports.sendMessages = async (req, res) => {
+  console.log('req Body:', req.body);
+  console.log('req messages:', req.body.messages);
+  try {
+    const { participants, messages } = req.body;
+    const senderWorker = await Workers.findById(participants[0]);
+    const receiverWorker = await Workers.findById(participants[1]);
+
+    const senderAvatarUrl = senderWorker?.avatar?.url || '';
+    const receiverAvatarUrl = receiverWorker?.avatar?.url || '';
+
+    const existingChat = await Chats.findOne({ participants });
+
+// Variable to store the updated chat
+    let updatedChat; 
+
+    if (existingChat) {
+      await Chats.findByIdAndUpdate(existingChat._id, {
+        $push: {
+          messages: messages.map((message) => ({
+            ...message,
+            content: {
+              ...message.content,
+              avatars: {
+                senderAvatar: senderAvatarUrl,
+                otherAvatar: receiverAvatarUrl,
+              },
+            },
+          })),
+        },
+      });
+
+      // Retrieve the updated chat after modification
+      updatedChat = await Chats.findById(existingChat._id);
+    } else {
+      const newChat = await Chats.create({
+        participants,
+        messages: messages.map((message) => ({
+          ...message,
+          content: {
+            ...message.content,
+            avatars: {
+              senderAvatar: senderAvatarUrl,
+              otherAvatar: receiverAvatarUrl,
+            },
+          },
+        })),
+      });
+      updatedChat = newChat;
+
+     io.to(participants.join('-')).emit('joinChat', participants);
+
+      // Check if the chat ID exists in the worker's chats array
+      const workerHasChat = senderWorker.chats.some(
+        (chat) => chat.chatId.toString() === updatedChat._id.toString()
+      );
+
+      // Update the worker document with the chat ID if it doesn't exist
+      if (!workerHasChat) {
+        await Workers.findByIdAndUpdate(
+          participants[0],
+          {
+            $push: {
+              chats: {
+                chatId: updatedChat._id,
+                type: 'private',
+              },
+            },
+          },
+          { new: true }
+        );
+      }
+
+      // Check if the chat ID exists in the receiver's chats array
+      const receiverHasChat = receiverWorker.chats.some(
+        (chat) => chat.chatId.toString() === updatedChat._id.toString()
+      );
+
+      // Update the receiver document with the chat ID if it doesn't exist
+      if (!receiverHasChat) {
+        await Workers.findByIdAndUpdate(
+          participants[1],
+          {
+            $push: {
+              chats: {
+                chatId: updatedChat._id,
+                type: 'private',
+              },
+            },
+          },
+          { new: true }
+        );
+      }
+    }
+
+    io.to(updatedChat._id).emit('message', {
+      message: messages,
+      sender: senderWorker._id,
+    });
+    
+// console.log(updatedChat.messages[0].timestamp)
+    res.status(200).json({ chat: updatedChat }); // Return the updated chat
+  } catch (error) {
+    console.error('Error sending message:', error.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+// Controller function for getting all chats
+exports.getAllChats = async (req, res) => {
+  console.log(req.query)
+  
+  try {
+    const { selectedMember, userId } = req.query;
+
+    // Assuming Chats model has a participants field as an array of ObjectId
+    const allChats = await Chats.find({
+      participants: { $all: [selectedMember, userId] }
+    });
+
+    res.status(200).json({ chats: allChats });
+  } catch (error) {
+    console.error('Error retrieving chats:', error.message);
+    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+  }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

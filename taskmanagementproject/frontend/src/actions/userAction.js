@@ -124,8 +124,6 @@ export const fetchTasks = async () => {
    console.error('Error fetching Tasks to Chart, MainData component ')
   }
 }
-  
-
 
 export async function fetchRequests(user) {
   try {
@@ -141,6 +139,44 @@ export async function fetchRequests(user) {
     throw error;
   }
 }
+
+//Chat layot section 
+
+// messageActions.js
+export async function sendMessages(data) {
+  try {
+    const response = await axios.post('/api/v1/send-messages', data);
+     console.log('res:',response)
+    if (response.status === 200) {
+      // Message sent successfully, you can handle any further logic here
+      console.log('Message sent successfully');
+      return response.data; // You can return any data you want, if needed
+    } else {
+      // Handle error response from the server
+      console.error('Error sending message:', response.statusText);
+      throw new Error(response.statusText);
+    }
+  } catch (error) {
+    console.error('Error sending message:', error.message);
+    throw error;
+  }
+}
+
+// Update getAllChats with console.log statements
+export async function getAllChats(memberSelected, userId) {
+  try {
+    // console.log('Fetching chats with:', memberSelected, userId);
+    const res = await axios.get(`/api/v1/getAllChats?selectedMember=${memberSelected}&userId=${userId}`);
+    // console.log('Response:', res.data);
+    return res.data;
+  } catch (error) {
+    console.error('Error in chat:', error);
+    throw error; // Rethrow the error to propagate it to the calling code
+  }
+}
+
+
+
 
 
 

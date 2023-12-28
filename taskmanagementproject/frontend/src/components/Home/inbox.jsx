@@ -2,10 +2,12 @@ import * as React from 'react';
 import {
 Avatar,Divider,ListItemText,ListItemAvatar,List,ListItem,Drawer,Typography,Box,Grid,Badge,Stack,styled,TextField,Paper,InputBase,IconButton
 } from '@mui/material'
-import { getAllUsers } from '../../actions/userAction';
-import MenuIcon from '@mui/icons-material/Menu';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import VideocamIcon from '@mui/icons-material/Videocam';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import CallIcon from '@mui/icons-material/Call';
+import { getAllUsers , sendMessages , getAllChats} from '../../actions/userAction';
 import SearchIcon from '@mui/icons-material/Search';
-import DirectionsIcon from '@mui/icons-material/Directions'
 import Loading from '../Layouts/loading';
 import SendIcon from '@mui/icons-material/Send';
 import { useRef } from 'react';
@@ -13,6 +15,15 @@ import InsertEmoticonIcon from '@mui/icons-material/InsertEmoticon';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
 import EmojiPicker from 'emoji-picker-react'
+import { useSocket } from '../../actions/socketService'
+import openSocket from 'socket.io-client';
+import{ Howl } from 'howler';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+
+const socket = openSocket('http://localhost:4000');
+
+
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
   '& .MuiBadge-badge': {
@@ -81,62 +92,50 @@ const fakeCompaniesData = [
   { id: 12, name: 'Company Z', avatar: 'companyB.jpg' },
 ];
 
-// Sample data representing different types of messages
-const messages = [
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'other' },
-  { type: 'text', content: 'I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'I am good, thank you! I am good, thank you! I am good, thank you! I am good, thank you! I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-  { type: 'text', content: 'I am good, thank you! I am good, thank you! I am good, thank you! I am good, thank you! I am good, thank you!', sender: 'other' },
-  { type: 'text', content: 'Hello, how are you?', sender: 'user' },
-
-  // ... other message types
-];
 
 
 
-const TextMessage = ({ content, sender }) => (
-  <Paper
-    elevation={3}
-    sx={{
-      p: 1,
-      mb: 1,
-      maxWidth: '70%',
-      wordWrap: 'break-word',
-      borderRadius: '10px',
-      background: sender === 'user' ? '#f3f3f8' : '#1976d2',
-      color: sender === 'user' ?  'black' : '#f3f3f8',
-      alignSelf: sender === 'user' ? 'flex-start' : 'flex-end',
-      float: sender === 'user' ? 'left' : 'right', // Float left for user, right for other
-      clear: 'both', // Clear the float to prevent layout issues
-    }}
-  >
-    <Typography variant="body1" sx={{fontSize:'14px', fontWeight:'normal'}}>
-      {content}
-    </Typography>
-  </Paper>
-);
 
+const TextMessage = ({ src ,content, sender, iAm }) => {
+  const isCurrentUser = sender === iAm?._id;
+  const senderAvatarUrl = sender?.avatar?.url || 'https://res.cloudinary.com/dktkavyr3/image/upload/v1692559468/ntagij9ap6etxzphjkok.jpg';
+  // console.log('content:' , content.avatar?.senderAvatar)
+  // console.log('sender:' , src)
+  // console.log('Sender Avatar URL:', senderAvatarUrl);
+
+  return (
+    <>
+      <Paper
+        elevation={3}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          p: 1,
+          mb: 1,
+          maxWidth: '70%',
+          wordWrap: 'break-word',
+          borderRadius: '10px',
+          background: isCurrentUser ? '#1976d2' : '#f3f3f8',
+          color: isCurrentUser ? '#f3f3f8' : 'black',
+          alignSelf: isCurrentUser ? 'flex-end' : 'flex-start',
+          marginLeft: isCurrentUser ? 'auto' : '0',
+          marginRight: isCurrentUser ? '0' : 'auto',
+          clear: 'both',
+        }}
+      >
+        {!isCurrentUser && senderAvatarUrl && (
+          <Avatar
+            src={src.avatars.senderAvatar}
+            style={{ width: '30px', height: '30px', marginRight: '8px' }}
+          />
+        )}
+        <Typography variant="body1" sx={{ fontSize: '14px', fontWeight: 'normal' }}>
+          {content}
+        </Typography>
+      </Paper>
+    </>
+  );
+};
 
 
 
@@ -155,22 +154,133 @@ const FileMessage = ({ content }) => (
 );
 
 
+
 const ChatLayout = () => {
     const [users, setUsers] = React.useState([]);
     const [loading, setLoading ] = React.useState(null);
-    const [me, setMe ] = React.useState([]);
+    const [me, setMe ] = React.useState(null);
+    const [receiver, setReceiver] =React.useState(null);
     const containerRef = useRef(null);
     const [isEmojiPickerVisible, setEmojiPickerVisible ] = React.useState(false);
     const [inputValue, setInputValue] = React.useState('');
+    const [iAm, setIAM ] = React.useState([]);
+    const [selectedMemberBackgroundColor, setSelectedMemberBackgroundColor] = React.useState(null);
+    const [chatMessages, setChatMessages ] = React.useState([]);
+    const [response, setResponse ] = React.useState('')
+    const isMounted = useRef(true);
+    const [receivedMessages, setReceivedMessages] = React.useState([]);
+    const theme = useTheme();
+    const matches = useMediaQuery(theme.breakpoints.up('sm'));    
+    const [senderAvatarUrl, setSenderAvatarUrl ] = React.useState('');
+    const [senderName , setSenderName ] = React.useState('');
 
-      const handleHover = (event) => {
-        event.currentTarget.style.backgroundColor = '#f0f0f0'
-        event.currentTarget.style.cursor = 'pointer'
-        event.currentTarget.style.borderRadius = '5px'
-      };
-    const handleHoverOut = (event) => {
-      event.currentTarget.style.backgroundColor = 'inherit';
-    }
+    const handleMemberSelect = async (member) => {
+      try {
+        // Reset background color for the previously selected member
+        const previousSelected = document.querySelector(`[data-member-id="${receiver}"]`);
+        if (previousSelected) {
+          previousSelected.style.backgroundColor = 'inherit';
+        }
+    
+        // Set the new receiver and update background color
+        setReceiver(member._id);
+        setSelectedMemberBackgroundColor('#f3f3f8');
+    
+        // Update the selected member in local storage
+        localStorage.setItem('selectedMember', JSON.stringify(member._id));
+
+        // Fetch chats for the selected member
+        const res = await getAllChats(member._id, me._id);
+        const allMessages = res.chats.flatMap((chat) => chat.messages);
+        setChatMessages(allMessages);
+        setSenderAvatarUrl(res.chats[1]?.messages[0]?.content?.avatars?.senderAvatar)
+        // setSenderName(senderName)
+        console.log('member2:', res.chats[0].messages[0].content.avatars.senderAvatar)
+      } catch (error) {
+        console.error('Error fetching chats:', error);
+      }
+    };
+    // 
+    
+
+    const handleHover = (event) => {
+      event.currentTarget.style.backgroundColor = '#f0f0f0';
+      event.currentTarget.style.cursor = 'pointer';
+      event.currentTarget.style.borderRadius = '5px';
+    };
+    const handleHoverOut = (event, member) => {
+      if (receiver !== member?._id) {
+        event.currentTarget.style.backgroundColor = 'inherit';
+      }
+    };
+    // Simplified getBackgroundColor
+    const getBackgroundColor = (member) => (receiver === member?._id ? '#f3f3f8' : 'inherit');
+    
+
+      
+    const sendMessage = async () => {
+      try {
+        if (!inputValue.trim() || !receiver || !me || receiver._id === me._id) {
+          // Handle empty message case, or simply return without sending
+          return;
+        }
+    
+        // Make sure both me._id and receiver._id are valid
+        if (!me._id || !receiver) {
+          console.error('Invalid user IDs');
+          return;
+        }
+    
+        const data = {
+          participants: [me._id, receiver],
+          messages: [
+            {
+              sender: me._id,
+              content: {
+                type: 'text',
+                data: inputValue,
+              },
+              timestamp: new Date(),
+            },
+          ],
+        };
+        socket.emit('message', { participants: data.participants, message: data.messages[0] });
+    
+        // Send message and get the updated chat
+        const response = await sendMessages(data);
+    
+        if (response && response.chat && response.chat.messages && Array.isArray(response.chat.messages)) {
+          // Update the state with the new messages
+          setChatMessages((prevMessages) => {
+            // Filter out messages that already exist in the state
+            const newMessages = response.chat.messages.filter(
+              (message) =>
+                !prevMessages.some(
+                  (prevMessage) =>
+                    prevMessage.timestamp === message.timestamp && prevMessage.sender === message.sender
+                )
+            );
+    
+            // Concatenate previous messages with new messages
+            const updatedMessages = [...prevMessages, ...newMessages];
+    
+            // Scroll to the bottom after updating messages
+            containerRef.current.scrollTop = containerRef.current.scrollHeight;
+    
+            return updatedMessages;
+          });
+    
+          setInputValue('');
+        } else {
+          console.error('Invalid response structure:', response);
+        }
+      } catch (error) {
+        // Handle any errors, if needed
+        console.error('Error sending message:', error.message);
+      }
+    };
+    
+    
 
 const handleBoxClick = () => {
   setEmojiPickerVisible(false);
@@ -180,44 +290,154 @@ const toggleEmojiPicker = () => {
   setEmojiPickerVisible((prev) => !prev);
 };
 
+
+
+
+
+
+
+React.useEffect(() => {
+  // Create an abort controller
+  const abortController = new AbortController();
+  const signal = abortController.signal;
+
+  const fetchUsers = async () => {
+    try {
+      const res = await getAllUsers(signal); // Pass the signal to your async function
+      const workers = res.users;
+      const me = JSON.parse(localStorage.getItem('user'));
+      setIAM(me);
+      setUsers(workers);
+      setMe(me);
+    } catch (error) {
+      // Check if the error is due to the component being unmounted
+      if (error.name === 'AbortError') {
+        console.log('Component unmounted, request aborted.');
+      } else {
+        console.error('Error fetching users:', error);
+      }
+    }
+  };
+
+  fetchUsers();
+
+  // Cleanup function: abort the fetch if the component is unmounted
+  return () => abortController.abort();
+}, []);
+
+React.useEffect(() => {
+ 
+  // Check if there is a selected member in local storage
+  const storedSelectedMember = localStorage.getItem('selectedMember');
+  const selectedMember = storedSelectedMember ? JSON.parse(storedSelectedMember) : null;
+
+  // Set the selected member to the state
+  if (selectedMember) {
+    setReceiver(selectedMember);
+
+    // Check if 'me' is available and has '_id'
+    if (me && me._id) {
+      // Fetch chats for the selected member
+      const fetchChats = async () => {
+        try {
+          const res = await getAllChats(selectedMember, me._id);
+          const allMessages = res.chats.flatMap((chat) => chat.messages);
+          setChatMessages(allMessages);
+          setSelectedMemberBackgroundColor(selectedMember); // Assuming selectedMember is an ID
+        } catch (error) {
+          console.error('Error fetching chats:', error);
+        }
+      };
+      
+
+      // Call the fetchChats function
+      fetchChats();
+    }
+  }
+}, [me]);
+
+const messageSound = new Howl({
+  src: ['./sound/decidemp3-14575.mp3'],
+  volume: 1,
+  autoplay:true,
+  html5:true,
+  loop:true,
+  onend : function() {
+    console.log('finished');
+  }
+});
+useSocket('message', (data) => {
+  console.log('Received message data:', data.message.timestamp);
+// Log the current state of the Howl instance
+console.log('Howl instance:', messageSound);
+
+// Try playing the sound
+console.log('Playing message sound...');
+messageSound.play();
+  const content = data.message.content;
+  const sender_id = data.message.sender;
+  const timestamp = data.message.timestamp;
+
+  // Use the updater function provided by setChatMessages
+  setChatMessages((prevMessages) => {
+    // Extract senderAvatar from the last message in prevMessages
+    const lastMessage = prevMessages.length > 0 ? prevMessages[prevMessages.length - 1] : null;
+    const senderAvatar = lastMessage ? lastMessage.content.avatars.senderAvatar : null;
+
+    // Create a new message object with updated content and timestamp
+    const newMessage = {
+      content: {
+        avatars: {
+          senderAvatar: senderAvatar,
+          otherAvatar: "https://res.cloudinary.com/dktkavyr3/image/upload/v1692559468/ntagij9ap6etxzphjkok.jpg",
+        },
+        data: content.data || "", // Use data.content.data or an empty string if it's undefined
+        type: content.type || "text", // Use data.content.type or "text" if it's undefined
+      },
+      sender: sender_id,
+      timestamp: timestamp, // Use the timestamp from the received message
+      _id: Math.floor(Math.random() * 1000000).toString(),
+    };
+
+    // Log updated prevMessages
+    console.log('Prev messages:', prevMessages);
+
+    // Log newMessage
+    console.log('New message:', newMessage);
+    // Return the updated messages array (don't push to prevMessages directly)
+    return [...prevMessages, newMessage];
+  });
+});
+
+
+
+
+
+
+
+
+const sortedChatMessages = [...chatMessages].sort((a,b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+
 React.useEffect(() => {
   containerRef.current.scrollTop = containerRef.current.scrollHeight;
-}, [messages])
+}, [sortedChatMessages]);
 
 
-    React.useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-              const res = await getAllUsers();
-              const workers = res.users;
-              const me = JSON.parse(localStorage.getItem('user'));
-              // console.log(workers);
-              console.log('me:', me)
-              // Assuming `res` is an array of users, you can set it to the state
-              setUsers(workers);
-              setMe(me)
-            } catch (error) {
-              console.error('Error fetching users:', error);
-            }
-          };
-          
-          fetchUsers();
-          
-    }, []);
-    
     return (
-        <Grid container spacing={2}  >
+      <>
 
+        <Grid container spacing={2}>
 
 
           {/* Left Grid (Companies) */}
           <Grid item xs={6} md={3}  >
           <ListItem alignItems="flex-start">
   <ListItemAvatar>
-    <Avatar alt={me.name} src={me.avatar?.url} />
+    <Avatar alt={iAm.name} src={iAm.avatar?.url} />
   </ListItemAvatar>
   <ListItemText
-    primary={me.name}
+    primary={iAm.name}
     secondary={
       <React.Fragment>
         <Typography
@@ -226,8 +446,8 @@ React.useEffect(() => {
           variant="body2"
           color="text.primary"
         >
-          {/* {me.name} */}
-          {` — Full stack web developer…`}
+          {/* {iAm.position} */}
+          {` example— Full stack web developer…`}
         </Typography>
       </React.Fragment>
     }
@@ -321,13 +541,7 @@ React.useEffect(() => {
 
 
 
-
           </Grid>
-    
-
-
-
-
 
 
           {/* Middle Grid (Conversation) */}
@@ -335,13 +549,45 @@ React.useEffect(() => {
                   background: '',
                   position:'relative',
                   flexGrow:1
-          }}
-
+          }} 
           >
+      <Paper
+  sx={{
+    padding: '10px',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    position: 'absolute',
+    top: '1.3%',
+    left: '52%', // Adjusted left position to center the component
+    transform: 'translate(-50%, -50%)',
+    zIndex: '1001',
+    width: '96%',
+  }}
+>
+  {/* Sender's information */}
+  <IconButton>
+    <ArrowBackIcon />
+  </IconButton>
+  <Avatar alt="Sender Avatar" src={senderAvatarUrl} />
+  <Box sx={{ marginLeft: '10px', marginRight: 'auto' }}>
+    <Typography variant='span'>Mehdi elatrassi</Typography>
+  </Box>
+
+  {/* Video, Call, and More icons */}
+  <Divider orientation="vertical" flexItem sx={{ margin: '0 10px', height: '80%' }} />
+  <IconButton>
+    <VideocamIcon color='primary' />
+  </IconButton>
+  <IconButton>
+    <CallIcon color='primary'/>
+  </IconButton>
+  <IconButton>
+    <MoreVertIcon color='primary'/>
+  </IconButton>
+</Paper>
 
 
-
-            
           <Box
         ref={containerRef}
         onClick={handleBoxClick}
@@ -360,17 +606,31 @@ React.useEffect(() => {
       },
     }}
   >
-   
-   {messages.map((message, index) => (
+  
+  {sortedChatMessages.map((message, index) => (
+  <React.Fragment key={index}>
+    {index !== 0 && <Divider />}
+    
+    {message.content.type === 'text' && (
+      <React.Fragment>
+        <TextMessage src={message.content} content={message.content.data} sender={message.sender} iAm={iAm}  />
 
-        <React.Fragment key={index}>
-          {index !== 0 && <Divider />}
-          {message.type === 'text' && <TextMessage content={message.content} sender={message.sender} />}
+      </React.Fragment>
+    )}
+    {/* Add similar conditions for other message types */}
+    
+    {/* Add margin to the bottom of the first item */}
+    {index === 0 && (
+      <Divider sx={{ marginBottom: '300px' }} />
+    )}
+  </React.Fragment>
+))}
 
-        </React.Fragment>
-      ))}
 
-  </Box>
+
+
+
+        </Box>
 
             <Paper
   component="form"
@@ -403,9 +663,10 @@ React.useEffect(() => {
     value={inputValue}
     onChange={(e) => setInputValue(e.target.value)}
   />
-  <IconButton>
+    <IconButton onClick={sendMessage}>
     <SendIcon color='primary' />
   </IconButton>
+  
  
 </Paper>
 
@@ -433,20 +694,13 @@ React.useEffect(() => {
 </div>
     </Grid>
     
- 
-
-
-
-
-   
-
           {/* Right Grid (Members) */}
           <Grid item xs={6} md={3} >
             <List>
               <ListItem>
                 <div>
                   <Typography variant='h6'>Members</Typography>
-
+ 
                   <Paper
       component="form"
       sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: '100%' }}
@@ -466,31 +720,47 @@ React.useEffect(() => {
     
               {/* Right Grid Content (Members) */}
             
-      {users.map((member) => (
-        <ListItem key={member.id}  alignItems="flex-start" onMouseOver={handleHover} onMouseOut={handleHoverOut} >
-          <ListItemAvatar>
-            <Stack direction="row" spacing={2}>
-              <OnlineIndicator user={member} />
-            </Stack>
-          </ListItemAvatar>
 
-          <ListItemText
-            primary={member.name}
-            secondary={
-              <React.Fragment>
-                <Typography
-                  sx={{ display: 'inline' }}
-                  component="span"
-                  variant="body2"
-                  color="text.primary"
-                >
-                  {member.position}
-                </Typography>
-              </React.Fragment>
-            }
-          />
-        </ListItem>
-      ))}
+              {users.map((member) => (
+  <ListItem 
+    key={member.id}
+    data-member-id={member._id}
+    alignItems="flex-start" 
+    onMouseOver={handleHover} 
+    onMouseOut={(event) => handleHoverOut(event, member)} 
+    onClick={() => {
+      setSelectedMemberBackgroundColor(null);
+      handleMemberSelect(member);
+    }}
+    sx={{
+      cursor: 'pointer',
+      backgroundColor: getBackgroundColor(member), // Set the background color dynamically
+    }}
+  >
+    <ListItemAvatar>
+      <Stack direction="row" spacing={2}>
+        <OnlineIndicator user={member} />
+      </Stack>
+    </ListItemAvatar>
+
+    <ListItemText
+      primary={member.name}
+      secondary={
+        <React.Fragment>
+          <Typography
+            sx={{ display: 'inline' }}
+            component="span"
+            variant="body2"
+            color="text.primary"
+          >
+            {member.position}
+          </Typography>
+        </React.Fragment>
+      }
+    />
+  </ListItem>
+))}
+
   
   
             </List>
@@ -500,9 +770,11 @@ React.useEffect(() => {
 
 
 
-
-
         </Grid>
+
+
+
+        </>
       );
 };
 

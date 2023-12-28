@@ -24,7 +24,9 @@ const {
   editWorker,
   editJobs,
   changePassword,
-  Track
+  Track,
+  sendMessages,
+  getAllChats
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
@@ -56,4 +58,6 @@ router.post('/editworker', editWorker)
 router.post('/editJobs', editJobs)
 router.post('/changePassword', changePassword)
 router.get('/track', Track)
+router.post('/send-messages', sendMessages);
+router.get('/getAllChats', getAllChats)
 module.exports = router;

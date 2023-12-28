@@ -1,73 +1,98 @@
 
 const BestWebAgencyInRabat = [
-  {
-    companyName: 'Pixels Trade',
-    link: 'https://www.pixelstrade.com/?utm_source=sortlist&utm_medium=profile&utm_campaign=https%3A%2F%2Fwww.sortlist.com%2Fweb-design%2Frabat-rabat-sale-zemmour-zaer-ma',
-    email:'info@pixelstrade.com',
+  // {
+  //   companyName: 'Pixels Trade',
+  //   link: 'https://www.pixelstrade.com/?utm_source=sortlist&utm_medium=profile&utm_campaign=https%3A%2F%2Fwww.sortlist.com%2Fweb-design%2Frabat-rabat-sale-zemmour-zaer-ma',
+  //   email:'info@pixelstrade.com',
 
-  },
-  {
-    companyName: 'E-Novation',
-    link: 'https://www.e-novation.ma/',
-    email:'contact@e-novation.ma',
+  // },
+  // {
+  //   companyName: 'E-Novation',
+  //   link: 'https://www.e-novation.ma/',
+  //   email:'contact@e-novation.ma',
 
-  },
-  {
-    companyName: 'DigiTransform',
-    link: 'https://digitransform.co/',
-    email:'contact@digitransform.co',
+// {
+//   companyName:'intel',
+//   email:'intel@gmail.com'
+// },
+// {
+//   companyName:'Ntt',
+//   email:'ntt@gmail.com'
+// },
+{
+  companyName:'Ocode',
+  email:'recrutement@ocode.ma'
+}
+  // },
+  // {
+  //   companyName: 'DigiTransform',
+  //   link: 'https://digitransform.co/',
+  //   email:'contact@digitransform.com',
 
+  // },
+  // {
+  //   companyName: 'ThinkWeb',
+  //   link: 'https://thinkweb.ma/',
+  //   email:'contact@thinkweb.ma',
+  // },
+  // {
+  //   companyName: 'Majjane',
+  //   link: 'https://majjane.ma',
+  //   email:'contact@majjane.ma',
+  // },
+  // {
+  //   companyName:'Central Web',
+  //   link:'https://www.centralweb.ma/',
+  //   email:'contact@centralweb.ma'
+  // },
+  // {
+  //   companyName:'EmaVeo',
+  //   link: '  https://emaveo.com/',
+  //   email:'contact@emaveo.com'
+  // },
+  // {
+  //   companyName:'Digency',
+  //   link:'https://www.digency.ma/',
+  //   email:'info@digency.ma',
+  // },
+  // {
+  //   companyName:'ReWeb',
+  //   link:'https://www.reweb.ma/',
+  //   email: 'contact@reweb.ma',
+  // },
+  // {
+  //   companyName:'NTV',
+  //   link:'https://ntv.ma/',
+  //   email:'contact@ntv.ma',
+  // },
+  // {
+  //   companyName:'NieMe',
+  //   link:'https://www.niemeconseil.ma/',
+  //   email:'info@niemeconseil.ma'
+  // },
+  // {
+  //   companyName:'fornetmaroc',
+  //   link:'https://www.fornetmaroc.com/',
+  //   email:'recrutement@fornetmaroc.com'
+  // },
+  // {
+  //   companyName:'Inovat',
+  //   link:'https://inovat.ma/',
+  //   email:'contact@inovat.ma'
+  // }
+];
+
+const testCompanies = [
+  {
+    companyName: 'TestCompany1',
+    link: 'https://www.testcompany1.com',
+    email: 'raymondyounes2@gmail.com',
   },
   {
-    companyName: 'ThinkWeb',
-    link: 'https://thinkweb.ma/',
-    email:'contact@thinkweb.ma',
+    companyName: 'TestCompany2',
+    link: 'https://www.testcompany2.com',
+    email: 'youneshero436@gmail.com',
   },
-  {
-    companyName: 'Majjane',
-    link: 'https://majjane.ma',
-    email:'contact@majjane.ma',
-  },
-  {
-    companyName:'Central Web',
-    link:'https://www.centralweb.ma/',
-    email:'contact@centralweb.ma'
-  },
-  {
-    companyName:'EmaVeo',
-    link: '  https://emaveo.com/',
-    email:'contact@emaveo.com'
-  },
-  {
-    companyName:'Digency',
-    link:'https://www.digency.ma/',
-    email:'info@digency.ma',
-  },
-  {
-    companyName:'ReWeb',
-    link:'https://www.reweb.ma/',
-    email: 'contact@reweb.ma',
-  },
-  {
-    companyName:'NTV',
-    link:'https://ntv.ma/',
-    email:'contact@ntv.ma',
-  },
-  {
-    companyName:'NieMe',
-    link:'https://www.niemeconseil.ma/',
-    email:'info@niemeconseil.ma'
-  },
-  {
-    companyName:'fornetmaroc',
-    link:'https://www.fornetmaroc.com/',
-    email:'recrutement@fornetmaroc.com'
-  },
-  {
-    companyName:'Inovat',
-    link:'https://inovat.ma/',
-    email:'contact@inovat.ma'
-  }
 ];
 
 const AU = [
@@ -1302,6 +1327,7 @@ const   GEFrankfurt
 
 
 module.exports = {
+  testCompanies,
   BestWebAgencyInRabat,
     AU,
     MATANGER,

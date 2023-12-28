@@ -80,6 +80,7 @@ const getMenuItems = () => {
       style={{
         zIndex: 9999,
         position: 'fixed',
+        background:'#f3f3f8',
        
         transform: isMenuOpen ? 'translateX(0)' : 'translateX(-100%)', // Slide in from the left when open
         transition: 'transform 0.5s ease-in-out', // Add transition properties

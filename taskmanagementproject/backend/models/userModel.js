@@ -13,6 +13,19 @@ const WorkersSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  chats: [
+    {
+      chatId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Chat',
+      },
+      type: {
+        type: String,
+        enum: ['private', 'group'],
+        required: true,
+      },
+    },
+  ],
   position: {
     type:String,
     required: false,
