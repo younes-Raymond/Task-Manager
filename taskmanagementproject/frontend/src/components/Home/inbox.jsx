@@ -20,7 +20,7 @@ import{ Howl } from 'howler';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import openSocket from 'socket.io-client';
-const socket = openSocket('https://ajial.onrender.com');  // or 'wss://ajial.onrender.com' for secure WebSocket
+const socket = openSocket('http://localhost:4000');
 
 
 
