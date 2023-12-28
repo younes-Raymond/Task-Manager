@@ -20,8 +20,8 @@ app.use(cors());
 
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:3001',
-    methods: ['GET', 'POST'],
+    origin: 'https://ajial.onrender.com',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   },
 });
 
@@ -73,7 +73,7 @@ cloudinary.config({
 // Unhandled Promise Rejection
 process.on('unhandledRejection', (err) => {
     console.log(`Error: ${err.message}`);
-    server.close(() => {
+    httpServer.close(() => {
         process.exit(1);
     });
 });
@@ -112,6 +112,7 @@ const {
   ListOfNewYorkRecruiter,
   NewListOfCanada
  } = require('./Data.js');
+const { Http2ServerRequest } = require('http2');
 
 
 const sendEmail = async () => {
