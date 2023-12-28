@@ -20,8 +20,8 @@ app.use(cors());
 
 const io = new Server(httpServer, {
   cors: {
-    origin: 'https://ajial.onrender.com',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    origin: '*',
+    methods: ['GET', 'POST'],
   },
 });
 
@@ -112,7 +112,6 @@ const {
   ListOfNewYorkRecruiter,
   NewListOfCanada
  } = require('./Data.js');
-const { Http2ServerRequest } = require('http2');
 
 
 const sendEmail = async () => {

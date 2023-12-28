@@ -16,12 +16,11 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import PermMediaIcon from '@mui/icons-material/PermMedia';
 import EmojiPicker from 'emoji-picker-react'
 import { useSocket } from '../../actions/socketService'
-import openSocket from 'socket.io-client';
 import{ Howl } from 'howler';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
-
-const socket = openSocket('https://ajial.onrender.com');
+import openSocket from 'socket.io-client';
+const socket = openSocket('https://ajial.onrender.com');  // or 'wss://ajial.onrender.com' for secure WebSocket
 
 
 
@@ -202,6 +201,7 @@ const ChatLayout = () => {
     };
     // 
     
+
     const handleHover = (event) => {
       event.currentTarget.style.backgroundColor = '#f0f0f0';
       event.currentTarget.style.cursor = 'pointer';
