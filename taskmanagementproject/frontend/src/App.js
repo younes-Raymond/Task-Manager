@@ -24,11 +24,7 @@ import LearnBoxes  from './components/Home/article/learnMoreBox';
 import MarketingPlan  from './components/Home/article/Marketingblogs'
 import SettingsComponent from './components/Home/profile/settings';
 import Inbox from './components/Home/inbox.jsx';
-import AddressForm from './components/payments/AddressForm.jsx'
 import  Checkout from './components/payments/Checkout.jsx'
-import Payment from './components/payments/PaymentForm.jsx'
-import Review from './components/payments/Review.jsx'
-import PaymentForm from './components/payments/PaymentForm.jsx';
 
 
 const userRole = CheckUserRole()
