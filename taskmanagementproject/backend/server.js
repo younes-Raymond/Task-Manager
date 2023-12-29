@@ -18,10 +18,11 @@ app.use(cors());
 // Create a Socket.IO server attached to the HTTP server
 const io = new Server(httpServer, {
   cors: {
-    origin: 'http://localhost:3000',
+    origin: 'https://ajial.onrender.com',
     methods: ['GET', 'POST'],
   },
 });
+
 const PORT = process.env.PORT || 4000;
 
 // Handle Socket.IO connection event
@@ -60,10 +61,10 @@ cloudinary.config({
 
 
 // Start the HTTP server
-// httpServer.listen(PORT, () => {
-//   console.log(`Server running on http://localhost:${PORT}`);
-// });
-// // Start the Express app
+httpServer.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
+// Start the Express app
 
 
 // Serve static files from the public directory
