@@ -20,7 +20,7 @@ import{ Howl } from 'howler';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import openSocket from 'socket.io-client';
-const socket = openSocket('http://localhost:4000');
+// const socket = openSocket('http://localhost:4000');
 
 
 
@@ -244,7 +244,7 @@ const ChatLayout = () => {
             },
           ],
         };
-        socket.emit('message', { participants: data.participants, message: data.messages[0] });
+        // socket.emit('message', { participants: data.participants, message: data.messages[0] });
     
         // Send message and get the updated chat
         const response = await sendMessages(data);
