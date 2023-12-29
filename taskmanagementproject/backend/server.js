@@ -73,13 +73,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Start the server
 
   // Start the server
-httpServer.listen(3000, () => {
-  console.log(`Server running on http://localhost:${3000}`);
+httpServer.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
 
-// httpServer.listen(3000, () => {
-//   console.log('Server started on port 3000');
-// });
+
+app.listen(3000, () => {
+  console.log('Server started on port 3000');
+});
 
 
 
