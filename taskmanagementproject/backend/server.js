@@ -60,7 +60,10 @@ cloudinary.config({
 });
 
 
-
+// Start the HTTP server
+httpServer.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
+});
 
 
 // Serve static files from the public directory
@@ -71,8 +74,5 @@ app.use(express.static(path.join(__dirname, 'public')));
 //   console.log('Server started on port 3000');
 // });
 
-// Start the HTTP server
-httpServer.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+
 // Start the Express app
