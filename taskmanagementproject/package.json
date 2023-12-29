@@ -1,17 +1,14 @@
 {
-  "name": "AllMart",
+  "name": "allmart",
   "version": "1.0.0",
   "description": "Full Stack shipping system",
   "main": "server.js",
   "scripts": {
-    "build": "cd backend && npm install && cd ../frontend && npm install && npm run build",
-    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
-    "start:backend": "cd backend && npm start",
-    "start:frontend": "cd frontend && npm start",
-    "server": "/frontend/build/index.html",
-    "dev": "concurrently \"npm run server\" \"npm run frontend\"",
-    "install:all": "cd ../backend && npm install && cd ../frontend && npm install",
-    "create-build-folder": "mkdir -p build"
+    "install-server": "cd backend && npm install",
+    "start-server": "cd backend && node app.js",
+    "install-client": "cd frontend && npm install",
+    "build-client": "cd frontend && npm run build",
+    "start-client": "cd frontend && npm run start"
   },
   "author": "Younes Attaoui",
   "license": "ISC",

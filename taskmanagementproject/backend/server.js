@@ -8,7 +8,6 @@ const cloudinary = require('cloudinary');
 const { v4: uuidv4 } = require('uuid');
 const { Server } = require('socket.io');
 
-const PORT = process.env.PORT || 3000;
 
 // Create an HTTP server
 const httpServer = http.createServer(app);
@@ -23,6 +22,7 @@ const io = new Server(httpServer, {
     methods: ['GET', 'POST'],
   },
 });
+const PORT = process.env.PORT || 4000;
 
 // Handle Socket.IO connection event
 io.on('connection', (socket) => {
@@ -60,10 +60,16 @@ cloudinary.config({
 
 
 // Start the HTTP server
-httpServer.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// httpServer.listen(PORT, () => {
+//   console.log(`Server running on http://localhost:${PORT}`);
+// });
+// // Start the Express app
+
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+app.listen(3000, () => {
+  console.log('Server started on port 3000');
+});
