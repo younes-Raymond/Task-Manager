@@ -20,7 +20,7 @@ import{ Howl } from 'howler';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import openSocket from 'socket.io-client';
-const socket = openSocket('https://ajial.onrender.com');
+const socket = openSocket('http://localhost:4000');
 
 
 
@@ -53,7 +53,6 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     },
   },
 }));
-
 
 
 const OnlineIndicator = ({user}) => (
@@ -366,7 +365,6 @@ const messageSound = new Howl({
     console.log('finished');
   }
 });
-
 
 useSocket('message', (data) => {
   console.log('Received message data:', data.message.timestamp);
