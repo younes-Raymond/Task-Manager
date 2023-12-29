@@ -20,8 +20,7 @@ import{ Howl } from 'howler';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import openSocket from 'socket.io-client';
-const currentURL = window.location.href;
-const socket = openSocket(currentURL);
+const socket = openSocket('https://ajial.onrender.com');
 
 
 
@@ -367,6 +366,8 @@ const messageSound = new Howl({
     console.log('finished');
   }
 });
+
+
 useSocket('message', (data) => {
   console.log('Received message data:', data.message.timestamp);
 // Log the current state of the Howl instance
