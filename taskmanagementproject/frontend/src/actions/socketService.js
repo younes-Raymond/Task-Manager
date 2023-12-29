@@ -2,7 +2,7 @@
 import { useEffect } from 'react';
 import openSocket from 'socket.io-client';
 
-const socket = openSocket('http://localhost:4000');
+const socket = openSocket('https://ajial.onrender.com');
 
 export const useSocket = (eventName, callback) => {
   useEffect(() => {
