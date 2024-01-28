@@ -23,4 +23,5 @@ As a former plasterer and team leader, I recognized the need for a customized so
 
 Simply navigate to the `/backend` directory and run `npx nodemon server.js`. For the frontend, execute `npm start` within the `/frontend` directory, and press 'yes' to start the app on port 3001.
 
-##### AllMart targets employers seeking developer talent to enhance their organizational capabilities and investors interested in innovative solutions revolutionizing workforce management and resource allocation. Join us in reshaping the future of task management with AllMart!
+**AllMart** targets employers seeking developer talent to enhance their organizational capabilities and investors interested in innovative solutions revolutionizing workforce management and resource allocation. Join us in reshaping the future of task management with AllMart!
+
