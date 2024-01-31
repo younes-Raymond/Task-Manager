@@ -26,13 +26,14 @@ const {
   changePassword,
   Track,
   sendMessages,
-  getAllChats
+  getAllChats,
+  registerWorker
 } = require('../controllers/userController');
 const { isAuthenticatedUser, authorizeRoles } = require('../middlewares/auth');
 
 const router = express.Router();
 
-router.post('/register', registerUser);
+router.post('/register', registerWorker);
 router.post('/login', loginUser);
 router.route('/admin/users').get(isAuthenticatedUser, authorizeRoles('admin'), getAllUsers);
 router.post('/approve', approveRequest);

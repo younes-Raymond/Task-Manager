@@ -49,8 +49,8 @@ exports.Track = async (req, res) => {
 
 
 exports.sendMessages = async (req, res) => {
-  console.log('req Body:', req.body);
-  console.log('req messages:', req.body.messages);
+  // console.log('req Body:', req.body);
+  // console.log('req messages:', req.body.messages);
   try {
     const { participants, messages } = req.body;
     const senderWorker = await Workers.findById(participants[0]);
@@ -98,7 +98,7 @@ exports.sendMessages = async (req, res) => {
       });
       updatedChat = newChat;
 
-     io.to(participants.join('-')).emit('joinChat', participants);
+    //  io.to(participants.join('-')).emit('joinChat', participants);
 
       // Check if the chat ID exists in the worker's chats array
       const workerHasChat = senderWorker.chats.some(
@@ -143,10 +143,10 @@ exports.sendMessages = async (req, res) => {
       }
     }
 
-    io.to(updatedChat._id).emit('message', {
-      message: messages,
-      sender: senderWorker._id,
-    });
+    // io.to(updatedChat._id).emit('message', {
+    //   message: messages,
+    //   sender: senderWorker._id,
+    // });
     
 // console.log(updatedChat.messages[0].timestamp)
     res.status(200).json({ chat: updatedChat }); // Return the updated chat
@@ -197,18 +197,8 @@ exports.getAllChats = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
 // Register User
-exports.registerUser = asyncErrorHandler(async (req, res, next) => {
+exports.registerWorker = asyncErrorHandler(async (req, res, next) => {
   // console.log(req.body);
 const { name, email, position, salary, gender, nationalId, phoneNumber, legalInfo, password} = req.body;
   try {

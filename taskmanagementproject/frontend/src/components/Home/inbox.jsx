@@ -20,7 +20,7 @@ import{ Howl } from 'howler';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import openSocket from 'socket.io-client';
-const socket = openSocket('/');
+// const socket = openSocket('/');
 
 
 
@@ -244,7 +244,7 @@ const ChatLayout = () => {
             },
           ],
         };
-        socket.emit('message', { participants: data.participants, message: data.messages[0] });
+        // socket.emit('message', { participants: data.participants, message: data.messages[0] });
     
         // Send message and get the updated chat
         const response = await sendMessages(data);
@@ -356,24 +356,13 @@ React.useEffect(() => {
   }
 }, [me]);
 
-const messageSound = new Howl({
-  src: ['./sound/decidemp3-14575.mp3'],
-  volume: 1,
-  autoplay:true,
-  html5:true,
-  loop:true,
-  onend : function() {
-    console.log('finished');
-  }
-});
+
 useSocket('message', (data) => {
   console.log('Received message data:', data.message.timestamp);
 // Log the current state of the Howl instance
-console.log('Howl instance:', messageSound);
 
 // Try playing the sound
 console.log('Playing message sound...');
-messageSound.play();
   const content = data.message.content;
   const sender_id = data.message.sender;
   const timestamp = data.message.timestamp;
