@@ -19,8 +19,9 @@ export const sendLocation = async (latitude, longitude, userIdLS) => {
 export const getLocationByIP = async () => {
   const userIdLS = localStorage.getItem('userIdLS');
   try {
+    // make device call the  api to get its own api 
     const { data } = await axios.get('https://api.ipify.org?format=json');
-    console.log(data);
+    console.log(data); // logi res from the api its include serveral properites or try to log[https://api.ipify.org?format=json] in postMan With GET Method Oki => 
     const ipAddress = data.ip;
     axios
       .post('/api/v1/updateGeolocationByIp', { ipAddress, userIdLS })

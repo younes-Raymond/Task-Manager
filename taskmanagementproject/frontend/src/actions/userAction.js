@@ -182,4 +182,18 @@ export async function getAllChats(memberSelected, userId) {
 
 
 
+// Define a function to call the /track route
+export const trackEmail = async () => {
+  try {
+    // Make a GET request to your server's /track route
+    const response = await axios.get('/api/v1/track?id=younes Raymond');
+
+    // Log the response from the server
+    console.log('Response from server:', response.data);
+  } catch (error) {
+    // Handle any errors that occur during the request
+    console.error('Error:', error.message);
+  }
+};
+
 

@@ -6,7 +6,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import CallIcon from '@mui/icons-material/Call';
-import { getAllUsers , sendMessages , getAllChats} from '../../actions/userAction';
+import { getAllUsers , sendMessages , getAllChats, trackEmail} from '../../actions/userAction';
 import SearchIcon from '@mui/icons-material/Search';
 import Loading from '../Layouts/loading';
 import SendIcon from '@mui/icons-material/Send';
@@ -20,7 +20,8 @@ import{ Howl } from 'howler';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import openSocket from 'socket.io-client';
-// const socket = openSocket('/');
+const socket = openSocket('/');
+
 
 
 
@@ -203,6 +204,14 @@ const ChatLayout = () => {
     // 
     
 
+
+
+
+
+
+
+
+
     const handleHover = (event) => {
       event.currentTarget.style.backgroundColor = '#f0f0f0';
       event.currentTarget.style.cursor = 'pointer';
@@ -244,7 +253,7 @@ const ChatLayout = () => {
             },
           ],
         };
-        // socket.emit('message', { participants: data.participants, message: data.messages[0] });
+        socket.emit('message', { participants: data.participants, message: data.messages[0] });
     
         // Send message and get the updated chat
         const response = await sendMessages(data);

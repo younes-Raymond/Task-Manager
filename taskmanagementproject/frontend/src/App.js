@@ -25,7 +25,7 @@ import MarketingPlan  from './components/Home/article/Marketingblogs'
 import SettingsComponent from './components/Home/profile/settings';
 import Inbox from './components/Home/inbox.jsx';
 import  Checkout from './components/payments/Checkout.jsx'
-
+import SearchQueryGenerator from './components/Home/searchQuery.jsx';
 
 const userRole = CheckUserRole()
 
@@ -80,6 +80,7 @@ const App = () => {
           <Route path="/login" element={<LoginPage />} />       
           <Route path="/learn-more" element={<LearnBoxes />} />
           <Route path='/Marketing-plan' element={<MarketingPlan />} />
+          <Route path='/SearchQueryGenerator' element={<SearchQueryGenerator />} />
           {/* <Route path="/" element={<Optionbox />} /> */}   
 
         </Routes>
