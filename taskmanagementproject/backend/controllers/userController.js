@@ -25,24 +25,27 @@ const axios = require('axios');
 exports.Track = async (req, res) => {
   console.log('req Query: ', req.query);
   
-
   try {
-
-  // Retrieve the client's IP address from the request object
+    // Retrieve the client's IP address from the request object
     const ipAddress = req.ip;
 
     // Construct the URL for the IP geolocation service using your API key
     const myApiKey = '6c105f5d9e926dc7f86df2da63b2e5f3';
     const url = `http://api.ipstack.com/${ipAddress}?access_key=${myApiKey}`;
-    const { id } = req.query;
-// Fetch additional details about the client's IP address
+
+    // Fetch additional details about the client's IP address
     const response = await axios.get(url);
-     // Log or store the response data
-     console.log("IP Geolocation Response: ", response.data);
+    // Log or store the response data
+    console.log("IP Geolocation Response: ", response.data);
      
+    // its email adress not id , id is generates from mongodb by default
+    const { id } = req.query;
+
     // Create a new instance of the EmailLog model
     const emailLogEntry = new EmailLog({
       id,
+      ipAddress,
+      geolocation: response.data,
     });
 
     // Save the entry to the database
@@ -56,6 +59,7 @@ exports.Track = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 
 
