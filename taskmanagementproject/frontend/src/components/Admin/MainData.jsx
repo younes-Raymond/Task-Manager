@@ -47,14 +47,14 @@ const MainData = () => {
   }, []);
 
   const workersBarChartData = {
-    labels: Workers.map(worker => worker.name),
+    labels: Workers.map(worker => worker?.firstName || worker?.name),
     datasets: [
       {
         label: 'Salary',
         backgroundColor: 'rgba(75, 192, 192, 0.6)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,
-        data: Workers.map(worker => worker.salary),
+        data: Workers.map(worker => worker?.salary),
       },
     ],
   };
@@ -73,7 +73,7 @@ const MainData = () => {
   };
 
   const usersDoughnutChartData = {
-    labels: Materials.map(material => material.users.map(user => user.name).join(', ')),
+    labels: Materials.map(material => material.users.map(user => user?.firstName || user?.name).join(', ')),
     datasets: [
       {
         data: Materials.map(material => material.users.length),
@@ -122,10 +122,10 @@ const getStatusValue = status => {
   }
 };
   
-const taskLabels = Tasks.map(task => `${formatDate(task?.createdAt)}`);
+const taskLabels = Tasks.map(task => task.workerName || 'Unknown Tasker');
 
 const tasksBarChartData = {
-  labels: taskLabels,
+  labels:taskLabels,
   datasets: [
     {
       label: 'Tasks',
@@ -151,7 +151,8 @@ const options = {
   plugins: {
     legend: {
       display: true,
-      position: 'top',    },
+      position: 'top',    
+    },
     datalabels: {
       align: 'bottom',
       anchor: 'end',
@@ -164,10 +165,14 @@ const options = {
     },
     tooltip: {
       enabled: true,
+      position: 'average',
+      align: 'center',
+      mode: 'index',
       callbacks: {
         label: context => {
           const task = Tasks[context?.dataIndex];
-          return  `Task: ${task?.title}   Status: ${task?.status}`;
+          const formattedDate = formatDate(task?.createdAt);
+          return  `Task: ${task?.title}   Status: ${task?.status} Date:${formattedDate}`;
         },
       },
     },

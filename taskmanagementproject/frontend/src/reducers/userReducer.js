@@ -11,12 +11,30 @@ import {
  LOAD_USER_FAIL,
  LOGOUT_USER_FAIL,
  CLEAR_ERRORS,
- SET_MENU_OPEN,
- SET_MENU_CLOSE,
 } from '../constants/userConstant'
 
 
-export const userReducer = (state = { user: {} }, { type, payload }) => {
+const initialState = {
+    isMenuOpen: false, 
+    user: {},
+    loading: false,
+    isAuthenticated: false,
+    error: null,
+  };
+
+
+const storedUser = JSON.parse(localStorage.getItem('user'));
+
+const persistedState = storedUser
+  ? {
+      ...initialState,
+      isAuthenticated: true,
+      user: storedUser,
+    }
+  : initialState;
+
+
+export const userReducer = (state = persistedState, { type, payload }) => {
   switch (type) {
       case LOGIN_USER_REQUEST:
       case REGISTER_USER_REQUEST:
@@ -28,6 +46,7 @@ export const userReducer = (state = { user: {} }, { type, payload }) => {
       case LOGIN_USER_SUCCESS:
       case REGISTER_USER_SUCCESS:
       case LOAD_USER_SUCCESS:
+        localStorage.setItem('user', JSON.stringify(payload));
           return {
               ...state,
               loading: false,
@@ -35,7 +54,9 @@ export const userReducer = (state = { user: {} }, { type, payload }) => {
               user: payload,
           };
       case LOGOUT_USER_SUCCESS:
+        localStorage.removeItem('user');
           return {
+              ...state,
               loading: false,
               user: null,
               isAuthenticated: false,
@@ -73,11 +94,6 @@ export const userReducer = (state = { user: {} }, { type, payload }) => {
 };
 
 
-
-  const initialState = {
-    isMenuOpen: false, 
-  };
-  
   
 export   const menuReducer = (state = initialState, action) => {
     switch (action.type) {

@@ -9,7 +9,6 @@
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     height: 100%;
     box-sizing: border-box;
-    width: 85%;
   }
   .Chart-container div:not(.Chart) 
   {

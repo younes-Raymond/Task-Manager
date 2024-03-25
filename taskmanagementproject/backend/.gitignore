@@ -10,7 +10,7 @@
 
 # production
 /build
-/config.env
+/config/config.env
 /Gmail
 /jsonLogs
 Data.js
