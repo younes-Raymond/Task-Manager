@@ -1,56 +1,96 @@
 import axios from "axios";
 
+import {
+ REGISTER_USER_REQUEST,
+ REGISTER_USER_FAIL,
+ REGISTER_USER_SUCCESS,
+ LOGIN_USER_REQUEST,
+ LOGIN_USER_FAIL,
+ LOGIN_USER_SUCCESS
+} from '../constants/userConstant.js'
 
 // login user 
-export const loginUser = async (email, password) => {
+
+export const loginUser = (email, password) => async (dispatch) => {
   try {
-    const config = {
-      headers: { 'Content-Type': 'application/json' },
-    };
-    const { data } = await axios.post('/api/v1/login', { email, password }, config);
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    return data;
+
+      dispatch({ type: LOGIN_USER_REQUEST });
+    
+      // const config = {
+      //     headers: {
+      //         "Content-Type": "application/json",
+      //     },
+      // }
+    
+      const { data } = await axios.post(
+          '/api/v1/login',
+          { email, password },
+          // config
+      );
+
+      const token = data.token
+      localStorage.setItem('token', token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+  
+      dispatch({
+          type: LOGIN_USER_SUCCESS,
+          payload: data.user,
+      });
+      return data
+
   } catch (error) {
-    if (error.response && error.response.data.message) {
-      throw new Error(error.response.data.message);
-    } else {
-      throw new Error(error.message);
-    }
+      dispatch({
+          type: LOGIN_USER_FAIL,
+          payload: error.response.data.message,
+      });
   }
 };
 
-export const registerUser = async (userData) => {
-  console.log(userData); // log user data to console
-  const config = { headers: { "Content-Type": "multipart/form-data" } };
-  return axios.post("/api/v1/register", userData, config)
-    .then((response) => {
-      const { data } = response;
-      // console.log('Registered User:', data.user); // log registered user object to console
-      const user = {
-        ...data.user,
-        userId: data.user._id,
-        email: data.user.email,
-        name: data.user.name, // Add the name property to the user object
-      };
-      console.log(user)
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('userId', data.user._id);
-      localStorage.setItem('user', JSON.stringify(user));
-      localStorage.setItem('name', data.user.name); // Store the name property in the localStorage
-      localStorage.setItem('email', data.user.email); // Store the name property in the localStorage
-      
-      return data;
-    })
-    .catch((error) => {
-      if (error.response && error.response.data.message) {
-        throw new Error(error.response.data.message);
-      } else {
-        throw new Error(error.message);
-      }
+
+
+
+
+export const registerUser = (userData) => async (dispatch) => {
+  try {
+    dispatch({ type: REGISTER_USER_REQUEST });
+
+    // const config = {
+    //   headers: {
+    //     "Content-Type": "multipart/form-data",
+    //   },
+    // };
+
+    const { data } = await axios.post(
+      '/api/v1/register',
+      userData,
+      // config
+    );
+    const token = data.token
+
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(data.user));
+
+    dispatch({
+      type: REGISTER_USER_SUCCESS,
+      payload: data.user,
     });
+
+    return data
+
+  } catch (error) {
+    dispatch({
+      type: REGISTER_USER_FAIL,
+      payload: error.response.data.message,
+    });
+  }
 };
-  // Get All Users ---ADMIN
+
+
+
+
+
+
+
 
 export const search = async (keyword) => {
     try {
@@ -68,6 +108,9 @@ export const search = async (keyword) => {
       }
     }
 };
+
+
+
 
   export const getAllUsers = async () => {
     try {
@@ -166,9 +209,11 @@ export async function sendMessages(data) {
 export async function getAllChats(memberSelected, userId) {
   try {
     // console.log('Fetching chats with:', memberSelected, userId);
-    const res = await axios.get(`/api/v1/getAllChats?selectedMember=${memberSelected}&userId=${userId}`);
-    // console.log('Response:', res.data);
-    return res.data;
+    const { data }= await axios.get(`/api/v1/getAllChats?selectedMember=${memberSelected}&userId=${userId}`);
+    console.log('Response:', data);
+    localStorage.setItem('memberDetails', JSON.stringify(data.memberDetails));
+
+    return data;
   } catch (error) {
     console.error('Error in chat:', error);
     throw error; // Rethrow the error to propagate it to the calling code

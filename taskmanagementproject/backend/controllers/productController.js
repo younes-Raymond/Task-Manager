@@ -1,5 +1,5 @@
 const Material = require('../models/productModel');
-const Workers = require('../models/userModel');
+const Workers = require('../models/workersModel');
 const MaterialRequest = require('../models/MaterialRequestModel');
 const asyncErrorHandler = require('../middlewares/asyncErrorHandler');
 const cloudinary = require('cloudinary');

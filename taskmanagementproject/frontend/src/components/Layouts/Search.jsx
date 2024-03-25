@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import NotFound from '../NotFound';
+import NotFound from './NotFound';
 import { Link } from 'react-router-dom';
 import { sendRequest } from '../../actions/productaction';
 import MARKER from '../../assets/images/G-M-Marker.png';

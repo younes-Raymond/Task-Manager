@@ -122,7 +122,7 @@ const getStatusValue = status => {
   }
 };
   
-const taskLabels = Tasks.map(task => `${formatDate(task.createdAt)}`);
+const taskLabels = Tasks.map(task => `${formatDate(task?.createdAt)}`);
 
 const tasksBarChartData = {
   labels: taskLabels,
@@ -132,7 +132,7 @@ const tasksBarChartData = {
       backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(153, 102, 255, 0.6)'],
       borderColor: ['rgba(75, 192, 192, 1)', 'rgba(255, 99, 132, 1)', 'rgba(153, 102, 255, 1)'],
       borderWidth: 1,
-      data: Tasks.map(task => getStatusValue(task.status)),
+      data: Tasks.map(task => getStatusValue(task?.status)),
     },
   ],
 };
@@ -166,8 +166,8 @@ const options = {
       enabled: true,
       callbacks: {
         label: context => {
-          const task = Tasks[context.dataIndex];
-          return  `Task: ${task.title}   Status: ${task.status}`;
+          const task = Tasks[context?.dataIndex];
+          return  `Task: ${task?.title}   Status: ${task?.status}`;
         },
       },
     },

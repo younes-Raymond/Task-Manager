@@ -97,8 +97,7 @@ export default function Header() {
   const [approvedCount, setApprovedCount ] = React.useState('')
   const [rejectedCount, setRejectedCount ] = React.useState('')
   const [notificationDialogOpen, setNotificationDialogOpen ] = React.useState(false);
-
-
+  const Ruser = useSelector(state => state.user);
 
 
  const fetchRequestsData = async () => {
@@ -116,20 +115,32 @@ export default function Header() {
   }
 };
 
-
 React.useEffect(() => {
-  const user = JSON.parse(localStorage.getItem('user'));
-  if (user) {
-    setAvatarUrl(user.avatar.url);
+  // Check Redux store first
+  if (Ruser && Ruser.avatar && Ruser.avatar.url) {
+    console.log(Ruser.avatar.url);
+    setAvatarUrl(Ruser.avatar.url);
+  } else {
+    // If not in Redux, check localStorage
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user && user.avatar && user.avatar.url) {
+      console.log(user.avatar.url);
+      setAvatarUrl(user.avatar.url);
+    }
   }
- 
+  
   // Fetch requests when the component mounts
   fetchRequestsData();
-}, []);
+}, [Ruser]);
 
 const handleLogOut = () => {
-  localStorage.clear()
-} 
+  localStorage.clear();
+  navigate('/singin');
+  window.location.reload();
+};
+
+
+
 const handleNotificationsOpen = () => {
   setNotificationDialogOpen(true);
 }
@@ -141,24 +152,32 @@ const handleNotificationsClose = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    dispatch({ type: 'SET_MENU_CLOSE', payload: false }); 
+
   };
 
+// three dots ... t/b
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
 
+
+  
   const toggleDrawer = () => {
     dispatch({ type: 'SET_MENU_OPEN', payload: !isMenuOpen }); // Toggle the value
     setOpen(!open);
   };
+  
+  
+  
+  
   
   
 
@@ -166,7 +185,7 @@ const handleNotificationsClose = () => {
     e.preventDefault();
     if (keyword.trim()) {
       try {
-        await search(keyword); // Call the search function from userAction with the keyword
+        await search(keyword); 
         navigate(`/search/${keyword}`);
         navigate('/search');
       } catch (error) {
@@ -198,7 +217,10 @@ const handleNotificationsClose = () => {
     >
     <Link to= '/profile' style={{textDecoration:'none', color:'black'}} >  <MenuItem onClick={handleMenuClose}>Profile</MenuItem></Link>
     <Link to='/settings' style={{textDecoration:'none', color:'black'}}><MenuItem onClick={handleMenuClose}>My account</MenuItem></Link>
-    <MenuItem onClick={handleLogOut}> <Button>Log Out</Button></MenuItem>
+    <MenuItem onClick={handleLogOut}>
+  <Button>Log Out</Button>
+</MenuItem>
+
     </Menu>
   );
 

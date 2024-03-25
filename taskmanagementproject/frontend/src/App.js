@@ -5,8 +5,8 @@ import ProductForm from './components/Admin/ProductForm.jsx';
 import Aboutus from './components/Home/about-us';
 import Header from './components/Layouts/Header';
 import ProductDetailPage from './components/Home/ProductDetailPage';
-import LoginPage from './components/Home/Login/Login';
-import RegisterPage from './components/Home/Login/RegisterPage';
+import LoginPage from './components/Auth/SingIn.jsx';
+import RegisterPage from './components/Auth/SingUp.jsx';
 import Search from './components/Layouts/Search';
 import Jobs from './components/Jobs/Jobs'
 import OptionDashboard from './components/Admin/options' 
@@ -18,18 +18,12 @@ import MainData from './components/Admin/MainData';
 import ShowWorkers from './components/Admin/Show-workers'
 import ShowMaterials from './components/Admin/ShowMaterials';
 import ShowJobs from './components/Admin/Show-Jobs'
-import PrivateRoutes from './Routes/PrivateRoutes';
-import CheckUserRole  from './Routes/checkUserRole';
 import LearnBoxes  from './components/Home/article/learnMoreBox';
 import MarketingPlan  from './components/Home/article/Marketingblogs'
 import SettingsComponent from './components/Home/profile/settings';
-import Inbox from './components/Home/inbox.jsx';
-import  Checkout from './components/payments/Checkout.jsx'
-import SearchQueryGenerator from './components/Home/searchQuery.jsx';
-
-const userRole = CheckUserRole()
-
-
+import ChatLayouts from './components/Home/ChatLayout/ChatLayout.jsx'
+import ProtectedRoute from './Routes/ProtectedRoute.js';
+import ForgetPassword from './components/Auth/ForgetPassword.jsx';
 
 
 
@@ -37,50 +31,125 @@ const App = () => {
   return (
     <>
       <Router>
-        {userRole !== 'unknown' && (
-          <Header />
-        )}
+        <ProtectedRoute>
+        <Header />
+        </ProtectedRoute>
+
         <Routes>
-          <Route element={<PrivateRoutes /> }>
-           {/* start user section              */}
-          <Route element={<Optionbox />} path='/' exact />
-          <Route path="/about-us" element={<Aboutus />} />
-          <Route path="/show-products" element={<ProductDetailPage />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/Jobs" element={<Jobs />} />
-          <Route path="/settings" element={<SettingsComponent />} />
+           {/* start user section     */}
+          <Route path='/'  exact   element={
+            <ProtectedRoute>
+          <Optionbox />
+            </ProtectedRoute>
+          }></Route>
 
-          {/* start users section                        */}
+<Route path="/about-us" element={
+    <ProtectedRoute>
+        <Aboutus />
+    </ProtectedRoute>
+} />
+
+<Route path="/show-products" element={
+    <ProtectedRoute>
+        <ProductDetailPage />
+    </ProtectedRoute>
+} />
+
+<Route path="/search" element={
+    <ProtectedRoute>
+        <Search />
+    </ProtectedRoute>
+} />
+
+<Route path="/Jobs" element={
+    <ProtectedRoute>
+        <Jobs />
+    </ProtectedRoute>
+} />
+
+<Route path="/settings" element={
+    <ProtectedRoute>
+        <SettingsComponent />
+    </ProtectedRoute>
+} />
+
+<Route path="/inbox" element={
+    <ProtectedRoute>
+        <ChatLayouts />
+    </ProtectedRoute>
+} />
+<Route path="/profile" element={
+    <ProtectedRoute>
+        <Profile />
+    </ProtectedRoute>
+} />
+
+{/* end users section*/}
       
-            {userRole === 'admin' && (
-              <>
-          {/*  start   admin   dashboard section  */}
-          <Route path="/admin/option" element={<OptionDashboard />} />
-          <Route path="/admin/add-worker" element={<AddWorkersForm />} />
-          <Route path="/admin/add-Jobs" element={<AddJobForm />} />
-          <Route path="/admin/dashboard" element={<Dashboard/>} />
-          <Route path="/admin/add-material" element={<ProductForm />} />
-          <Route path='/admin/showWorkers' element={<ShowWorkers />} />
-          <Route path='/admin/showMaterial' element={<ShowMaterials />} />
-          <Route path='/admin/ShowJobs' element={<ShowJobs />} /> 
-        {/*end   admin   dashboard section  */}
 
-              </>
-        )}
 
-        {/* start profile section  */}
-        <Route path="/profile" element={<Profile />} />
-        {/* end  profile section  */}
-        <Route path='/inbox' element={<Inbox />}/>
-        <Route path='/CheckOut' element={<Checkout />}/>
 
-          </Route>
 
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/login" element={<LoginPage />} />       
+{/* start Admin Dashboard Section */}
+<Route path="/admin/option" element={
+  <ProtectedRoute isAdmin={true}>
+    <OptionDashboard />
+  </ProtectedRoute>
+}></Route>
+
+<Route path="/admin/add-worker" element={
+  <ProtectedRoute isAdmin={true}>
+    <AddWorkersForm />
+  </ProtectedRoute>
+}></Route>
+
+<Route path="/admin/add-Jobs" element={
+  <ProtectedRoute isAdmin={true}>
+    <AddJobForm />
+  </ProtectedRoute>
+}></Route>
+
+<Route path="/admin/dashboard" element={
+  <ProtectedRoute>
+    <Dashboard />
+  </ProtectedRoute>
+} ></Route>
+
+<Route path="/admin/add-material" element={
+  <ProtectedRoute isAdmin={true}>
+    <ProductForm />
+  </ProtectedRoute>
+}></Route>
+
+<Route path='/admin/showWorkers' element={
+  <ProtectedRoute isAdmin={true}>
+    <ShowWorkers />
+  </ProtectedRoute>
+}></Route>
+
+<Route path='/admin/showMaterial' element={
+  <ProtectedRoute isAdmin={true}>
+    <ShowMaterials />
+  </ProtectedRoute>
+}></Route>
+
+<Route path='/admin/ShowJobs' element={
+  <ProtectedRoute isAdmin={true}>
+    <ShowJobs />
+  </ProtectedRoute>
+}></Route>
+{/* end Admin Dashboard Section */}
+
+
+
+
+
+
+          <Route path="/forget-password" element={<ForgetPassword />} />
+          <Route path="/singup" element={<RegisterPage />} />
+          <Route path="/singin" element={<LoginPage />} />       
           <Route path="/learn-more" element={<LearnBoxes />} />
           <Route path='/Marketing-plan' element={<MarketingPlan />} />
-          <Route path='/SearchQueryGenerator' element={<SearchQueryGenerator />} />
           {/* <Route path="/" element={<Optionbox />} /> */}   
 
         </Routes>

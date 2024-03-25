@@ -1,8 +1,7 @@
-// socketService.js
 import { useEffect } from 'react';
 import openSocket from 'socket.io-client';
 
-const socket = openSocket('http://localhost:4000');
+const socket = openSocket('http://localhost:5000');
 
 export const useSocket = (eventName, callback) => {
   useEffect(() => {

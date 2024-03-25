@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import checkUserRole from '../../Routes/checkUserRole';
 import { styled } from '@mui/system';
 import {
   Paper,
@@ -32,20 +31,17 @@ const iconStyle = {
 };
 
 const Optionbox = () => {
-  const userRole = checkUserRole();
 
   return (
     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
-      {userRole !== 'user' && (
         <StyledBox elevation={3}>
-          <DashboardIcon color="primary" style={iconStyle}/> {/* Dashboard Icon */}
+          <DashboardIcon color="primary" style={iconStyle}/> 
           <Typography variant="h4">Dashboard</Typography>
           <Typography variant="body1">Click the button below to add new materials:</Typography>
           <Button variant="contained" color="primary" component={Link} to="/admin/option">
             Dashboard
           </Button>
         </StyledBox>
-      )}
       
       <StyledBox elevation={3}>
         <InventoryIcon color="primary" style={iconStyle} /> {/* Inventory Icon */}

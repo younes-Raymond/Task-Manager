@@ -1,14 +1,13 @@
-import react from 'react'
-import './loading.css'
-const Loading = () => {
 
-    return(
-        <div className="loading_container">
-        <div className='custom-loader'></div>
-        <p>loading....</p>
-        <p>please wait the data is loaded</p>
-       </div>
-    )
+import * as React from 'react';
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
+
+
+export default function Loading() {
+  return (
+    <Box sx={{ display: 'flex' }}>
+      <CircularProgress />
+    </Box>
+  );
 }
-
-export default Loading

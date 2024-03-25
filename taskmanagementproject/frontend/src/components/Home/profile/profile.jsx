@@ -130,7 +130,7 @@ const LogoutButton = () => {
     const handleLogout = () => {
       // Clear the localStorage
       localStorage.clear();
-        navigate('/login')
+        navigate('/singin')
         window.location.reload()
     };
     handleLogout()

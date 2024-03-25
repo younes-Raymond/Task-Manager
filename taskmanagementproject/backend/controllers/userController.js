@@ -1,4 +1,4 @@
-const Workers = require('../models/userModel');
+const Workers = require('../models/workersModel');
 const Materials = require('../models/productModel');
 const Jobs = require('../models/jobsModel');
 const EmailLog = require('../models/emailModel')
@@ -21,6 +21,168 @@ const { timeStamp } = require('console');
 const server = http.createServer(app);
 const io = new Server(server);
 const axios = require('axios'); 
+const  { validate } = require('deep-email-validator') ;
+const ErrorHandler = require("../utils/errorHandler");
+
+
+
+async function generateUniqueNationalId() {
+    try {
+        let isUnique = false;
+        let nextNationalId;
+
+        while (!isUnique) {
+            // Generate a new unique nationalID
+            nextNationalId = generateRandomNationalId(6); // Generate a 6-digit random nationalId
+
+            // Check if the generated nationalID already exists
+            const existingWorker = await Workers.findOne({ nationalId: nextNationalId });
+
+            if (!existingWorker) {
+                isUnique = true; // Exit the loop if the nationalID is unique
+            }
+        }
+
+        return nextNationalId; // Return the unique nationalID
+    } catch (error) {
+        console.error("Error generating unique nationalID:", error);
+        throw error;
+    }
+}
+
+function generateRandomNationalId(length) {
+    let result = '';
+    const characters = '0123456789';
+    const charactersLength = characters.length;
+    
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    
+    return result;
+}
+
+
+
+
+exports.registerWorker = asyncErrorHandler(async (req, res, next) => {
+    console.log(req.body);
+    const { firstName, lastName, email, password, position, salary, gender, nationalId, phoneNumber, legalInfo, avatar } = req.body;
+
+    try {
+        let user;
+
+        // Validate email format
+        let validationResult = await validate({
+          email: email,
+          sender: 'raymondyounes2@gmail.com',
+          validateRegex: true,
+          validateMx: true,
+          validateTypo: true,
+          validateDisposable: true,
+          validateSMTP: false,
+      });
+
+      console.log('full validationResult:', validationResult);
+
+        if (!validationResult.valid) {
+            throw new ErrorHandler('Invalid email format, please provide a valid email address', 400);
+        }
+
+        // Check if email is already in use
+        const existingUser = await Workers.findOne({ email });
+        if (existingUser) {
+            throw new ErrorHandler('Email is already in use', 400);
+        }
+        const nationalId = await generateUniqueNationalId();
+        console.log("Unique nationalId:", nationalId);
+        
+        if (firstName && lastName && email && password ) {
+        
+          user = await Workers.create({
+              firstName,
+              lastName,
+              email,
+              password,
+              role: 'unknown',
+              nationalId,
+              receiveUpdates: true,
+
+          });
+
+
+      }  else if (firstName && lastName && email && password && position && salary && gender && nationalId && phoneNumber && legalInfo) {
+            const result = await cloudinary.uploader.upload(req.body.avatar[0], {
+                folder: "workers",
+                width: 150,
+                crop: "scale"
+            });
+
+            user = await Workers.create({
+                firstName,
+                lastName,
+                email,
+                password,
+                position,
+                salary,
+                gender,
+                nationalId: nationalId, 
+                phoneNumber,
+                legalInfo,
+                avatar: {
+                    public_id: result.public_id,
+                    url: result.secure_url
+                },
+                role: 'user', 
+                receiveUpdates: true, 
+            });
+        } else {
+            throw new Error('Incomplete data');
+        }
+        sendToken(user, 201, res);
+    } catch (error) {
+        console.error(error);
+        next(error); // Pass error to the error handler middleware
+    }
+});
+
+
+
+exports.loginUser = asyncErrorHandler(async (req, res) => {
+  console.log(req.body)
+  const { email, password } = req.body.email;
+
+  if (!email || !password) {
+    res.status(400).json({ message: 'Please enter email and password' });
+    return;
+  }
+
+  const user = await Workers.findOne({ email }).select('+password');
+
+  if (!user) {
+    res.status(401).json({ message: "Sorry, we couldn't find an account with that email and password" });
+    return;
+  }
+
+  const isPasswordMatched = await user.comparePassword(password);
+
+  if (!isPasswordMatched) {
+    res.status(401).json({ message: "Sorry, we couldn't find an account with that email and password" });
+    return;
+  }
+
+  const token = user.generateToken();
+
+  // Create an object containing the token and additional user data
+  const responseData = {
+    token,
+    user
+  };
+  res.status(200).json(responseData);
+});
+
+
+
 // Your route handler
 exports.Track = async (req, res) => {
   console.log('req Query: ', req.query);
@@ -59,8 +221,6 @@ exports.Track = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
-
 
 
 
@@ -173,6 +333,7 @@ exports.sendMessages = async (req, res) => {
   }
 };
 
+
 // Controller function for getting all chats
 exports.getAllChats = async (req, res) => {
   console.log(req.query)
@@ -185,7 +346,9 @@ exports.getAllChats = async (req, res) => {
       participants: { $all: [selectedMember, userId] }
     });
 
-    res.status(200).json({ chats: allChats });
+    const memberDetails = await Workers.findById(selectedMember);
+    console.log(memberDetails)
+    res.status(200).json({ chats: allChats,memberDetails: memberDetails  });
   } catch (error) {
     console.error('Error retrieving chats:', error.message);
     res.status(500).json({ error: 'Internal Server Error', message: error.message });
@@ -201,93 +364,6 @@ exports.getAllChats = async (req, res) => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Register User
-exports.registerWorker = asyncErrorHandler(async (req, res, next) => {
-  // console.log(req.body);
-const { name, email, position, salary, gender, nationalId, phoneNumber, legalInfo, password} = req.body;
-  try {
-    const result = await cloudinary.uploader.upload(req.body.avatar[0], {
-      folder: "workers",
-      width: 150,
-      crop: "scale"
-    });
-    console.log(password);
-    const user = await Workers.create({
-      name,
-      email,
-      position,
-      salary,
-      gender,
-      nationalId,
-      phoneNumber,
-      password,
-      legalInfo,
-      avatar: {
-        public_id: result.public_id,
-        url: result.secure_url
-      },
-    });
-    // await sendPasswordEmail(name ,email, password, gender);
-    sendToken(user, 201, res);
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-exports.loginUser = asyncErrorHandler(async (req, res) => {
-  // console.log(req.body)
-  const { email, password } = req.body;
-
-  if (!email || !password) {
-    res.status(400).json({ message: 'Please enter email and password' });
-    return;
-  }
-
-  const user = await Workers.findOne({ email }).select('+password');
-
-  if (!user) {
-    res.status(401).json({ message: "Sorry, we couldn't find an account with that email and password" });
-    return;
-  }
-
-  const isPasswordMatched = await user.comparePassword(password);
-
-  if (!isPasswordMatched) {
-    res.status(401).json({ message: "Sorry, we couldn't find an account with that email and password" });
-    return;
-  }
-
-  const token = user.generateToken();
-
-  // Create an object containing the token and additional user data
-  const responseData = {
-    token,
-    user: {
-      _id: user._id,
-      name: user.name,
-      gender: user.gender,
-      avatar: user.avatar,
-      role: user.role,
-      email: user.email,
-      // Add any other user data you want to include
-    },
-  };
-  res.status(200).json(responseData);
-});
 
 
 

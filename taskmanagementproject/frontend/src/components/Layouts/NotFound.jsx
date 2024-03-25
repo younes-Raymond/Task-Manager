@@ -1,4 +1,4 @@
-import notFound from '../assets/images/404-not-found.svg';
+import notFound from '../../assets/images/404-not-found.svg';
 import { Link } from 'react-router-dom';
 
 const NotFound = () => {
