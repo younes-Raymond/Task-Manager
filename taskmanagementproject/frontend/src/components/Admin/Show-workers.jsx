@@ -19,27 +19,16 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Typography,
-  Table,
-  TableContainer,
-  TableHead,
-  TableBody,
-  TableRow,
   TextField,
   IconButton,
-  TableCell,
-  Paper,
   Snackbar, 
-
  } from '@mui/material';
 import AddTaskRoundedIcon from '@mui/icons-material/AddTaskRounded';
 import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import VideocamIcon from '@mui/icons-material/Videocam';
 import SendIcon from '@mui/icons-material/Send';
-import StopIcon from '@mui/icons-material/Stop'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import SaveIcon from '@mui/icons-material/Save';
-
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
@@ -70,7 +59,6 @@ const ShowWorkers = () => {
   const canvasRef = useRef(null);
   const fileInputRef = useRef(null);
   const [iconColor, setIconColor] = useState({ camera: 'default', upload: 'default' , video:'default'});
-  const [editedRows, setEditedRows] = useState([]);
   const dataGridRef = useRef();
 
 
@@ -81,11 +69,9 @@ const ShowWorkers = () => {
       resultExpectation: '',
       deadlineDays: '',
     },
-    validationSchema: validationSchema, // Add the validation schema here
+    validationSchema: validationSchema, 
     onSubmit: async (values) => {
-      // This function will only be called if the form passes validation
       console.log('Form submitted with values:', values);
-      // Call your form submission logic here (e.g., handleCreateTask)
     },
   });
   
@@ -200,7 +186,7 @@ useEffect(() => {
        console.log(data.users)// this is log undifined how to deal with this probleme right now 
       const updatedRows = data.users.map((user, index) => ({
         id: user._id, // Assign a unique ID based on the index
-        fullName: user.name,
+        fullName: user?.name || user?.firstName,
         phoneNumber: user.phoneNumber,
         email: user.email,
         gender: user.gender,
@@ -419,8 +405,6 @@ const columns = [
 <IconButton onClick={() => handleSelectWorker(params.id)} color="primary">
   <AddTaskRoundedIcon />
 </IconButton>
-
-
       </div>
     ),
   },

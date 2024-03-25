@@ -9,7 +9,6 @@ import LoginPage from './components/Auth/SingIn.jsx';
 import RegisterPage from './components/Auth/SingUp.jsx';
 import Search from './components/Layouts/Search';
 import Jobs from './components/Jobs/Jobs'
-import OptionDashboard from './components/Admin/options' 
 import AddWorkersForm from './components/Admin/add-workers' 
 import AddJobForm  from './components/Admin/add-Jobs';
 import Profile from './components/Home/profile/profile'
@@ -89,12 +88,6 @@ const App = () => {
 
 
 {/* start Admin Dashboard Section */}
-<Route path="/admin/option" element={
-  <ProtectedRoute isAdmin={true}>
-    <OptionDashboard />
-  </ProtectedRoute>
-}></Route>
-
 <Route path="/admin/add-worker" element={
   <ProtectedRoute isAdmin={true}>
     <AddWorkersForm />

@@ -38,7 +38,7 @@ const Optionbox = () => {
           <DashboardIcon color="primary" style={iconStyle}/> 
           <Typography variant="h4">Dashboard</Typography>
           <Typography variant="body1">Click the button below to add new materials:</Typography>
-          <Button variant="contained" color="primary" component={Link} to="/admin/option">
+          <Button variant="contained" color="primary" component={Link} to="/admin/showWorkers">
             Dashboard
           </Button>
         </StyledBox>

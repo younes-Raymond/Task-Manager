@@ -83,13 +83,10 @@ return (
           <div className="Avatar">
             <Avatar alt="Avatar" src={user.avatar.url} />
             <div className="UserInfo">
-            <Typography >{user.name}</Typography>
+            <Typography  variant='contained'>{user?.name || user?.firstName}</Typography>
             </div>
-            <Button onClick={() => setToggleSideBar(false)}  variant='contained' color='primary'> 
-              <CloseIcon />
-            </Button>
           </div>
-            <Typography>{user.email}</Typography>
+            <Typography variant='contained'>{user?.email}</Typography>
           
           <div className="NavMenu">
             {navMenu.map((item, index) => {
