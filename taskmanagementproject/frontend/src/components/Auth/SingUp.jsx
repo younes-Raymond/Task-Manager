@@ -23,7 +23,7 @@ function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://github.com/younes-Raymond/Safe-Earth/">
+      <Link color="inherit" href="https://github.com/younes-Raymond/">
         AllMart Task Manager
       </Link>{' '}
       {new Date().getFullYear()}

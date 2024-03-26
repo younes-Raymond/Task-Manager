@@ -1,5 +1,5 @@
 import React , {useEffect, useState , }from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route,useLocation  } from 'react-router-dom';
 import Optionbox from './components/Home/option';
 import ProductForm from './components/Admin/ProductForm.jsx';
 import Aboutus from './components/Home/about-us';
@@ -28,11 +28,11 @@ const App = () => {
   return (
     <>
       <Router>
-        <ProtectedRoute>
-        <Header />
-        </ProtectedRoute>
+         <Header />
 
         <Routes>
+        <Route path="/singin" element={<LoginPage />} />       
+        <Route path="/singup" element={<RegisterPage />} />
            {/* start user section     */}
           <Route path='/'  exact   element={
             <ProtectedRoute>
@@ -130,20 +130,13 @@ const App = () => {
   </ProtectedRoute>
 }></Route>
 {/* end Admin Dashboard Section */}
-
-
-
-
-
-
           <Route path="/forget-password" element={<ForgetPassword />} />
-          <Route path="/singup" element={<RegisterPage />} />
-          <Route path="/singin" element={<LoginPage />} />       
           <Route path="/learn-more" element={<LearnBoxes />} />
           <Route path='/Marketing-plan' element={<MarketingPlan />} />
-          {/* <Route path="/" element={<Optionbox />} /> */}   
 
         </Routes>
+
+
       </Router>
     </>
   );
